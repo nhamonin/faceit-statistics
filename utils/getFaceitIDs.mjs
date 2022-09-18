@@ -1,3 +1,5 @@
+import fetch from 'node-fetch';
+
 export default async function getFaceitIDs(nicknames) {
   return await Promise.all(
     nicknames.map((nickname) =>

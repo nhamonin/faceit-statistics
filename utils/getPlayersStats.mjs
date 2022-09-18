@@ -1,3 +1,5 @@
+import fetch from 'node-fetch';
+
 export default async function getPlayersStats(faceitIDs) {
   return await Promise.all(
     faceitIDs.map((faceitID) =>
