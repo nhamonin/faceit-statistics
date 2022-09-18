@@ -1,0 +1,13 @@
+{
+  "env": {
+    "node": true
+  },
+  "rules": {
+    "quotes": [2, "single", { "avoidEscape": true }],
+    "arrow-body-style": ["error", "as-needed"]
+  },
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "sourceType": "module"
+  }
+}
