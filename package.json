@@ -14,11 +14,11 @@
   "type": "module",
   "devDependencies": {
     "eslint": "^8.23.1",
-    "node-telegram-bot-api": "^0.59.0",
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1"
   },
   "dependencies": {
-    "dotenv": "^16.0.2"
+    "dotenv": "^16.0.2",
+    "node-telegram-bot-api": "^0.59.0"
   }
 }
