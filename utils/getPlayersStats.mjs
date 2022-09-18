@@ -1,19 +1,19 @@
-import fetch from 'node-fetch';
+import dotenv from 'dotenv';
+import Faceit from 'faceit-js-api';
 
-export default async function getPlayersStats(faceitIDs) {
+dotenv.config();
+const faceit = new Faceit(process.env.FACEIT_API_KEY);
+
+export default async function getPlayersStats(nicknames) {
   return await Promise.all(
-    faceitIDs.map((faceitID) =>
-      fetch(`https://open.faceit.com/data/v4/players/${faceitID}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${process.env.FACEIT_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((response) => response.json())
-        .catch((error) => {
-          console.error('Error: ', error);
-        })
+    nicknames.map((nickname) =>
+      faceit.getPlayerInfo(nickname).then((player) => ({
+        game: player.games.csgo,
+        nickname: player.nickname,
+        playerId: player.id,
+        elo: player.games.csgo.faceitElo,
+        lvl: player.games.csgo.skillLevel,
+      }))
     )
   );
 }

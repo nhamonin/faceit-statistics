@@ -1,8 +1,9 @@
 import dotenv from 'dotenv';
 import TelegramBot from 'node-telegram-bot-api';
 
-import getFaceitIDs from './utils/getFaceitIDs.mjs';
+import getPlayersLastMatchesId from './utils/getPlayersLastMatchesId.mjs';
 import getPlayersStats from './utils/getPlayersStats.mjs';
+import getPlayersMatchesStats from './utils/getPlayersMatchesStats.mjs';
 
 const playersNicknames = [
   'stolbn',
@@ -13,20 +14,50 @@ const playersNicknames = [
 ];
 
 dotenv.config();
-const bot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true });
+const tBot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true });
 
-bot.onText(/\/getstats/, async (msg) => {
+tBot.onText(/\/getTeamStats/, async (msg) => {
   const chatId = msg.chat.id;
-  const faceitIDs = await getFaceitIDs(playersNicknames);
-  const playersStats = await getPlayersStats(faceitIDs);
-  const playersElo = playersStats.map(
-    (playerStats) => playerStats.games.csgo.faceit_elo
+
+  const playersStats = await getPlayersStats(playersNicknames);
+  const playersId = playersStats.map(({ playerId }) => playerId);
+
+  const playersLastMatchesIds = await getPlayersLastMatchesId(playersId);
+  const playersMatchesStats = await getPlayersMatchesStats(
+    playersLastMatchesIds
   );
-  const prettiedMessage = playersElo
-    .map((playerElo, index) => `${playersNicknames[index]}: ${playerElo}`)
+  const avgPlayersKD = playersMatchesStats.map(
+    (playerMatchesStats) =>
+      playerMatchesStats
+        .map(({ player_stats }) => +player_stats['K/D Ratio'])
+        .reduce((a, b) => a + b, 0) / playerMatchesStats.length
+  );
+
+  const prettiedMessage = avgPlayersKD
+    .map(
+      (avgPlayerKD, index) =>
+        `${playersNicknames[index]}: ${avgPlayerKD.toFixed(3)} K/D`
+    )
     .join('\n');
+  const avgTeamKD =
+    avgPlayersKD.reduce((a, b) => a + b, 0) / avgPlayersKD.length;
+
+  tBot.sendMessage(chatId, prettiedMessage + '\n\n' + `Avg K/D: ${avgTeamKD}`);
+});
+
+tBot.onText(/\/getTeamElo/, async (msg) => {
+  const chatId = msg.chat.id;
+
+  const playersStats = await getPlayersStats(playersNicknames);
+  const prettiedMessage = playersStats
+    .map(
+      (playerStats) =>
+        `${playerStats.nickname}: ${playerStats.elo} elo (${playerStats.lvl} lvl)`
+    )
+    .join('\n');
+  const playersElo = playersStats.map(({ elo }) => elo);
+
   const avgTeamElo = playersElo.reduce((a, b) => a + b, 0) / playersElo.length;
-  bot
-    .sendMessage(chatId, prettiedMessage)
-    .then(() => bot.sendMessage(chatId, `Avg Elo: ${avgTeamElo}`));
+
+  tBot.sendMessage(chatId, prettiedMessage + '\n\n' + `Avg Elo: ${avgTeamElo}`);
 });
