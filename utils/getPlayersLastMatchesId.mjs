@@ -3,7 +3,6 @@ import fetch from 'node-fetch';
 
 dotenv.config();
 
-const NORMAL_PLAYERS_AMOUNT = 10;
 const allowedCompetitionNames = ['5v5 RANKED'];
 
 export default async function getPlayersLastMatchesId(playerIDs) {
@@ -12,7 +11,7 @@ export default async function getPlayersLastMatchesId(playerIDs) {
   );
 }
 
-const getPlayerLastMatches = async (playerID, MATCHES_LIMIT, OFFSET) =>
+const getPlayerLastMatches = async (playerID, MATCHES_LIMIT) =>
   await fetch(
     `https://open.faceit.com/data/v4/players/${playerID}/history?game=csgo&limit=${MATCHES_LIMIT}`,
     {
