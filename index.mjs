@@ -1,7 +1,7 @@
 import {
-  getTeamStatsListener,
-  getTeamEloListener,
+  initTeamStatsListener,
+  initTeamEloListener,
 } from './controllers/telegramController.mjs';
 
-getTeamStatsListener();
-getTeamEloListener();
+initTeamStatsListener();
+initTeamEloListener();
