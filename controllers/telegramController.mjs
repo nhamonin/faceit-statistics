@@ -13,14 +13,14 @@ import { getTeamEloMessage } from '../services/getTeamElo.mjs';
 const tBot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true });
 dotenv.config();
 
-function getTeamStatsListener() {
+function initTeamStatsListener() {
   tBot.onText(/\/getTeamStats/, async ({ chat }) => {
     const msg = await getTeamKdMessage();
     tBot.sendMessage(chat.id, msg);
   });
 }
 
-function getTeamEloListener() {
+function initTeamEloListener() {
   tBot.onText(/\/getTeamElo/, async ({ chat }) => {
     const msg = await getTeamEloMessage();
     sendPhoto('image.png', chat.id, getEloMsg(msg));
@@ -43,4 +43,4 @@ function sendPhoto(fileName, chatId, html) {
   });
 }
 
-export { getTeamStatsListener, getTeamEloListener };
+export { initTeamStatsListener, initTeamEloListener };
