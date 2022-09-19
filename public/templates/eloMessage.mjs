@@ -1,5 +1,5 @@
 export const getEloMsg = (prettiedMessage) =>
-    `<html lang="en">
+  `<html lang="en">
         <head>
           <style>
             html {
@@ -31,5 +31,5 @@ export const getEloMsg = (prettiedMessage) =>
             }
           </style>
         </head>
-    <body> ${prettiedMessage} <br> <br> {{avgEloMsg}}</body>
+    <body> ${prettiedMessage} </body>
 </html>`;
