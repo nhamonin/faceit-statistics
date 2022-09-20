@@ -5,4 +5,13 @@ build:
     build:
       - npm install
 run:
+  runtime-version: 16.17.0
   command: npm start
+  network:
+    port: 8000
+    env: APP_PORT
+  env:
+    - name: TELEGRAM_API_TOKEN
+      value: '5707591890:AAEbtTBokJa2MfWd1O7jHSbYczzWmAxmDVo'
+    - name: FACEIT_API_KEY
+      value: 'd945690f-7ffa-4332-94c7-fc7f8412d1ae'
