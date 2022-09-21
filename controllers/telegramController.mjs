@@ -7,23 +7,43 @@ import path from 'path';
 import fs from 'fs';
 
 import { getEloMsg } from '../public/templates/eloMessage.mjs';
+import { getKDMsg } from '../public/templates/kdMessage.mjs';
 import { getTeamKdMessage } from '../services/getTeamKD.mjs';
 import { getTeamEloMessage } from '../services/getTeamElo.mjs';
 
 const tBot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true });
 dotenv.config();
 
+function tBotInit() {
+  tBot.onText(/^\/start$/, function (msg) {
+    tBot.sendMessage(
+      msg.chat.id,
+      'Hi team, check out some commands below I can do for you:',
+      {
+        reply_to_message_id: msg.message_id,
+        reply_markup: {
+          resize_keyboard: true,
+          one_time_keyboard: true,
+          keyboard: [
+            [{ text: 'Get Team Elo' }, { text: 'Get Team K/D (Last 20)' }],
+          ],
+        },
+      }
+    );
+  });
+}
+
 function initTeamStatsListener() {
-  tBot.onText(/\/getTeamStats/, async ({ chat }) => {
+  tBot.onText(/Get Team K\/D \(Last 20\)/, async ({ chat }) => {
     const msg = await getTeamKdMessage();
-    tBot.sendMessage(chat.id, msg);
+    sendPhoto('kd.png', chat.id, getKDMsg(msg));
   });
 }
 
 function initTeamEloListener() {
-  tBot.onText(/\/getTeamElo/, async ({ chat }) => {
+  tBot.onText(/Get Team Elo/, async ({ chat }) => {
     const msg = await getTeamEloMessage();
-    sendPhoto('image.png', chat.id, getEloMsg(msg));
+    sendPhoto('elo.png', chat.id, getEloMsg(msg));
   });
 }
 
@@ -43,4 +63,4 @@ function sendPhoto(fileName, chatId, html) {
   });
 }
 
-export { initTeamStatsListener, initTeamEloListener };
+export { tBotInit, initTeamStatsListener, initTeamEloListener };
