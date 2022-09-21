@@ -13,24 +13,45 @@ export const getTeamKdMessage = async () => {
   );
   const avgPlayersKD = getAvgPlayersKD(playersMatchesStats);
   const playersKDMessage = formatMessage(avgPlayersKD);
-  const avgTeamKDMessage = 'Avg Team K/D: ' + calculateAverage(avgPlayersKD);
+  const avgTeamKDMessage =
+    'Avg Team K/D: ' +
+    calculateAverage(
+      avgPlayersKD.map((avgPlayerKD) => Object.values(avgPlayerKD)[0])
+    ).toFixed(2);
 
-  return `${playersKDMessage}\n\n${avgTeamKDMessage}`;
+  return `Last 20 matches:<br><br>${playersKDMessage}<br><br>${avgTeamKDMessage}`;
 };
 
 function getAvgPlayersKD(playersMatchesStats) {
-  return playersMatchesStats.map((playerMatchesStats) =>
-    calculateAverage(
+  return playersMatchesStats.map((playerMatchesStats) => ({
+    [playerMatchesStats[0].nickname]: calculateAverage(
       playerMatchesStats.map(({ player_stats }) => +player_stats['K/D Ratio'])
-    )
-  );
+    ),
+  }));
 }
 
 function formatMessage(avgPlayersKD) {
   return avgPlayersKD
+    .sort((a, b) => Object.values(b)[0] - Object.values(a)[0])
     .map(
-      (avgPlayerKD, index) =>
-        `${playersNicknames[index]}: ${avgPlayerKD.toFixed(2)} K/D`
+      (avgPlayerKD) =>
+        `${Object.keys(avgPlayerKD)[0]}: <span class='${getKDColorClass(
+          +Object.values(avgPlayerKD)[0]
+        )}'>${(+Object.values(avgPlayerKD)[0]).toFixed(
+          2
+        )} <span class='white'>&nbsp;K/D</span></span>`
     )
-    .join('\n');
+    .join('<br>');
+}
+
+function getKDColorClass(kdValue) {
+  if (kdValue < 1) {
+    return 'red';
+  } else if (kdValue < 1.1) {
+    return 'yellow';
+  } else if (kdValue < 1.3) {
+    return 'green';
+  } else {
+    return 'aqua';
+  }
 }
