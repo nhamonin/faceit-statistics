@@ -1,4 +1,4 @@
-export const getEloMsg = (msg) =>
+export const getKDMsg = (msg) =>
   `<html lang="en">
         <head>
           <style>
@@ -9,10 +9,14 @@ export const getEloMsg = (msg) =>
               color: white;
               background: #0E1621;
               font-size: 4rem;
-              font-family: Open Sans, sans-serif;
+              font-family: Open Sans,sans-serif;
             }
             body {
               padding: 40px;
+            }
+            span {
+              float: right;
+              margin-right: 100px;
             }
             .red {
               color: #F81E00;
@@ -20,20 +24,14 @@ export const getEloMsg = (msg) =>
             .yellow {
               color: #FFC803;
             }
-            .orange {
-              color: #FF630C;
-            }
             .green {
               color: #1DE100;
-            }
-            .white {
-              color: #E5E5E4;
             }
             .aqua {
               color: aqua;
             }
-            .float-right {
-              float: right;
+            .white {
+              color: white;
             }
           </style>
         </head>
