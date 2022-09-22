@@ -3,7 +3,7 @@ import calculateAverage from '../utils/calculateAverage.mjs';
 import { playersNicknames, lvlClasses } from '../config/config.js';
 
 export const getTeamEloMessage = async () => {
-  const playersStats = await getPlayersStats(playersNicknames);
+  const playersStats = (await getPlayersStats(playersNicknames)).sort((a, b) => b.elo - a.elo);
   const playerEloMessage = formatMessage(playersStats);
   const playersElo = playersStats.map(({ elo }) => elo);
   const avgTeamEloMessage = 'Avg Team Elo: ' + calculateAverage(playersElo);
