@@ -14,34 +14,15 @@ import { getTeamEloMessage } from '../services/getTeamElo.mjs';
 const tBot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true });
 dotenv.config();
 
-function tBotInit() {
-  tBot.onText(/^\/start$/, function (msg) {
-    tBot.sendMessage(
-      msg.chat.id,
-      'Hi team, check out some commands below I can do for you:',
-      {
-        reply_to_message_id: msg.message_id,
-        reply_markup: {
-          resize_keyboard: true,
-          one_time_keyboard: true,
-          keyboard: [
-            [{ text: 'Get Team Elo' }, { text: 'Get Team K/D (Last 20)' }],
-          ],
-        },
-      }
-    );
-  });
-}
-
 function initTeamStatsListener() {
-  tBot.onText(/Get Team K\/D \(Last 20\)/, async ({ chat }) => {
+  tBot.onText(/\/getTeamKD/, async ({ chat }) => {
     const msg = await getTeamKdMessage();
     sendPhoto('kd.png', chat.id, getKDMsg(msg));
   });
 }
 
 function initTeamEloListener() {
-  tBot.onText(/Get Team Elo/, async ({ chat }) => {
+  tBot.onText(/\/getTeamElo/, async ({ chat }) => {
     const msg = await getTeamEloMessage();
     sendPhoto('elo.png', chat.id, getEloMsg(msg));
   });
@@ -64,4 +45,4 @@ function sendPhoto(fileName, chatId, html) {
   .catch(err => console.log(err));
 }
 
-export { tBotInit, initTeamStatsListener, initTeamEloListener };
+export { initTeamStatsListener, initTeamEloListener };
