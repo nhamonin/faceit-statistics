@@ -14,6 +14,12 @@ import { getTeamEloMessage } from '../services/getTeamElo.mjs';
 const tBot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true });
 dotenv.config();
 
+function initBot() {
+  tBot.onText(/\/start/, async ({ chat }) => {
+    tBot.sendMessage(chat.id, 'This bot can provide statistics for the RubickOn team(currently). Try it out by using /getTeamElo or /getTeamKD commands!');
+  });
+}
+
 function initTeamStatsListener() {
   tBot.onText(/\/getTeamKD/, async ({ chat }) => {
     const msg = await getTeamKdMessage();
@@ -45,4 +51,4 @@ function sendPhoto(fileName, chatId, html) {
   .catch(err => console.log(err));
 }
 
-export { initTeamStatsListener, initTeamEloListener };
+export { initBot, initTeamStatsListener, initTeamEloListener };
