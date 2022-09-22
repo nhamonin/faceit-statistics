@@ -60,7 +60,8 @@ function sendPhoto(fileName, chatId, html) {
   }).then(() => {
     console.log('The image was created successfully!');
     tBot.sendPhoto(chatId, path.join(process.cwd(), 'public', 'png', fileName));
-  });
+  })
+  .catch(err => console.log(err));
 }
 
 export { tBotInit, initTeamStatsListener, initTeamEloListener };
