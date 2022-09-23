@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 
 dotenv.config();
 
-const allowedCompetitionNames = ['5v5 RANKED'];
+import { allowedCompetitionNames } from '../config/config.js';
 
 export default async function getPlayersLastMatchesId(playerIDs) {
   return await Promise.all(
