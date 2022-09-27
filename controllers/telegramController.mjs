@@ -1,10 +1,11 @@
 process.env['NTBA_FIX_350'] = 1;
 
-import TelegramBot from 'node-telegram-bot-api';
-import nodeHtmlToImage from 'node-html-to-image';
-import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
+
+import dotenv from 'dotenv';
+import TelegramBot from 'node-telegram-bot-api';
+import nodeHtmlToImage from 'node-html-to-image';
 
 import { getEloMsg } from '../public/templates/eloMessage.mjs';
 import { getKDMsg } from '../public/templates/kdMessage.mjs';
@@ -24,14 +25,14 @@ function initBot() {
 }
 
 function initTeamStatsListener() {
-  tBot.onText(/\/getTeamKD/, async ({ chat }) => {
+  tBot.onText(/\/get\_team\_kd/, async ({ chat }) => {
     const msg = await getTeamKdMessage();
     sendPhoto('kd.png', chat.id, getKDMsg(msg));
   });
 }
 
 function initTeamEloListener() {
-  tBot.onText(/\/getTeamElo/, async ({ chat }) => {
+  tBot.onText(/\/get\_team\_elo/, async ({ chat }) => {
     const msg = await getTeamEloMessage();
     sendPhoto('elo.png', chat.id, getEloMsg(msg));
   });
