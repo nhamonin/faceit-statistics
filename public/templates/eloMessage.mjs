@@ -1,4 +1,4 @@
-export const getEloMsg = (msg) =>
+export const getEloTemplate = (msg) =>
   `<html lang="en">
         <head>
           <style>
