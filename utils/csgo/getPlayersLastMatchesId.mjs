@@ -1,9 +1,7 @@
-import dotenv from 'dotenv';
-import fetch from 'node-fetch';
+import { Players } from 'faceit-node-api';
+import { allowedCompetitionNames } from '../../config/config.js';
 
-dotenv.config();
-
-import { allowedCompetitionNames } from '../config/config.js';
+const players = new Players();
 
 export default async function getPlayersLastMatchesId(playerIDs) {
   return await Promise.all(
@@ -11,18 +9,9 @@ export default async function getPlayersLastMatchesId(playerIDs) {
   );
 }
 
-const getPlayerLastMatches = async (playerID, MATCHES_LIMIT) =>
-  await fetch(
-    `https://open.faceit.com/data/v4/players/${playerID}/history?game=csgo&limit=${MATCHES_LIMIT}`,
-    {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${process.env.FACEIT_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-    }
-  )
-    .then((response) => response.json())
+const getPlayerLastMatches = (playerID, MATCHES_LIMIT) =>
+  players
+    .getAllMatchesOfAPlayer(playerID, 'csgo', { limit: MATCHES_LIMIT })
     .then(({ items }) =>
       items
         .filter(({ competition_name }) =>

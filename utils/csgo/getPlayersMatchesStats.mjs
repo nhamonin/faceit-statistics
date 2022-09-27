@@ -1,7 +1,6 @@
-import dotenv from 'dotenv';
-import fetch from 'node-fetch';
+import { Matches } from 'faceit-node-api';
 
-dotenv.config();
+const matches = new Matches();
 
 export default async function getPlayersMatchesStats(playersMatchesId) {
   return await Promise.all(
@@ -11,14 +10,8 @@ export default async function getPlayersMatchesStats(playersMatchesId) {
 
       return await Promise.all(
         matchesId.map((matchId) =>
-          fetch(`https://open.faceit.com/data/v4/matches/${matchId}/stats`, {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${process.env.FACEIT_API_KEY}`,
-              'Content-Type': 'application/json',
-            },
-          })
-            .then((response) => response.json())
+          matches
+            .getStatisticsOfAMatch(matchId)
             .then((data) => {
               const players = [
                 ...data.rounds[0].teams[0].players,

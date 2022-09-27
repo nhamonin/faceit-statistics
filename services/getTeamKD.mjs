@@ -1,6 +1,6 @@
-import getPlayersLastMatchesId from '../utils/getPlayersLastMatchesId.mjs';
-import getPlayersStats from '../utils/getPlayersStats.mjs';
-import getPlayersMatchesStats from '../utils/getPlayersMatchesStats.mjs';
+import getPlayersLastMatchesId from '../utils/csgo/getPlayersLastMatchesId.mjs';
+import getPlayersStats from '../utils/csgo/getPlayersStats.mjs';
+import getPlayersMatchesStats from '../utils/csgo/getPlayersMatchesStats.mjs';
 import { playersNicknames } from '../config/config.js';
 import calculateAverage from '../utils/calculateAverage.mjs';
 

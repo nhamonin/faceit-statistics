@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "dotenv": "^16.0.2",
-    "faceit-js-api": "^0.3.3",
+    "faceit-node-api": "^1.0.0",
     "node-fetch": "^3.2.10",
     "node-html-to-image": "^3.2.4",
     "node-telegram-bot-api": "^0.59.0",

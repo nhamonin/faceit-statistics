@@ -1,9 +1,11 @@
-import getPlayersStats from '../utils/getPlayersStats.mjs';
+import getPlayersStats from '../utils/csgo/getPlayersStats.mjs';
 import calculateAverage from '../utils/calculateAverage.mjs';
 import { playersNicknames, lvlClasses } from '../config/config.js';
 
 export const getTeamEloMessage = async () => {
-  const playersStats = (await getPlayersStats(playersNicknames)).sort((a, b) => b.elo - a.elo);
+  const playersStats = (await getPlayersStats(playersNicknames)).sort(
+    (a, b) => b.elo - a.elo
+  );
   const playersElo = playersStats.map(({ elo }) => elo);
   const playerEloMessage = formatMessage(playersStats);
   const avgTeamEloMessage = 'Avg Team Elo: ' + calculateAverage(playersElo);
