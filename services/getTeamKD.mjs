@@ -4,10 +4,13 @@ import getPlayersMatchesStats from '../utils/csgo/getPlayersMatchesStats.mjs';
 import calculateAverage from '../utils/calculateAverage.mjs';
 import { playersNicknames } from '../config/config.js';
 
-export const getTeamKdMessage = async () => {
+const DEFAULT_MATCH_LIMIT = 20;
+
+export const getTeamKdMessage = async (matchLimit) => {
+  const limit = matchLimit || DEFAULT_MATCH_LIMIT;
   const playersStats = await getPlayersStats(playersNicknames);
   const playersId = playersStats.map(({ playerId }) => playerId);
-  const playersLastMatchesIds = await getPlayersLastMatchesId(playersId);
+  const playersLastMatchesIds = await getPlayersLastMatchesId(playersId, limit);
   const playersMatchesStats = await getPlayersMatchesStats(
     playersLastMatchesIds
   );
@@ -19,15 +22,14 @@ export const getTeamKdMessage = async () => {
       avgPlayersKD.map((avgPlayerKD) => Object.values(avgPlayerKD)[0])
     ).toFixed(2);
 
-  return `Last 20 matches:<br><br>${playersKDMessage}<br><br>${avgTeamKDMessage}`;
+  return `Last ${limit} matches:<br><br>${playersKDMessage}<br><br>${avgTeamKDMessage}`;
 };
 
 function getAvgPlayersKD(playersMatchesStats) {
   return playersMatchesStats.map((playerMatchesStats) => {
-    const playerKDs = playerMatchesStats.map(({ player_stats }) => {
-      let qq = 5;
-      return +player_stats['K/D Ratio'];
-    });
+    const playerKDs = playerMatchesStats.map(
+      ({ player_stats }) => +player_stats['K/D Ratio']
+    );
     return { [playerMatchesStats[0].nickname]: calculateAverage(playerKDs) };
   });
 }

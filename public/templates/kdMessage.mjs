@@ -1,4 +1,4 @@
-export const getKDMsg = (msg) =>
+export const getKDTemplate = (msg) =>
   `<html lang="en">
         <head>
           <style>

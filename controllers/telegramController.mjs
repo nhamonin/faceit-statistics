@@ -7,8 +7,8 @@ import dotenv from 'dotenv';
 import TelegramBot from 'node-telegram-bot-api';
 import nodeHtmlToImage from 'node-html-to-image';
 
-import { getEloMsg } from '../public/templates/eloMessage.mjs';
-import { getKDMsg } from '../public/templates/kdMessage.mjs';
+import { getEloTemplate } from '../public/templates/eloMessage.mjs';
+import { getKDTemplate } from '../public/templates/kdMessage.mjs';
 import { getTeamKdMessage } from '../services/getTeamKD.mjs';
 import { getTeamEloMessage } from '../services/getTeamElo.mjs';
 
@@ -25,16 +25,16 @@ function initBot() {
 }
 
 function initTeamStatsListener() {
-  tBot.onText(/\/get\_team\_kd/, async ({ chat }) => {
-    const msg = await getTeamKdMessage();
-    sendPhoto('kd.png', chat.id, getKDMsg(msg));
+  tBot.onText(/\/get\_team\_kd ?(\d*)/, async (msg, match) => {
+    const kdMessage = await getTeamKdMessage(+match[1]);
+    sendPhoto('kd.png', msg.chat.id, getKDTemplate(kdMessage));
   });
 }
 
 function initTeamEloListener() {
   tBot.onText(/\/get\_team\_elo/, async ({ chat }) => {
-    const msg = await getTeamEloMessage();
-    sendPhoto('elo.png', chat.id, getEloMsg(msg));
+    const eloMessage = await getTeamEloMessage();
+    sendPhoto('elo.png', chat.id, getEloTemplate(eloMessage));
   });
 }
 
