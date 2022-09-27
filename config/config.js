@@ -1,9 +1,9 @@
 const playersNicknames = [
   'stolbn',
-  'Grenat',
   'Zyw007',
   'DragoMag',
   'L-Jenkins',
+  'Grenat',
 ];
 
 const allowedCompetitionNames = ['5v5 RANKED', 'CS:GO 5v5'];
