@@ -9,7 +9,7 @@ const DEFAULT_MATCH_LIMIT = 20;
 export const getTeamKdMessage = async (matchLimit) => {
   const limit = matchLimit || DEFAULT_MATCH_LIMIT;
   const playersStats = await getPlayersStats(playersNicknames);
-  const playersId = playersStats.map(({ playerId }) => playerId);
+  const playersId = playersStats.map(({ player_id }) => player_id);
   const playersLastMatchesIds = await getPlayersLastMatchesId(playersId, limit);
   const playersMatchesStats = await getPlayersMatchesStats(
     playersLastMatchesIds
@@ -27,9 +27,9 @@ export const getTeamKdMessage = async (matchLimit) => {
 
 function getAvgPlayersKD(playersMatchesStats) {
   return playersMatchesStats.map((playerMatchesStats) => {
-    const playerKDs = playerMatchesStats.map(
-      ({ player_stats }) => +player_stats['K/D Ratio']
-    );
+    const playerKDs = playerMatchesStats
+      .filter(Boolean)
+      .map(({ player_stats }) => +player_stats['K/D Ratio']);
     return { [playerMatchesStats[0].nickname]: calculateAverage(playerKDs) };
   });
 }
