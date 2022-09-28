@@ -5,27 +5,27 @@ const players = new Players();
 
 export default async function getPlayersLastMatchesId(playerIDs, limit) {
   return await Promise.all(
-    playerIDs.map((playerID) => handlePlayerLastMatches(playerID, limit))
+    playerIDs.map((player_id) => handlePlayerLastMatches(player_id, limit))
   );
 }
 
-const handlePlayerLastMatches = async (playerID, matchesLimit) => {
+const handlePlayerLastMatches = async (player_id, matchesLimit) => {
   let result = [];
   let limit = matchesLimit;
 
   while (result.length !== matchesLimit) {
-    result = await getPlayerLastMatches(playerID, limit);
+    result = await getPlayerLastMatches(player_id, limit);
     limit += matchesLimit - result.length;
   }
 
   return {
-    [playerID]: result,
+    [player_id]: result,
   };
 };
 
-const getPlayerLastMatches = (playerID, limit) =>
+const getPlayerLastMatches = (player_id, limit) =>
   players
-    .getAllMatchesOfAPlayer(playerID, 'csgo', { limit })
+    .getAllMatchesOfAPlayer(player_id, 'csgo', { limit })
     .then(({ items }) => {
       const filtered = items.filter(
         (item) => item.playing_players.length === 10
