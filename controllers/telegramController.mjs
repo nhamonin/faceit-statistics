@@ -36,27 +36,27 @@ function addPlayerListener() {
 
 function initTeamStatsListener() {
   tBot.onText(/\/get\_team\_kd.* ?(\d*)/, async ({ chat }, match) => {
-    const result = await getTeamKdMessage(+match[1], chat.id);
+    const { message, error } = await getTeamKdMessage(+match[1], chat.id);
 
-    if (result.error) {
-      tBot.sendMessage(chat.id, result.message);
+    if (error) {
+      tBot.sendMessage(chat.id, message);
       return;
     }
 
-    sendPhoto('kd.png', chat.id, getKDTemplate(kdMessage));
+    sendPhoto('kd.png', chat.id, getKDTemplate(message));
   });
 }
 
 function initTeamEloListener() {
   tBot.onText(/\/get\_team\_elo/, async ({ chat }) => {
-    const result = await getTeamEloMessage(chat.id);
+    const { message, error } = await getTeamEloMessage(chat.id);
 
-    if (result.error) {
-      tBot.sendMessage(chat.id, result.message);
+    if (error) {
+      tBot.sendMessage(chat.id, message);
       return;
     }
 
-    sendPhoto('elo.png', chat.id, getEloTemplate(eloMessage));
+    sendPhoto('elo.png', chat.id, getEloTemplate(message));
   });
 }
 

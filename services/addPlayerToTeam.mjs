@@ -5,15 +5,16 @@ import { messages } from '../config/config.js';
 
 export const addPlayer = async (name, chat_id) => {
   try {
-    const team = await Team.findOne({ chat_id });
-    if (checkPlayerUniqueness(team.players, name)) {
+    let { players } = await Team.findOne({ chat_id });
+
+    if (playerInTheTeam(players, name)) {
       return messages.addPlayer.exists(name);
     }
 
     const playerStats = await getPlayersStats([name]);
     const { player_id, nickname, elo, lvl } = playerStats[0];
     const player = new Player({ player_id, nickname, elo, lvl });
-    const players = [...team.players, player];
+    players = [...players, player];
 
     return Team.findOneAndUpdate({ chat_id }, { players }).then(() =>
       messages.addPlayer.success(name)
@@ -24,6 +25,6 @@ export const addPlayer = async (name, chat_id) => {
   }
 };
 
-function checkPlayerUniqueness(players, name) {
+function playerInTheTeam(players, name) {
   return players.some(({ nickname }) => nickname === name);
 }
