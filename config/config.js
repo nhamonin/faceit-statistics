@@ -1,12 +1,8 @@
-const playersNicknames = [
-  'stolbn',
-  'Zyw007',
-  'DragoMag',
-  'L-Jenkins',
-  'Grenat',
+const allowedCompetitionNames = [
+  '5v5 RANKED',
+  '5v5 RANKED PREMIUM',
+  'CS:GO 5v5',
 ];
-
-const allowedCompetitionNames = ['5v5 RANKED', 'CS:GO 5v5'];
 
 const lvlClasses = {
   1: 'white',
@@ -21,4 +17,4 @@ const lvlClasses = {
   10: 'red',
 };
 
-export { playersNicknames, allowedCompetitionNames, lvlClasses };
+export { allowedCompetitionNames, lvlClasses };
