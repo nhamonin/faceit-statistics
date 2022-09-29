@@ -13,7 +13,7 @@ const teamSchema = new Schema(
       required: false,
     },
     players: {
-      type: [{type: playerSchema}],
+      type: [{ type: playerSchema }],
       required: true,
     },
   },
