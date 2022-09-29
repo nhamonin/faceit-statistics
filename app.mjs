@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import {
   initBot,
   addPlayerListener,
+  deletePlayerListener,
   initTeamStatsListener,
   initTeamEloListener,
 } from './controllers/telegramController.mjs';
@@ -19,6 +20,7 @@ Faceit.setApiKey(FACEIT_API_KEY);
 
 initBot();
 addPlayerListener();
+deletePlayerListener();
 initTeamStatsListener();
 initTeamEloListener();
 
