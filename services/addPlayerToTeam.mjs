@@ -1,12 +1,13 @@
 import getPlayersStats from '../utils/csgo/getPlayersStats.mjs';
 import { Player } from '../models/player.js';
 import { Team } from '../models/team.js';
+import { messages } from '../config/config.js';
 
 export const addPlayer = async (name, chat_id) => {
   try {
     const team = await Team.findOne({ chat_id });
     if (checkPlayerUniqueness(team.players, name)) {
-      return `Sorry, but ${name} already exists!`;
+      return messages.addPlayer.exists(name);
     }
 
     const playerStats = await getPlayersStats([name]);
@@ -14,8 +15,8 @@ export const addPlayer = async (name, chat_id) => {
     const player = new Player({ player_id, nickname, elo, lvl });
     const players = [...team.players, player];
 
-    return Team.findOneAndUpdate({ chat_id }, { players }).then(
-      () => `Player ${name} was added!`
+    return Team.findOneAndUpdate({ chat_id }, { players }).then(() =>
+      messages.addPlayer.success(name)
     );
   } catch (e) {
     console.log(e.message);

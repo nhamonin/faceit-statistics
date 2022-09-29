@@ -17,4 +17,15 @@ const lvlClasses = {
   10: 'red',
 };
 
-export { allowedCompetitionNames, lvlClasses };
+const messages = {
+  start:
+    'Welcome to the faceit stats bot! You are now able to add players to your list. Please do it via the command /add_player nickname.',
+  addPlayer: {
+    success: (nickname) =>
+      `Player ${nickname} was added.\nCheck out elo via /get_team_elo or K/D via /get_team_kd commands.`,
+    exists: (nickname) =>
+      `Sorry, but ${nickname} already exists in your team. Try to add another player.`,
+  },
+};
+
+export { allowedCompetitionNames, lvlClasses, messages };
