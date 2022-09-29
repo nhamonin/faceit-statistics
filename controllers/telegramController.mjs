@@ -22,7 +22,7 @@ function initBot() {
     initTeam(chat.id);
     tBot.sendMessage(
       chat.id,
-      'This bot can provide statistics for the RubickOn team(currently). Try it out by using /getTeamElo or /getTeamKD commands!'
+      'You are now able to add players to your list! Please do it via the command /add_player nickname.'
     );
   });
 }
