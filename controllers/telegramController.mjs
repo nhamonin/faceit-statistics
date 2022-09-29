@@ -12,14 +12,13 @@ import { getKDTemplate } from '../public/templates/kdMessage.mjs';
 import { getTeamKdMessage } from '../services/getTeamKD.mjs';
 import { getTeamEloMessage } from '../services/getTeamElo.mjs';
 import { addPlayer } from '../services/addPlayerToTeam.mjs';
-import { Team } from '../models/team.js';
+import { initTeam } from '../services/initTeam.mjs';
 
 config();
 const tBot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true });
 
 function initBot() {
   tBot.onText(/\/start/, async ({ chat }) => {
-    //TODO: move to service
     initTeam(chat.id);
     tBot.sendMessage(
       chat.id,
@@ -70,11 +69,6 @@ function sendPhoto(fileName, chatId, html) {
     .catch((e) => {
       console.log(e.message);
     });
-}
-
-function initTeam(chat_id) {
-  const team = new Team({ chat_id, players: [] });
-  team.save();
 }
 
 export {
