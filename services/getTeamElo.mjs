@@ -1,17 +1,30 @@
 import calculateAverage from '../utils/calculateAverage.mjs';
-import { lvlClasses } from '../config/config.js';
+import { lvlClasses, messages } from '../config/config.js';
 import { Team } from '../models/team.js';
 
 export const getTeamEloMessage = async (chat_id) => {
-  const team = await Team.findOne({ chat_id });
-  const playersStats = team.players.sort((a, b) => b.elo - a.elo);
-  const playerEloMessage = formatMessage(playersStats);
+  const result = {
+    error: false,
+    message: '',
+  };
+  const { players } = await Team.findOne({ chat_id });
+  const noPlayersInTeam = players.length === 0;
 
+  if (noPlayersInTeam) {
+    result.error = true;
+    result.message = messages.emptyTeamError('elo');
+
+    return result;
+  }
+
+  const playersStats = players.sort((a, b) => b.elo - a.elo);
+  const playerEloMessage = formatMessage(playersStats);
   const playersElo = playersStats.map(({ elo }) => elo);
   const avgTeamEloMessage =
     'Avg Team Elo: ' + calculateAverage(playersElo).toFixed(0);
 
-  return `${playerEloMessage}<br><br>${avgTeamEloMessage}`;
+  result.message = `${playerEloMessage}<br><br>${avgTeamEloMessage}`;
+  return result;
 };
 
 function formatMessage(playersStats) {
