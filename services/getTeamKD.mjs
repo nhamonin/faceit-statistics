@@ -1,14 +1,16 @@
 import getPlayersLastMatchesId from '../utils/csgo/getPlayersLastMatchesId.mjs';
-import getPlayersStats from '../utils/csgo/getPlayersStats.mjs';
 import getPlayersMatchesStats from '../utils/csgo/getPlayersMatchesStats.mjs';
 import calculateAverage from '../utils/calculateAverage.mjs';
-import { playersNicknames } from '../config/config.js';
+import { Team } from '../models/team.js';
 
 const DEFAULT_MATCH_LIMIT = 20;
 
-export const getTeamKdMessage = async (matchLimit) => {
+export const getTeamKdMessage = async (matchLimit, chat_id) => {
   const limit = matchLimit || DEFAULT_MATCH_LIMIT;
-  const playersStats = await getPlayersStats(playersNicknames);
+
+  const team = await Team.findOne({ chat_id });
+  const playersStats = team.players.sort((a, b) => b.elo - a.elo);
+
   const playersId = playersStats.map(({ player_id }) => player_id);
   const playersLastMatchesIds = await getPlayersLastMatchesId(playersId, limit);
   const playersMatchesStats = await getPlayersMatchesStats(

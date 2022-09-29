@@ -11,14 +11,16 @@ import { getEloTemplate } from '../public/templates/eloMessage.mjs';
 import { getKDTemplate } from '../public/templates/kdMessage.mjs';
 import { getTeamKdMessage } from '../services/getTeamKD.mjs';
 import { getTeamEloMessage } from '../services/getTeamElo.mjs';
-import getPlayersStats from '../utils/csgo/getPlayersStats.mjs';
-import { Player } from '../models/player.js';
+import { addPlayer } from '../services/addPlayerToTeam.mjs';
+import { Team } from '../models/team.js';
 
 config();
 const tBot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true });
 
 function initBot() {
   tBot.onText(/\/start/, async ({ chat }) => {
+    //TODO: move to service
+    initTeam(chat.id);
     tBot.sendMessage(
       chat.id,
       'This bot can provide statistics for the RubickOn team(currently). Try it out by using /getTeamElo or /getTeamKD commands!'
@@ -26,40 +28,23 @@ function initBot() {
   });
 }
 
-function addUserListener() {
-  tBot.onText(/\/add\_player (\w*)/, async (msg, match) => {
-    try {
-      const playerStats = await getPlayersStats([match[1]]);
-      const { player_id, nickname, elo, lvl } = playerStats[0];
-      const player = new Player({ player_id, nickname, elo, lvl });
-      player
-        .save()
-        .then(() =>
-          tBot.sendMessage(
-            msg.chat.id,
-            `Player ${player.nickname} was successfully created!`
-          )
-        )
-        .catch((e) => {
-          console.log(e.message);
-        });
-    } catch (e) {
-      console.log(e.message);
-      tBot.sendMessage(msg.chat.id, e.message);
-    }
+function addPlayerListener() {
+  tBot.onText(/\/add\_player.* (\S*)/, async ({ chat }, match) => {
+    const message = await addPlayer(match[1], chat.id);
+    tBot.sendMessage(chat.id, message);
   });
 }
 
 function initTeamStatsListener() {
-  tBot.onText(/\/get\_team\_kd ?(\d*)/, async (msg, match) => {
-    const kdMessage = await getTeamKdMessage(+match[1]);
-    sendPhoto('kd.png', msg.chat.id, getKDTemplate(kdMessage));
+  tBot.onText(/\/get\_team\_kd.* ?(\d*)/, async ({ chat }, match) => {
+    const kdMessage = await getTeamKdMessage(+match[1], chat.id);
+    sendPhoto('kd.png', chat.id, getKDTemplate(kdMessage));
   });
 }
 
 function initTeamEloListener() {
   tBot.onText(/\/get\_team\_elo/, async ({ chat }) => {
-    const eloMessage = await getTeamEloMessage();
+    const eloMessage = await getTeamEloMessage(chat.id);
     sendPhoto('elo.png', chat.id, getEloTemplate(eloMessage));
   });
 }
@@ -87,4 +72,14 @@ function sendPhoto(fileName, chatId, html) {
     });
 }
 
-export { initBot, addUserListener, initTeamStatsListener, initTeamEloListener };
+function initTeam(chat_id) {
+  const team = new Team({ chat_id, players: [] });
+  team.save();
+}
+
+export {
+  initBot,
+  addPlayerListener,
+  initTeamStatsListener,
+  initTeamEloListener,
+};
