@@ -38,7 +38,6 @@ function addPlayerListener() {
 function initTeamStatsListener() {
   tBot.onText(/\/get\_team\_kd\w* ?(\d*)/, async ({ chat }, match) => {
     const limit = +match[1] || DEFAULT_MATCH_LIMIT;
-    console.log(limit);
     const { message, error } = await getTeamKdMessage(limit, chat.id);
 
     error
