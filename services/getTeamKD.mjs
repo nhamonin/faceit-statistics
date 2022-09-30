@@ -1,27 +1,28 @@
 import getPlayersLastMatchesId from '../utils/csgo/getPlayersLastMatchesId.mjs';
 import getPlayersMatchesStats from '../utils/csgo/getPlayersMatchesStats.mjs';
 import calculateAverage from '../utils/calculateAverage.mjs';
-import { messages } from '../config/config.js';
+import { messages, DEFAULT_MATCH_LIMIT } from '../config/config.js';
 import { Team } from '../models/team.js';
 
-const DEFAULT_MATCH_LIMIT = 20;
-
 export const getTeamKdMessage = async (matchLimit, chat_id) => {
-  const result = {
-    error: false,
-    message: '',
-  };
   const limit = matchLimit || DEFAULT_MATCH_LIMIT;
   const { players } = await Team.findOne({ chat_id });
-  const noPlayersInTeam = players.length === 0;
+  const isTeamEmpty = players.length === 0;
+  const statAttribute = 'K/D';
 
-  if (noPlayersInTeam) {
-    result.error = true;
-    result.message = messages.emptyTeamError('K/D');
+  return isTeamEmpty
+    ? prepareEmptyTeamResult(statAttribute)
+    : prepareProperResult(players, limit, statAttribute);
+};
 
-    return result;
-  }
+function prepareEmptyTeamResult(statAttribute) {
+  return {
+    error: true,
+    message: messages.emptyTeamError(statAttribute),
+  };
+}
 
+async function prepareProperResult(players, limit) {
   const playersStats = players.sort((a, b) => b.elo - a.elo);
   const playersId = playersStats.map(({ player_id }) => player_id);
   const playersLastMatchesIds = await getPlayersLastMatchesId(playersId, limit);
@@ -30,15 +31,15 @@ export const getTeamKdMessage = async (matchLimit, chat_id) => {
   );
   const avgPlayersKD = getAvgPlayersKD(playersMatchesStats);
   const playersKDMessage = formatMessage(avgPlayersKD);
-  const avgTeamKDMessage =
-    'Avg Team K/D: ' +
-    calculateAverage(
-      avgPlayersKD.map((avgPlayerKD) => Object.values(avgPlayerKD)[0])
-    ).toFixed(2);
+  const avgTeamKD = calculateAverage(
+    avgPlayersKD.map((avgPlayerKD) => Object.values(avgPlayerKD)[0])
+  ).toFixed(2);
 
-  result.message = `Last ${limit} matches:<br><br>${playersKDMessage}<br><br>${avgTeamKDMessage}`;
-  return result;
-};
+  return {
+    error: false,
+    message: messages.getTeamStats(playersKDMessage, 'K/D', avgTeamKD),
+  };
+}
 
 function getAvgPlayersKD(playersMatchesStats) {
   return playersMatchesStats.map((playerMatchesStats) => {

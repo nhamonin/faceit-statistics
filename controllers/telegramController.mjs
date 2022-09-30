@@ -13,6 +13,7 @@ import { getTeamKdMessage } from '../services/getTeamKD.mjs';
 import { getTeamEloMessage } from '../services/getTeamElo.mjs';
 import { addPlayer } from '../services/addPlayerToTeam.mjs';
 import { initTeam } from '../services/initTeam.mjs';
+import { DEFAULT_MATCH_LIMIT } from '../config/config.js';
 
 config();
 const tBot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true });
@@ -35,15 +36,14 @@ function addPlayerListener() {
 }
 
 function initTeamStatsListener() {
-  tBot.onText(/\/get\_team\_kd.* ?(\d*)/, async ({ chat }, match) => {
-    const { message, error } = await getTeamKdMessage(+match[1], chat.id);
+  tBot.onText(/\/get\_team\_kd\w* ?(\d*)/, async ({ chat }, match) => {
+    const limit = +match[1] || DEFAULT_MATCH_LIMIT;
+    console.log(limit);
+    const { message, error } = await getTeamKdMessage(limit, chat.id);
 
-    if (error) {
-      tBot.sendMessage(chat.id, message);
-      return;
-    }
-
-    sendPhoto('kd.png', chat.id, getKDTemplate(message));
+    error
+      ? tBot.sendMessage(chat.id, message)
+      : sendPhoto('kd.png', chat.id, getKDTemplate(limit, message));
   });
 }
 
@@ -51,12 +51,9 @@ function initTeamEloListener() {
   tBot.onText(/\/get\_team\_elo/, async ({ chat }) => {
     const { message, error } = await getTeamEloMessage(chat.id);
 
-    if (error) {
-      tBot.sendMessage(chat.id, message);
-      return;
-    }
-
-    sendPhoto('elo.png', chat.id, getEloTemplate(message));
+    error
+      ? tBot.sendMessage(chat.id, message)
+      : sendPhoto('elo.png', chat.id, getEloTemplate(message));
   });
 }
 
