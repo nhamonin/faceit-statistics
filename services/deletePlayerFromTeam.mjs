@@ -1,11 +1,12 @@
 import { Team } from '../models/team.js';
 import { messages } from '../config/config.js';
+import { isPlayerTeamMember } from '../utils/basic.mjs';
 
 export const deletePlayer = async (name, chat_id) => {
   try {
     let { players } = await Team.findOne({ chat_id });
 
-    if (playerNotInTheTeam(players, name)) {
+    if (!isPlayerTeamMember(players, name)) {
       return messages.deletePlayer.notExists(name);
     }
 
@@ -19,7 +20,3 @@ export const deletePlayer = async (name, chat_id) => {
     return e.message;
   }
 };
-
-function playerNotInTheTeam(players, name) {
-  return players.every(({ nickname }) => nickname !== name);
-}

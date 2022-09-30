@@ -2,6 +2,7 @@ import getPlayersStats from '../utils/csgo/getPlayersStats.mjs';
 import { Player } from '../models/player.js';
 import { Team } from '../models/team.js';
 import { messages } from '../config/config.js';
+import { isPlayerTeamMember } from '../utils/basic.mjs';
 
 export const addPlayer = async (name, chat_id) => {
   try {
@@ -24,7 +25,3 @@ export const addPlayer = async (name, chat_id) => {
     return e.message;
   }
 };
-
-function isPlayerTeamMember(players, name) {
-  return players.some(({ nickname }) => nickname === name);
-}
