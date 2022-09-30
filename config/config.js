@@ -28,6 +28,10 @@ const messages = {
   },
   emptyTeamError: (attribute) =>
     `Please add at least one player via '/add_player nickname' command to check ${attribute}.`,
+  getTeamStats: (playerStatMessage, statAttribute, avgTeamStat) =>
+    `${playerStatMessage}<br><br>Avg Team ${statAttribute}: ${avgTeamStat}`,
 };
 
-export { allowedCompetitionNames, lvlClasses, messages };
+const DEFAULT_MATCH_LIMIT = 20;
+
+export { allowedCompetitionNames, lvlClasses, messages, DEFAULT_MATCH_LIMIT };
