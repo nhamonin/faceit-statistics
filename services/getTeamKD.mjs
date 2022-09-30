@@ -13,7 +13,7 @@ export const getTeamKdMessage = async (matchLimit, chat_id) => {
   };
   const limit = matchLimit || DEFAULT_MATCH_LIMIT;
   const { players } = await Team.findOne({ chat_id });
-  const noPlayersInTeam = players.length === 0;
+  const isTeamEmpty = players.length === 0;
 
   if (noPlayersInTeam) {
     result.error = true;
