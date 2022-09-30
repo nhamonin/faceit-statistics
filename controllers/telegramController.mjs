@@ -12,6 +12,7 @@ import { getKDTemplate } from '../public/templates/kdMessage.mjs';
 import { getTeamKdMessage } from '../services/getTeamKD.mjs';
 import { getTeamEloMessage } from '../services/getTeamElo.mjs';
 import { addPlayer } from '../services/addPlayerToTeam.mjs';
+import { deletePlayer } from '../services/deletePlayerFromTeam.mjs';
 import { initTeam } from '../services/initTeam.mjs';
 import { DEFAULT_MATCH_LIMIT } from '../config/config.js';
 
@@ -31,6 +32,13 @@ function initBot() {
 function addPlayerListener() {
   tBot.onText(/\/add\_player.* (\S*)/, async ({ chat }, match) => {
     const message = await addPlayer(match[1], chat.id);
+    tBot.sendMessage(chat.id, message);
+  });
+}
+
+function deletePlayerListener() {
+  tBot.onText(/\/delete\_player.* (\S*)/, async ({ chat }, match) => {
+    const message = await deletePlayer(match[1], chat.id);
     tBot.sendMessage(chat.id, message);
   });
 }
@@ -82,6 +90,7 @@ function sendPhoto(fileName, chatId, html) {
 export {
   initBot,
   addPlayerListener,
+  deletePlayerListener,
   initTeamStatsListener,
   initTeamEloListener,
 };

@@ -26,6 +26,12 @@ const messages = {
     exists: (nickname) =>
       `Sorry, but ${nickname} already exists in your team. Try to add another player.`,
   },
+  deletePlayer: {
+    success: (nickname) =>
+      `Player ${nickname} was deleted.\nCheck out elo via /get_team_elo or K/D via /get_team_kd commands.`,
+    notExists: (nickname) =>
+      `Sorry, but ${nickname} doesn't exists in your team.`,
+  },
   emptyTeamError: (attribute) =>
     `Please add at least one player via '/add_player nickname' command to check ${attribute}.`,
   getTeamStats: (playerStatMessage, statAttribute, avgTeamStat) =>
