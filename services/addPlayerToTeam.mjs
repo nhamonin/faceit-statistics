@@ -7,7 +7,7 @@ export const addPlayer = async (name, chat_id) => {
   try {
     let { players } = await Team.findOne({ chat_id });
 
-    if (playerInTheTeam(players, name)) {
+    if (isPlayerTeamMember(players, name)) {
       return messages.addPlayer.exists(name);
     }
 
@@ -25,6 +25,6 @@ export const addPlayer = async (name, chat_id) => {
   }
 };
 
-function playerInTheTeam(players, name) {
+function isPlayerTeamMember(players, name) {
   return players.some(({ nickname }) => nickname === name);
 }

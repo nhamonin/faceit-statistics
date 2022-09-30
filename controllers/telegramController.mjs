@@ -14,6 +14,7 @@ import { getTeamEloMessage } from '../services/getTeamElo.mjs';
 import { addPlayer } from '../services/addPlayerToTeam.mjs';
 import { deletePlayer } from '../services/deletePlayerFromTeam.mjs';
 import { initTeam } from '../services/initTeam.mjs';
+import { DEFAULT_MATCH_LIMIT } from '../config/config.js';
 
 config();
 const tBot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true });
@@ -43,16 +44,23 @@ function deletePlayerListener() {
 }
 
 function initTeamStatsListener() {
-  tBot.onText(/\/get\_team\_kd.* ?(\d*)/, async ({ chat }, match) => {
-    const kdMessage = await getTeamKdMessage(+match[1], chat.id);
-    sendPhoto('kd.png', chat.id, getKDTemplate(kdMessage));
+  tBot.onText(/\/get\_team\_kd\w* ?(\d*)/, async ({ chat }, match) => {
+    const limit = +match[1] || DEFAULT_MATCH_LIMIT;
+    const { message, error } = await getTeamKdMessage(limit, chat.id);
+
+    error
+      ? tBot.sendMessage(chat.id, message)
+      : sendPhoto('kd.png', chat.id, getKDTemplate(limit, message));
   });
 }
 
 function initTeamEloListener() {
   tBot.onText(/\/get\_team\_elo/, async ({ chat }) => {
-    const eloMessage = await getTeamEloMessage(chat.id);
-    sendPhoto('elo.png', chat.id, getEloTemplate(eloMessage));
+    const { message, error } = await getTeamEloMessage(chat.id);
+
+    error
+      ? tBot.sendMessage(chat.id, message)
+      : sendPhoto('elo.png', chat.id, getEloTemplate(message));
   });
 }
 
