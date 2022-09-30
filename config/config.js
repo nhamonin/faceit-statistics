@@ -19,7 +19,7 @@ const lvlClasses = {
 
 const messages = {
   start:
-    'Welcome to the faceit stats bot! You are now able to add players to your list. Please do it via the command /add_player nickname.',
+    "Welcome to the faceit stats bot! You are now able to add players to your list. Please do it via the command '/add_player nickname.'",
   addPlayer: {
     success: (nickname) =>
       `Player ${nickname} was added.\nCheck out elo via /get_team_elo or K/D via /get_team_kd commands.`,
@@ -34,6 +34,10 @@ const messages = {
   },
   emptyTeamError: (attribute) =>
     `Please add at least one player via '/add_player nickname' command to check ${attribute}.`,
+  getTeamStats: (playerStatMessage, statAttribute, avgTeamStat) =>
+    `${playerStatMessage}<br><br>Avg Team ${statAttribute}: ${avgTeamStat}`,
 };
 
-export { allowedCompetitionNames, lvlClasses, messages };
+const DEFAULT_MATCH_LIMIT = 20;
+
+export { allowedCompetitionNames, lvlClasses, messages, DEFAULT_MATCH_LIMIT };

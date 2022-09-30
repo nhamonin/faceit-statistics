@@ -1,4 +1,4 @@
-export const getKDTemplate = (msg) =>
+export const getKDTemplate = (limit, msg) =>
   `<html lang="en">
         <head>
           <style>
@@ -35,5 +35,5 @@ export const getKDTemplate = (msg) =>
             }
           </style>
         </head>
-    <body> ${msg} </body>
+    <body>Last ${limit} matches:<br><br>${msg}</body>
 </html>`;
