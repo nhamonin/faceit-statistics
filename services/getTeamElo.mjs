@@ -1,18 +1,35 @@
 import calculateAverage from '../utils/calculateAverage.mjs';
-import { lvlClasses } from '../config/config.js';
+import { lvlClasses, messages } from '../config/config.js';
 import { Team } from '../models/team.js';
 
 export const getTeamEloMessage = async (chat_id) => {
-  const team = await Team.findOne({ chat_id });
-  const playersStats = team.players.sort((a, b) => b.elo - a.elo);
-  const playerEloMessage = formatMessage(playersStats);
+  const { players } = await Team.findOne({ chat_id });
+  const isTeamEmpty = players.length === 0;
+  const statAttribute = 'Elo';
 
-  const playersElo = playersStats.map(({ elo }) => elo);
-  const avgTeamEloMessage =
-    'Avg Team Elo: ' + calculateAverage(playersElo).toFixed(0);
-
-  return `${playerEloMessage}<br><br>${avgTeamEloMessage}`;
+  return isTeamEmpty
+    ? prepareEmptyTeamResult(statAttribute)
+    : prepareProperResult(players, statAttribute);
 };
+
+function prepareEmptyTeamResult(statAttribute) {
+  return {
+    error: true,
+    message: messages.emptyTeamError(statAttribute),
+  };
+}
+
+function prepareProperResult(players, statAttribute) {
+  const playersStats = players.sort((a, b) => b.elo - a.elo);
+  const playerEloMessage = formatMessage(playersStats);
+  const playersElo = playersStats.map(({ elo }) => elo);
+  const avgTeamElo = calculateAverage(playersElo).toFixed(0);
+
+  return {
+    error: false,
+    message: messages.getTeamStats(playerEloMessage, statAttribute, avgTeamElo),
+  };
+}
 
 function formatMessage(playersStats) {
   return playersStats
