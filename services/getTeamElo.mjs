@@ -8,7 +8,7 @@ export const getTeamEloMessage = async (chat_id) => {
     message: '',
   };
   const { players } = await Team.findOne({ chat_id });
-  const noPlayersInTeam = players.length === 0;
+  const isTeamEmpty = players.length === 0;
 
   if (noPlayersInTeam) {
     result.error = true;
