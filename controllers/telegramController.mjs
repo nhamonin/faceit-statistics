@@ -37,14 +37,14 @@ function addPlayerListener() {
 }
 
 function deletePlayerListener() {
-  tBot.onText(/\/delete\_player.* (\S*)/, async ({ chat }, match) => {
+  tBot.onText(/\/delete\_player[\w@]* (\S*)/, async ({ chat }, match) => {
     const message = await deletePlayer(match[1], chat.id);
     tBot.sendMessage(chat.id, message);
   });
 }
 
 function initTeamStatsListener() {
-  tBot.onText(/\/get\_team\_kd\w* ?(\d*)/, async ({ chat }, match) => {
+  tBot.onText(/\/get\_team\_kd[\w@]* ?(\d*)/, async ({ chat }, match) => {
     const limit = +match[1] || DEFAULT_MATCH_LIMIT;
     const { message, error } = await getTeamKdMessage(limit, chat.id);
 
