@@ -10,27 +10,32 @@ export default async function getPlayersLastMatchesId(playerIDs, limit) {
 }
 
 const handlePlayerLastMatches = async (player_id, matchesLimit) => {
+  let maxCallsWithNoResults = 3;
   let result = [];
-  let limit = matchesLimit;
+  let offset = 0;
 
-  while (result.length !== matchesLimit) {
-    result = await getPlayerLastMatches(player_id, limit);
-    limit += matchesLimit - result?.length;
+  while (result.length < matchesLimit && maxCallsWithNoResults) {
+    let playerLastMatches = await getPlayerLastMatches(
+      player_id,
+      matchesLimit,
+      offset
+    );
+    result.push(...playerLastMatches);
+    if (playerLastMatches.length === 0) maxCallsWithNoResults--;
+    console.log(result.length);
+    offset += matchesLimit;
   }
 
   return {
-    [player_id]: result,
+    [player_id]: result.slice(0, matchesLimit),
   };
 };
 
-const getPlayerLastMatches = (player_id, limit) =>
+const getPlayerLastMatches = (player_id, limit, offset) =>
   players
-    .getAllMatchesOfAPlayer(player_id, 'csgo', { limit })
-    .then(({ items }) => {
-      const filtered = items.filter(
-        (item) => item.playing_players.length === 10
-      );
-      return items
+    .getAllMatchesOfAPlayer(player_id, 'csgo', { limit, offset })
+    .then((data) => {
+      return data.items
         .filter(({ competition_name }) =>
           allowedCompetitionNames.includes(competition_name)
         )

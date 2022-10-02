@@ -34,6 +34,7 @@ const messages = {
   },
   emptyTeamError: (attribute) =>
     `Please add at least one player via '/add_player nickname' command to check ${attribute}.`,
+  emptyMatchesError: 'Your teammates have no matches in CS:GO.',
   getTeamStats: (playerStatMessage, statAttribute, avgTeamStat) =>
     `${playerStatMessage}<br><br>Avg Team ${statAttribute}: ${avgTeamStat}`,
 };

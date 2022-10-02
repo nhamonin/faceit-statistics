@@ -26,9 +26,17 @@ async function prepareProperResult(players, limit) {
   const playersStats = players.sort((a, b) => b.elo - a.elo);
   const playersId = playersStats.map(({ player_id }) => player_id);
   const playersLastMatchesIds = await getPlayersLastMatchesId(playersId, limit);
-  const playersMatchesStats = await getPlayersMatchesStats(
-    playersLastMatchesIds
-  );
+  const playersMatchesStats = (
+    await getPlayersMatchesStats(playersLastMatchesIds)
+  ).filter((arr) => !!arr.length);
+
+  if (!playersMatchesStats.length) {
+    return {
+      error: true,
+      message: messages.emptyMatchesError,
+    };
+  }
+
   const avgPlayersKD = getAvgPlayersKD(playersMatchesStats);
   const playersKDMessage = formatMessage(avgPlayersKD);
   const avgTeamKD = calculateAverage(
