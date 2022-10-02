@@ -14,7 +14,7 @@ import { getTeamEloMessage } from '../services/getTeamElo.mjs';
 import { addPlayer } from '../services/addPlayerToTeam.mjs';
 import { deletePlayer } from '../services/deletePlayerFromTeam.mjs';
 import { initTeam } from '../services/initTeam.mjs';
-import { DEFAULT_MATCH_LIMIT } from '../config/config.js';
+import { DEFAULT_MATCH_LIMIT, messages } from '../config/config.js';
 
 config();
 const tBot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true });
@@ -22,10 +22,7 @@ const tBot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true });
 function initBot() {
   tBot.onText(/\/start/, async ({ chat }) => {
     initTeam(chat.id);
-    tBot.sendMessage(
-      chat.id,
-      'You are now able to add players to your list! Please do it via the command /add_player nickname.'
-    );
+    tBot.sendMessage(chat.id, messages.start);
   });
 }
 
