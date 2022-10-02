@@ -15,7 +15,7 @@ const handlePlayerLastMatches = async (player_id, matchesLimit) => {
 
   while (result.length !== matchesLimit) {
     result = await getPlayerLastMatches(player_id, limit);
-    limit += matchesLimit - result.length;
+    limit += matchesLimit - result?.length;
   }
 
   return {

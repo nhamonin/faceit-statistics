@@ -6,7 +6,8 @@ import { isPlayerTeamMember } from '../utils/basic.mjs';
 
 export const addPlayer = async (name, chat_id) => {
   try {
-    let { players } = await Team.findOne({ chat_id });
+    const team = await Team.findOne({ chat_id });
+    let players = team.players;
 
     if (isPlayerTeamMember(players, name)) {
       return messages.addPlayer.exists(name);
