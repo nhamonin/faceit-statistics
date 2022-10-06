@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-import { playerSchema } from './player.js';
 
 const teamSchema = new Schema(
   {
@@ -13,7 +12,7 @@ const teamSchema = new Schema(
       required: false,
     },
     players: {
-      type: [{ type: playerSchema }],
+      type: [{ type: Schema.Types.ObjectId, ref: 'Player' }],
       required: true,
     },
   },
