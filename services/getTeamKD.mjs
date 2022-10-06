@@ -6,7 +6,8 @@ import { Team } from '../models/team.js';
 
 export const getTeamKdMessage = async (matchLimit, chat_id) => {
   const limit = matchLimit || DEFAULT_MATCH_LIMIT;
-  const { players } = await Team.findOne({ chat_id });
+  const team = await Team.findOne({ chat_id });
+  const { players } = await team.populate('players');
   const isTeamEmpty = players.length === 0;
   const statAttribute = 'K/D';
 

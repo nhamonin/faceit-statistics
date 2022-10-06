@@ -4,25 +4,34 @@ import { Team } from '../models/team.js';
 import { messages } from '../config/config.js';
 import { isPlayerTeamMember } from '../utils/basic.mjs';
 
-export const addPlayer = async (name, chat_id) => {
+export const addPlayer = async (playerNickname, chat_id) => {
   try {
     const team = await Team.findOne({ chat_id });
-    let players = team.players;
+    const { players } = await team.populate('players');
+    const playerInDB = await Player.findOne({ nickname: playerNickname });
 
-    if (isPlayerTeamMember(players, name)) {
-      return messages.addPlayer.exists(name);
+    if (isPlayerTeamMember(players, playerNickname)) {
+      return messages.addPlayer.exists(playerNickname);
+    } else if (playerInDB) {
+      team.players.push(playerInDB);
+      console.log(
+        `Player ${playerInDB.nickname} was added to the team from the DB.`
+      );
+    } else {
+      const playerStats = await getPlayersStats([playerNickname]);
+      const { player_id, nickname, elo, lvl } = playerStats[0];
+      const player = new Player({ player_id, nickname, elo, lvl });
+
+      team.players.push(player);
+      player.save().then(() => {
+        console.log(
+          `Player ${player.nickname} was added to the team from the Faceit API.`
+        );
+      });
     }
-
-    const playerStats = await getPlayersStats([name]);
-    const { player_id, nickname, elo, lvl } = playerStats[0];
-    const player = new Player({ player_id, nickname, elo, lvl });
-    players = [...players, player];
-
-    return Team.findOneAndUpdate({ chat_id }, { players }).then(() =>
-      messages.addPlayer.success(name)
-    );
+    return team.save().then(() => messages.addPlayer.success(playerNickname));
   } catch (e) {
-    console.log(e.message);
-    return e.message;
+    console.log(e);
+    return e;
   }
 };

@@ -1,20 +1,27 @@
 import { Team } from '../models/team.js';
+import { Player } from '../models/player.js';
 import { messages } from '../config/config.js';
 import { isPlayerTeamMember } from '../utils/basic.mjs';
 
-export const deletePlayer = async (name, chat_id) => {
+export const deletePlayer = async (playerNickname, chat_id) => {
   try {
-    let { players } = await Team.findOne({ chat_id });
+    const team = await Team.findOne({ chat_id });
+    const { players } = await team.populate('players');
 
-    if (!isPlayerTeamMember(players, name)) {
-      return messages.deletePlayer.notExists(name);
+    if (!isPlayerTeamMember(players, playerNickname)) {
+      return messages.deletePlayer.notExists(playerNickname);
     }
 
-    players = players.filter(({ nickname }) => nickname !== name);
+    const playerInDB = await Player.findOne({ nickname: playerNickname });
 
-    return Team.findOneAndUpdate({ chat_id }, { players }).then(() =>
-      messages.deletePlayer.success(name)
-    );
+    return Team.findOneAndUpdate(
+      { chat_id },
+      {
+        $pullAll: {
+          players: [{ _id: playerInDB._id }],
+        },
+      }
+    ).then(() => messages.deletePlayer.success(playerNickname));
   } catch (e) {
     console.log(e.message);
     return e.message;
