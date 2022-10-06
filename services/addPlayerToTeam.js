@@ -1,8 +1,8 @@
-import getPlayersStats from '../utils/csgo/getPlayersStats.mjs';
+import getPlayersStats from '../utils/csgo/getPlayersStats.js';
 import { Player } from '../models/player.js';
 import { Team } from '../models/team.js';
 import { messages } from '../config/config.js';
-import { isPlayerTeamMember } from '../utils/basic.mjs';
+import { isPlayerTeamMember } from '../utils/basic.js';
 
 export const addPlayer = async (playerNickname, chat_id) => {
   try {

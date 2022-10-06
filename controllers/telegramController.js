@@ -7,13 +7,13 @@ import { config } from 'dotenv';
 import TelegramBot from 'node-telegram-bot-api';
 import nodeHtmlToImage from 'node-html-to-image';
 
-import { getEloTemplate } from '../public/templates/eloMessage.mjs';
-import { getKDTemplate } from '../public/templates/kdMessage.mjs';
-import { getTeamKdMessage } from '../services/getTeamKD.mjs';
-import { getTeamEloMessage } from '../services/getTeamElo.mjs';
-import { addPlayer } from '../services/addPlayerToTeam.mjs';
-import { deletePlayer } from '../services/deletePlayerFromTeam.mjs';
-import { initTeam } from '../services/initTeam.mjs';
+import { getEloTemplate } from '../public/templates/eloMessage.js';
+import { getKDTemplate } from '../public/templates/kdMessage.js';
+import { getTeamKdMessage } from '../services/getTeamKD.js';
+import { getTeamEloMessage } from '../services/getTeamElo.js';
+import { addPlayer } from '../services/addPlayerToTeam.js';
+import { deletePlayer } from '../services/deletePlayerFromTeam.js';
+import { initTeam } from '../services/initTeam.js';
 import { DEFAULT_MATCH_LIMIT, messages } from '../config/config.js';
 
 config();

@@ -21,8 +21,8 @@ const handlePlayerLastMatches = async (player_id, matchesLimit) => {
       offset
     );
     result.push(...playerLastMatches);
-    if (playerLastMatches.length === 0) maxCallsWithNoResults--;
     console.log(result.length);
+    if (playerLastMatches.length === 0) maxCallsWithNoResults--;
     offset += matchesLimit;
   }
 

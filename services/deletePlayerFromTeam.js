@@ -1,7 +1,7 @@
 import { Team } from '../models/team.js';
 import { Player } from '../models/player.js';
 import { messages } from '../config/config.js';
-import { isPlayerTeamMember } from '../utils/basic.mjs';
+import { isPlayerTeamMember } from '../utils/basic.js';
 
 export const deletePlayer = async (playerNickname, chat_id) => {
   try {

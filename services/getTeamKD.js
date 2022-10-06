@@ -1,6 +1,6 @@
-import getPlayersLastMatchesId from '../utils/csgo/getPlayersLastMatchesId.mjs';
-import getPlayersMatchesStats from '../utils/csgo/getPlayersMatchesStats.mjs';
-import { calculateAverage } from '../utils/basic.mjs';
+import getPlayersLastMatchesId from '../utils/csgo/getPlayersLastMatchesId.js';
+import getPlayersMatchesStats from '../utils/csgo/getPlayersMatchesStats.js';
+import { calculateAverage } from '../utils/basic.js';
 import { messages, DEFAULT_MATCH_LIMIT } from '../config/config.js';
 import { Team } from '../models/team.js';
 

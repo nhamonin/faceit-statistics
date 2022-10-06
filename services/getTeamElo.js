@@ -1,4 +1,4 @@
-import { calculateAverage } from '../utils/basic.mjs';
+import { calculateAverage } from '../utils/basic.js';
 import { lvlClasses, messages } from '../config/config.js';
 import { Team } from '../models/team.js';
 
