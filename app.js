@@ -7,7 +7,7 @@ import {
   deletePlayerListener,
   initTeamStatsListener,
   initTeamEloListener,
-} from './controllers/telegramController.mjs';
+} from './controllers/telegramController.js';
 
 const {
   FACEIT_API_KEY,
