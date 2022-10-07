@@ -3,7 +3,7 @@ import { allowedCompetitionNames } from '../../config/config.js';
 
 const players = new Players();
 
-export default async function getPlayersLastMatchesId(playerIDs, limit) {
+export async function getPlayersLastMatchesId(playerIDs, limit) {
   return await Promise.all(
     playerIDs.map((player_id) => handlePlayerLastMatches(player_id, limit))
   );

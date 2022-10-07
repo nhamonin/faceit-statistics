@@ -1,10 +1,12 @@
-import getPlayersLastMatchesId from '../utils/csgo/getPlayersLastMatchesId.js';
-import getPlayersMatchesStats from '../utils/csgo/getPlayersMatchesStats.js';
-import { calculateAverage } from '../utils/basic.js';
+import {
+  calculateAverage,
+  getPlayersLastMatchesId,
+  getPlayersMatchesStats,
+} from '../utils/index.js';
 import { messages, DEFAULT_MATCH_LIMIT } from '../config/config.js';
-import { Team } from '../models/team.js';
+import { Team } from '../models/index.js';
 
-export const getTeamKdMessage = async (matchLimit, chat_id) => {
+export const getTeamKDMessage = async (matchLimit, chat_id) => {
   const limit = matchLimit || DEFAULT_MATCH_LIMIT;
   const team = await Team.findOne({ chat_id });
   const { players } = await team.populate('players');

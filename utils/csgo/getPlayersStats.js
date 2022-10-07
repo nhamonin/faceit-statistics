@@ -1,8 +1,10 @@
 import { Players } from 'faceit-node-api';
 
+import { messages } from '../../config/config.js';
+
 const players = new Players();
 
-export default async function getPlayersStats(nicknames) {
+export async function getPlayersStats(nicknames) {
   return await Promise.all(
     nicknames.map((nickname) =>
       players
@@ -15,7 +17,10 @@ export default async function getPlayersStats(nicknames) {
         }))
         .catch((e) => {
           console.log(e.message);
-          throw new Error('Player was not found!');
+          return {
+            error: true,
+            errorMessage: messages.addPlayer.notFound(nickname),
+          };
         })
     )
   );

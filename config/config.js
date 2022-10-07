@@ -24,7 +24,9 @@ const messages = {
     success: (nickname) =>
       `Player ${nickname} was added.\nCheck out elo via /get_team_elo or K/D via /get_team_kd commands.`,
     exists: (nickname) =>
-      `Sorry, but ${nickname} already exists in your team. Try to add another player.`,
+      `Sorry, but player ${nickname} already exists in your team. Try to add another player.`,
+    notFound: (nickname) =>
+      `Sorry, but player ${nickname} doesn't exist. Try to add another player.`,
   },
   deletePlayer: {
     success: (nickname) =>
