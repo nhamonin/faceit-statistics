@@ -1,4 +1,4 @@
-import { Team } from '../models/team.js';
+import { Team } from '../models/index.js';
 
 export const initTeam = async (chat_id) => {
   let team = await Team.findOne({ chat_id });

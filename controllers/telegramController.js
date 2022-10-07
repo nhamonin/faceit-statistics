@@ -7,13 +7,14 @@ import { config } from 'dotenv';
 import TelegramBot from 'node-telegram-bot-api';
 import nodeHtmlToImage from 'node-html-to-image';
 
-import { getEloTemplate } from '../public/templates/eloMessage.js';
-import { getKDTemplate } from '../public/templates/kdMessage.js';
-import { getTeamKdMessage } from '../services/getTeamKD.js';
-import { getTeamEloMessage } from '../services/getTeamElo.js';
-import { addPlayer } from '../services/addPlayerToTeam.js';
-import { deletePlayer } from '../services/deletePlayerFromTeam.js';
-import { initTeam } from '../services/initTeam.js';
+import { getEloTemplate, getKDTemplate } from '../public/templates/index.js';
+import {
+  initTeam,
+  getTeamEloMessage,
+  getTeamKDMessage,
+  addPlayer,
+  deletePlayer,
+} from '../services/index.js';
 import { DEFAULT_MATCH_LIMIT, messages } from '../config/config.js';
 
 config();
@@ -43,7 +44,7 @@ function deletePlayerListener() {
 function initTeamStatsListener() {
   tBot.onText(/\/get\_team\_kd[\w@]* ?(\d*)/, async ({ chat }, match) => {
     const limit = +match[1] || DEFAULT_MATCH_LIMIT;
-    const { message, error } = await getTeamKdMessage(limit, chat.id);
+    const { message, error } = await getTeamKDMessage(limit, chat.id);
 
     error
       ? tBot.sendMessage(chat.id, message)

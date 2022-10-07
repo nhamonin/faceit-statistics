@@ -1,6 +1,6 @@
-import { calculateAverage } from '../utils/basic.js';
+import { calculateAverage } from '../utils/index.js';
 import { lvlClasses, messages } from '../config/config.js';
-import { Team } from '../models/team.js';
+import { Team } from '../models/index.js';
 
 export const getTeamEloMessage = async (chat_id) => {
   const { players } = await Team.findOne({ chat_id }).populate('players');

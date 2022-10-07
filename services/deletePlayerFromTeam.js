@@ -1,7 +1,6 @@
-import { Team } from '../models/team.js';
-import { Player } from '../models/player.js';
+import { Player, Team } from '../models/index.js';
 import { messages } from '../config/config.js';
-import { isPlayerTeamMember } from '../utils/basic.js';
+import { isPlayerTeamMember } from '../utils/index.js';
 
 export const deletePlayer = async (playerNickname, chat_id) => {
   try {
@@ -21,7 +20,15 @@ export const deletePlayer = async (playerNickname, chat_id) => {
           players: [{ _id: playerInDB._id }],
         },
       }
-    ).then(() => messages.deletePlayer.success(playerNickname));
+    )
+      .then(async () => {
+        const teams = await Team.find({
+          players: [{ _id: playerInDB._id }],
+        });
+        if (teams.length) return;
+        Player.findByIdAndRemove({ _id: playerInDB._id }, () => {});
+      })
+      .then(() => messages.deletePlayer.success(playerNickname));
   } catch (e) {
     console.log(e.message);
     return e.message;

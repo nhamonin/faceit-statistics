@@ -2,7 +2,7 @@ import { Matches } from 'faceit-node-api';
 
 const matches = new Matches();
 
-export default async function getPlayersMatchesStats(playersMatchesId) {
+export async function getPlayersMatchesStats(playersMatchesId) {
   return await Promise.all(
     playersMatchesId.map(async (playerMatchesId) => {
       const player_id = Object.keys(playerMatchesId)[0];

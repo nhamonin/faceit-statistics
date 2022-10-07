@@ -1,8 +1,6 @@
-import getPlayersStats from '../utils/csgo/getPlayersStats.js';
-import { Player } from '../models/player.js';
-import { Team } from '../models/team.js';
+import { isPlayerTeamMember, getPlayersStats } from '../utils/index.js';
+import { Player, Team } from '../models/index.js';
 import { messages } from '../config/config.js';
-import { isPlayerTeamMember } from '../utils/basic.js';
 
 export const addPlayer = async (playerNickname, chat_id) => {
   try {
@@ -19,7 +17,9 @@ export const addPlayer = async (playerNickname, chat_id) => {
       );
     } else {
       const playerStats = await getPlayersStats([playerNickname]);
-      const { player_id, nickname, elo, lvl } = playerStats[0];
+      const { player_id, nickname, elo, lvl, error, errorMessage } =
+        playerStats[0];
+      if (error) return errorMessage;
       const player = new Player({ player_id, nickname, elo, lvl });
 
       team.players.push(player);
