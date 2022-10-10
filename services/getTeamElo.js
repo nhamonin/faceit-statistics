@@ -3,7 +3,8 @@ import { lvlClasses, messages } from '../config/config.js';
 import { Team } from '../models/index.js';
 
 export const getTeamEloMessage = async (chat_id) => {
-  const { players } = await Team.findOne({ chat_id }).populate('players');
+  const team = await Team.findOne({ chat_id });
+  const { players } = await team.populate('players');
   const isTeamEmpty = players?.length === 0;
   const statAttribute = 'Elo';
 
