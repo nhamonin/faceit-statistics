@@ -7,17 +7,18 @@ import {
   getTeamKDMessage,
   addPlayer,
   deletePlayer,
+  updateTeamPlayers,
 } from '../services/index.js';
 import {
   TELEGRAM_API_TOKEN,
   DEFAULT_MATCH_LIMIT,
   messages,
 } from '../config/config.js';
-import { sendPhoto } from '../utils/basic.js';
+import { sendPhoto } from '../utils/index.js';
 
 const tBot = new TelegramBot(TELEGRAM_API_TOKEN, { polling: true });
 
-function initBot() {
+function initBotListener() {
   tBot.onText(/\/start/, async ({ chat }) => {
     initTeam(chat.id);
     tBot.sendMessage(chat.id, messages.start);
@@ -38,7 +39,14 @@ function deletePlayerListener() {
   });
 }
 
-function initTeamStatsListener() {
+function updateTeamPlayersListener() {
+  tBot.onText(/\/update\_team\_players/, async ({ chat }, match) => {
+    const message = await updateTeamPlayers(chat.id);
+    tBot.sendMessage(chat.id, message);
+  });
+}
+
+function initTeamKDListener() {
   tBot.onText(/\/get\_team\_kd[\w@]* ?(\d*)/, async ({ chat }, match) => {
     const limit = +match[1] || DEFAULT_MATCH_LIMIT;
     const { message, error } = await getTeamKDMessage(limit, chat.id);
@@ -60,9 +68,10 @@ function initTeamEloListener() {
 }
 
 export {
-  initBot,
+  initBotListener,
   addPlayerListener,
   deletePlayerListener,
-  initTeamStatsListener,
+  updateTeamPlayersListener,
+  initTeamKDListener,
   initTeamEloListener,
 };

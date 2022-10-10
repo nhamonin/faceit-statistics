@@ -8,19 +8,21 @@ import {
   MONGO_DB_CLUSTER_NAME,
 } from './config/config.js';
 import {
-  initBot,
+  initBotListener,
   addPlayerListener,
   deletePlayerListener,
-  initTeamStatsListener,
+  updateTeamPlayersListener,
+  initTeamKDListener,
   initTeamEloListener,
 } from './controllers/telegramController.js';
 
 Faceit.setApiKey(FACEIT_API_KEY);
 
-initBot();
+initBotListener();
 addPlayerListener();
 deletePlayerListener();
-initTeamStatsListener();
+updateTeamPlayersListener();
+initTeamKDListener();
 initTeamEloListener();
 
 const uri = `mongodb+srv://${MONGO_DB_NAME}:${MONGO_DB_PASSWORD}@cluster0.cqna7jk.mongodb.net/${MONGO_DB_CLUSTER_NAME}?retryWrites=true&w=majority`;
