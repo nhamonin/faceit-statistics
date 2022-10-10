@@ -3,7 +3,6 @@ process.env['NTBA_FIX_350'] = 1;
 import path from 'path';
 import fs from 'fs';
 
-import { config } from 'dotenv';
 import TelegramBot from 'node-telegram-bot-api';
 import nodeHtmlToImage from 'node-html-to-image';
 
@@ -15,10 +14,13 @@ import {
   addPlayer,
   deletePlayer,
 } from '../services/index.js';
-import { DEFAULT_MATCH_LIMIT, messages } from '../config/config.js';
+import {
+  TELEGRAM_API_TOKEN,
+  DEFAULT_MATCH_LIMIT,
+  messages,
+} from '../config/config.js';
 
-config();
-const tBot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true });
+const tBot = new TelegramBot(TELEGRAM_API_TOKEN, { polling: true });
 
 function initBot() {
   tBot.onText(/\/start/, async ({ chat }) => {
