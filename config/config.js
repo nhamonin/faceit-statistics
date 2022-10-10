@@ -1,3 +1,14 @@
+import { config } from 'dotenv';
+config();
+
+const {
+  FACEIT_API_KEY,
+  TELEGRAM_API_TOKEN,
+  MONGO_DB_NAME,
+  MONGO_DB_PASSWORD,
+  MONGO_DB_CLUSTER_NAME,
+} = process.env;
+
 const allowedCompetitionNames = [
   '5v5 RANKED',
   '5v5 RANKED PREMIUM',
@@ -43,4 +54,14 @@ const messages = {
 
 const DEFAULT_MATCH_LIMIT = 20;
 
-export { allowedCompetitionNames, lvlClasses, messages, DEFAULT_MATCH_LIMIT };
+export {
+  FACEIT_API_KEY,
+  TELEGRAM_API_TOKEN,
+  MONGO_DB_NAME,
+  MONGO_DB_PASSWORD,
+  MONGO_DB_CLUSTER_NAME,
+  allowedCompetitionNames,
+  lvlClasses,
+  messages,
+  DEFAULT_MATCH_LIMIT,
+};

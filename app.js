@@ -2,19 +2,18 @@ import { Faceit } from 'faceit-node-api';
 import mongoose from 'mongoose';
 
 import {
+  FACEIT_API_KEY,
+  MONGO_DB_NAME,
+  MONGO_DB_PASSWORD,
+  MONGO_DB_CLUSTER_NAME,
+} from './config/config.js';
+import {
   initBot,
   addPlayerListener,
   deletePlayerListener,
   initTeamStatsListener,
   initTeamEloListener,
 } from './controllers/telegramController.js';
-
-const {
-  FACEIT_API_KEY,
-  MONGO_DB_NAME,
-  MONGO_DB_PASSWORD,
-  MONGO_DB_CLUSTER_NAME,
-} = process.env;
 
 Faceit.setApiKey(FACEIT_API_KEY);
 
