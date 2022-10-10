@@ -1,10 +1,4 @@
-process.env['NTBA_FIX_350'] = 1;
-
-import path from 'path';
-import fs from 'fs';
-
 import TelegramBot from 'node-telegram-bot-api';
-import nodeHtmlToImage from 'node-html-to-image';
 
 import { getEloTemplate, getKDTemplate } from '../public/templates/index.js';
 import {
@@ -19,6 +13,7 @@ import {
   DEFAULT_MATCH_LIMIT,
   messages,
 } from '../config/config.js';
+import { sendPhoto } from '../utils/basic.js';
 
 const tBot = new TelegramBot(TELEGRAM_API_TOKEN, { polling: true });
 
@@ -50,7 +45,7 @@ function initTeamStatsListener() {
 
     error
       ? tBot.sendMessage(chat.id, message)
-      : sendPhoto('kd.png', chat.id, getKDTemplate(limit, message));
+      : sendPhoto(tBot, 'kd.png', chat.id, getKDTemplate(limit, message));
   });
 }
 
@@ -60,31 +55,8 @@ function initTeamEloListener() {
 
     error
       ? tBot.sendMessage(chat.id, message)
-      : sendPhoto('elo.png', chat.id, getEloTemplate(message));
+      : sendPhoto(tBot, 'elo.png', chat.id, getEloTemplate(message));
   });
-}
-
-function sendPhoto(fileName, chatId, html) {
-  const dir = './public/png';
-
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
-  }
-
-  nodeHtmlToImage({
-    output: './public/png/' + fileName,
-    html,
-  })
-    .then(() => {
-      console.log('The image was created successfully!');
-      tBot.sendPhoto(
-        chatId,
-        path.join(process.cwd(), 'public', 'png', fileName)
-      );
-    })
-    .catch((e) => {
-      console.log(e.message);
-    });
 }
 
 export {
