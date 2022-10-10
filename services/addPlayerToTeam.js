@@ -16,9 +16,9 @@ export const addPlayer = async (playerNickname, chat_id) => {
         `Player ${playerInDB.nickname} was added to the team from the DB.`
       );
     } else {
-      const playerStats = await getPlayersStats([playerNickname]);
+      const playersStats = await getPlayersStats([playerNickname]);
       const { player_id, nickname, elo, lvl, error, errorMessage } =
-        playerStats[0];
+        playersStats[0];
       if (error) return errorMessage;
       const player = new Player({ player_id, nickname, elo, lvl });
 

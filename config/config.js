@@ -45,6 +45,12 @@ const messages = {
     notExists: (nickname) =>
       `Sorry, but ${nickname} doesn't exists in your team.`,
   },
+  updateTeamPlayers: {
+    success:
+      'Team players was successfully updated. Check out elo via /get_team_elo or K/D via /get_team_kd commands.',
+    error:
+      'Unfortunately, dut to the technical reasons it is impossible to update players right now. Please wait and try again later.',
+  },
   emptyTeamError: (attribute) =>
     `Please add at least one player via '/add_player nickname' command to check ${attribute}.`,
   emptyMatchesError: 'Your teammates have no matches in CS:GO.',
