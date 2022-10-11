@@ -64,14 +64,14 @@ function getAvgPlayersKD(playersMatchesStats) {
 function formatMessage(avgPlayersKD) {
   return avgPlayersKD
     .sort((a, b) => Object.values(b)[0] - Object.values(a)[0])
-    .map(
-      (avgPlayerKD) =>
-        `${Object.keys(avgPlayerKD)[0]}: <span class='${getKDColorClass(
-          +Object.values(avgPlayerKD)[0]
-        )}'>${(+Object.values(avgPlayerKD)[0]).toFixed(
-          2
-        )} <span class='white'>&nbsp;K/D</span></span>`
-    )
+    .map((avgPlayerKD) => {
+      const playerNickname = Object.keys(avgPlayerKD)[0];
+      const playerKD = +Object.values(avgPlayerKD)[0].toFixed(2);
+
+      return `${playerNickname}: <span class='${getKDColorClass(
+        playerKD
+      )}'>${playerKD} <span class='white'>&nbsp;K/D</span></span>`;
+    })
     .join('<br>');
 }
 

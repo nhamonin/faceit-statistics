@@ -56,6 +56,7 @@ const messages = {
   emptyMatchesError: 'Your teammates have no matches in CS:GO.',
   getTeamStats: (playerStatMessage, statAttribute, avgTeamStat) =>
     `${playerStatMessage}<br><br>Avg Team ${statAttribute}: ${avgTeamStat}`,
+  serverError: 'Oops, something went wrong. Try again later.',
 };
 
 const DEFAULT_MATCH_LIMIT = 20;
