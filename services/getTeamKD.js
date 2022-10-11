@@ -66,10 +66,10 @@ function formatMessage(avgPlayersKD) {
     .sort((a, b) => Object.values(b)[0] - Object.values(a)[0])
     .map((avgPlayerKD) => {
       const playerNickname = Object.keys(avgPlayerKD)[0];
-      const playerKD = +Object.values(avgPlayerKD)[0].toFixed(2);
+      const playerKD = Object.values(avgPlayerKD)[0].toFixed(2);
 
       return `${playerNickname}: <span class='${getKDColorClass(
-        playerKD
+        +playerKD
       )}'>${playerKD} <span class='white'>&nbsp;K/D</span></span>`;
     })
     .join('<br>');
