@@ -1,27 +1,14 @@
-import path from 'path';
-import fs from 'fs';
-
 import nodeHtmlToImage from 'node-html-to-image';
 
-function sendPhoto(tBot, fileName, chatId, html) {
+function sendPhoto(tBot, chatId, html) {
   process.env['NTBA_FIX_350'] = 1;
 
-  const dir = './public/png';
-
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
-  }
-
   nodeHtmlToImage({
-    output: './public/png/' + fileName,
     html,
   })
-    .then(() => {
+    .then((image) => {
       console.log('The image was created successfully!');
-      tBot.sendPhoto(
-        chatId,
-        path.join(process.cwd(), 'public', 'png', fileName)
-      );
+      tBot.sendPhoto(chatId, image);
     })
     .catch((e) => {
       console.log(e.message);

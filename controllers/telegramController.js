@@ -53,7 +53,7 @@ function initTeamKDListener() {
 
     error
       ? tBot.sendMessage(chat.id, message)
-      : sendPhoto(tBot, 'kd.png', chat.id, getKDTemplate(limit, message));
+      : sendPhoto(tBot, chat.id, getKDTemplate(limit, message));
   });
 }
 
@@ -63,7 +63,7 @@ function initTeamEloListener() {
 
     error
       ? tBot.sendMessage(chat.id, message)
-      : sendPhoto(tBot, 'elo.png', chat.id, getEloTemplate(message));
+      : sendPhoto(tBot, chat.id, getEloTemplate(message));
   });
 }
 
