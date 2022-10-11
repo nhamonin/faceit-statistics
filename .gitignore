@@ -1,6 +1,5 @@
 .vscode
 node_modules
 .env
-public/png
 .DS_Store
 **/.DS_Store
