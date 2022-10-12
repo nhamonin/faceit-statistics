@@ -2,10 +2,9 @@ import { Players } from 'faceit-node-api';
 
 import { messages } from '../../config/config.js';
 
-const players = new Players();
-
-export async function getPlayersStats(nicknames) {
-  return await Promise.all(
+export function getPlayersStats(nicknames) {
+  const players = new Players();
+  return Promise.all(
     nicknames.map((nickname) =>
       players
         .getPlayerDetailsByNickname(nickname)

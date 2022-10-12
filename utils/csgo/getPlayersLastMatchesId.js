@@ -3,31 +3,30 @@ import { allowedCompetitionNames } from '../../config/config.js';
 
 const players = new Players();
 
-export async function getPlayersLastMatchesId(playerIDs, limit) {
-  return await Promise.all(
+export function getPlayersLastMatchesId(playerIDs, limit) {
+  return Promise.all(
     playerIDs.map((player_id) => handlePlayerLastMatches(player_id, limit))
   );
 }
 
-const handlePlayerLastMatches = async (player_id, matchesLimit) => {
+const handlePlayerLastMatches = async (player_id, limit) => {
   let maxCallsWithNoResults = 3;
   let result = [];
   let offset = 0;
 
-  while (result.length < matchesLimit && maxCallsWithNoResults) {
+  while (result.length < limit && maxCallsWithNoResults) {
     let playerLastMatches = await getPlayerLastMatches(
       player_id,
-      matchesLimit,
+      limit,
       offset
     );
     result.push(...playerLastMatches);
-    console.log(result.length);
     if (playerLastMatches.length === 0) maxCallsWithNoResults--;
-    offset += matchesLimit;
+    offset += limit;
   }
 
   return {
-    [player_id]: result.slice(0, matchesLimit),
+    [player_id]: result.slice(0, limit),
   };
 };
 

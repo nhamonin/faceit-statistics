@@ -18,6 +18,10 @@ export const playerSchema = new Schema(
       type: Number,
       required: true,
     },
+    matches: {
+      type: [{ type: Schema.Types.ObjectId, ref: 'Match' }],
+      required: true,
+    },
   },
   { timestamp: true }
 );
