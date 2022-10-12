@@ -2,13 +2,13 @@ import { Matches } from 'faceit-node-api';
 
 const matches = new Matches();
 
-export async function getPlayersMatchesStats(playersMatchesId) {
-  return await Promise.all(
-    playersMatchesId.map(async (playerMatchesId) => {
+export function getPlayersMatchesStats(playersMatchesId) {
+  return Promise.all(
+    playersMatchesId.map((playerMatchesId) => {
       const player_id = Object.keys(playerMatchesId)[0];
       const matchesId = playerMatchesId[player_id];
 
-      return await Promise.all(
+      return Promise.all(
         matchesId.map((matchId) =>
           matches
             .getStatisticsOfAMatch(matchId)
