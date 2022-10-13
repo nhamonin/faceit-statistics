@@ -11,7 +11,7 @@ import {
 } from '../services/index.js';
 import {
   TELEGRAM_API_TOKEN,
-  DEFAULT_MATCH_LIMIT,
+  DEFAULT_MATCH_GET_LIMIT,
   messages,
 } from '../config/config.js';
 import { sendPhoto } from '../utils/index.js';
@@ -48,7 +48,7 @@ function updateTeamPlayersListener() {
 
 function initTeamKDListener() {
   tBot.onText(/\/get\_team\_kd[\w@]* ?(\d*)/, async ({ chat }, match) => {
-    const limit = +match[1] || DEFAULT_MATCH_LIMIT;
+    const limit = +match[1] || DEFAULT_MATCH_GET_LIMIT;
     const { message, error } = await getTeamKDMessage(limit, chat.id);
 
     error
