@@ -1,15 +1,7 @@
 import { Players } from 'faceit-node-api';
 import { allowedCompetitionNames } from '../../config/config.js';
 
-const players = new Players();
-
-export function getPlayersLastMatchesId(playerIDs, limit) {
-  return Promise.all(
-    playerIDs.map((player_id) => handlePlayerLastMatches(player_id, limit))
-  );
-}
-
-const handlePlayerLastMatches = async (player_id, limit) => {
+export async function getPlayersLastMatchesId(player_id, limit) {
   let maxCallsWithNoResults = 3;
   let result = [];
   let offset = 0;
@@ -25,21 +17,19 @@ const handlePlayerLastMatches = async (player_id, limit) => {
     offset += limit;
   }
 
-  return {
-    [player_id]: result.slice(0, limit),
-  };
-};
+  return result.slice(0, limit);
+}
 
 const getPlayerLastMatches = (player_id, limit, offset) =>
-  players
+  new Players()
     .getAllMatchesOfAPlayer(player_id, 'csgo', { limit, offset })
-    .then((data) => {
-      return data.items
+    .then(({ items }) =>
+      items
         .filter(({ competition_name }) =>
           allowedCompetitionNames.includes(competition_name)
         )
-        .map(({ match_id }) => match_id);
-    })
+        .map(({ match_id }) => match_id)
+    )
     .catch((error) => {
       console.error('Error: ', error);
     });

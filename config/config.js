@@ -59,7 +59,8 @@ const messages = {
   serverError: 'Oops, something went wrong. Try again later.',
 };
 
-const DEFAULT_MATCH_LIMIT = 20;
+const DEFAULT_MATCH_GET_LIMIT = 20;
+const DEFAULT_MATCH_STORE_LIMIT = 50;
 
 export {
   FACEIT_API_KEY,
@@ -70,5 +71,6 @@ export {
   allowedCompetitionNames,
   lvlClasses,
   messages,
-  DEFAULT_MATCH_LIMIT,
+  DEFAULT_MATCH_GET_LIMIT,
+  DEFAULT_MATCH_STORE_LIMIT,
 };

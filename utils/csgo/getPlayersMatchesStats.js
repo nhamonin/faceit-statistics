@@ -1,31 +1,21 @@
 import { Matches } from 'faceit-node-api';
+import sleep from 'sleep';
 
-const matches = new Matches();
+export function getPlayersMatchesStats(player_id, matchesIDs) {
+  const matches = new Matches();
 
-export function getPlayersMatchesStats(playersMatchesId) {
   return Promise.all(
-    playersMatchesId.map((playerMatchesId) => {
-      const player_id = Object.keys(playerMatchesId)[0];
-      const matchesId = playerMatchesId[player_id];
-
-      return Promise.all(
-        matchesId.map((matchId) =>
-          matches
-            .getStatisticsOfAMatch(matchId)
-            .then((data) => {
-              const players = [
-                ...data?.rounds[0]?.teams[0].players,
-                ...data?.rounds[0]?.teams[1].players,
-              ];
-              return players.filter(
-                (player) => player.player_id === player_id
-              )[0];
-            })
-            .catch((error) => {
-              console.error('Error: ', error);
-            })
-        )
-      );
+    matchesIDs.map((matchId) => {
+      sleep.msleep(100);
+      return matches.getStatisticsOfAMatch(matchId);
+    })
+  ).then((matchesStats) =>
+    matchesStats.filter((data) => {
+      const players = [
+        ...data?.rounds[0]?.teams[0].players,
+        ...data?.rounds[0]?.teams[1].players,
+      ];
+      return players.some((player) => player.player_id === player_id);
     })
   );
 }
