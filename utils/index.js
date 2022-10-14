@@ -6,6 +6,8 @@ import { getPlayersMatchesStats } from './csgo/getPlayersMatchesStats.js';
 import { getPlayersStats } from './csgo/getPlayersStats.js';
 import { storePlayerMatchesInDB } from './csgo/storePlayerMatchesInDB.js';
 import { extractPlayerStatsFromMatches } from './csgo/extractPlayerStatsFromMatches.js';
+// telegram
+import { getBasicTelegramOptions } from './telegram/telegram.js';
 
 export {
   calculateAverage,
@@ -16,4 +18,5 @@ export {
   getPlayersStats,
   storePlayerMatchesInDB,
   extractPlayerStatsFromMatches,
+  getBasicTelegramOptions,
 };
