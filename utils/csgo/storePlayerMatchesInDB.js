@@ -1,8 +1,6 @@
-import { Matches } from 'faceit-node-api';
-
 import { getPlayersLastMatchesId, getPlayersMatchesStats } from '../index.js';
 import { DEFAULT_MATCH_STORE_LIMIT } from '../../config/config.js';
-import { Match } from '../../models/Match.js';
+import { Match } from '../../models/index.js';
 
 export async function storePlayerMatchesInDB(player) {
   const { player_id } = player;
@@ -10,20 +8,22 @@ export async function storePlayerMatchesInDB(player) {
     player_id,
     DEFAULT_MATCH_STORE_LIMIT
   );
-  const matchesStats = await getPlayersMatchesStats(
-    player_id,
-    playerLastMatchesId
+  const matchesInDB = await Match.find()
+    .where('match_id')
+    .in(playerLastMatchesId)
+    .exec();
+  const matchesIDToSave = playerLastMatchesId.filter(
+    (lastMatchID) =>
+      !matchesInDB.some(({ match_id }) => match_id === lastMatchID)
   );
-
+  const matchesStats = await getPlayersMatchesStats(player_id, matchesIDToSave);
   const modelArr = [];
   matchesStats.map((matchesStats) =>
     matchesStats.rounds.map((round) => modelArr.push(new Match(round)))
   );
 
   Match.insertMany(modelArr);
-  for (const match of modelArr) {
-    player.matches.push(match);
-  }
+  player.matches.push(...[...matchesInDB, ...modelArr]);
 
   try {
     player.save().then(() => {

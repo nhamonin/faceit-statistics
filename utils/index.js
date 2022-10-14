@@ -5,6 +5,7 @@ import { getPlayersLastMatchesId } from './csgo/getPlayersLastMatchesId.js';
 import { getPlayersMatchesStats } from './csgo/getPlayersMatchesStats.js';
 import { getPlayersStats } from './csgo/getPlayersStats.js';
 import { storePlayerMatchesInDB } from './csgo/storePlayerMatchesInDB.js';
+import { extractPlayerStatsFromMatches } from './csgo/extractPlayerStatsFromMatches.js';
 
 export {
   calculateAverage,
@@ -14,4 +15,5 @@ export {
   getPlayersMatchesStats,
   getPlayersStats,
   storePlayerMatchesInDB,
+  extractPlayerStatsFromMatches,
 };

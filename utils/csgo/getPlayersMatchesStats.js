@@ -10,12 +10,11 @@ export function getPlayersMatchesStats(player_id, matchesIDs) {
       return matches.getStatisticsOfAMatch(matchId);
     })
   ).then((matchesStats) =>
-    matchesStats.filter((data) => {
-      const players = [
+    matchesStats.filter((data) =>
+      [
         ...data?.rounds[0]?.teams[0].players,
         ...data?.rounds[0]?.teams[1].players,
-      ];
-      return players.some((player) => player.player_id === player_id);
-    })
+      ].some((player) => player.player_id === player_id)
+    )
   );
 }
