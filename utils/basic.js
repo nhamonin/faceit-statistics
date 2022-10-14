@@ -1,5 +1,7 @@
 import puppeteer from 'puppeteer';
 
+import { getBasicTelegramOptions } from '../utils/index.js';
+
 const browser = await puppeteer.launch({
   args: [
     '--disable-gpu',
@@ -13,7 +15,7 @@ const browser = await puppeteer.launch({
 });
 const page = await browser.newPage();
 
-async function sendPhoto(tBot, chatId, html) {
+async function sendPhoto(tBot, chatId, message_id, html) {
   process.env['NTBA_FIX_350'] = 1;
 
   await page.setContent(html);
@@ -23,7 +25,7 @@ async function sendPhoto(tBot, chatId, html) {
     })
     .then((image) => {
       console.log('The image was created successfully!');
-      tBot.sendPhoto(chatId, image);
+      tBot.sendPhoto(chatId, image, getBasicTelegramOptions(message_id));
     })
     .catch((e) => {
       console.log(e.message);

@@ -14,56 +14,70 @@ import {
   DEFAULT_MATCH_GET_LIMIT,
   messages,
 } from '../config/config.js';
-import { sendPhoto } from '../utils/index.js';
+import { sendPhoto, getBasicTelegramOptions } from '../utils/index.js';
 
 const tBot = new TelegramBot(TELEGRAM_API_TOKEN, { polling: true });
 
 function initBotListener() {
-  tBot.onText(/\/start/, async ({ chat }) => {
+  tBot.onText(/\/start/, async ({ chat, message_id }) => {
     initTeam(chat.id);
-    tBot.sendMessage(chat.id, messages.start);
+    tBot.sendMessage(
+      chat.id,
+      messages.start,
+      getBasicTelegramOptions(message_id)
+    );
   });
 }
 
 function addPlayerListener() {
-  tBot.onText(/\/add\_player.* (\S*)/, async ({ chat }, match) => {
+  tBot.onText(/\/add\_player.* (\S*)/, async ({ chat, message_id }, match) => {
     const message = await addPlayer(match[1], chat.id);
-    tBot.sendMessage(chat.id, message);
+    tBot.sendMessage(chat.id, message, getBasicTelegramOptions(message_id));
   });
 }
 
 function deletePlayerListener() {
-  tBot.onText(/\/delete\_player[\w@]* (\S*)/, async ({ chat }, match) => {
-    const message = await deletePlayer(match[1], chat.id);
-    tBot.sendMessage(chat.id, message);
-  });
+  tBot.onText(
+    /\/delete\_player[\w@]* (\S*)/,
+    async ({ chat, message_id }, match) => {
+      const message = await deletePlayer(match[1], chat.id);
+      tBot.sendMessage(chat.id, message, getBasicTelegramOptions(message_id));
+    }
+  );
 }
 
 function updateTeamPlayersListener() {
-  tBot.onText(/\/update\_team\_players/, async ({ chat }, match) => {
+  tBot.onText(/\/update\_team\_players/, async ({ chat, message_id }) => {
     const message = await updateTeamPlayers(chat.id);
-    tBot.sendMessage(chat.id, message);
+    tBot.sendMessage(chat.id, message, getBasicTelegramOptions(message_id));
   });
 }
 
 function initTeamKDListener() {
-  tBot.onText(/\/get\_team\_kd[\w@]* ?(\d*)/, async ({ chat }, match) => {
-    const limit = +match[1] || DEFAULT_MATCH_GET_LIMIT;
-    const { message, error } = await getTeamKDMessage(limit, chat.id);
+  tBot.onText(
+    /\/get\_team\_kd[\w@]* ?(\d*)/,
+    async ({ chat, message_id }, match) => {
+      const limit = +match[1] || DEFAULT_MATCH_GET_LIMIT;
+      const { message, error } = await getTeamKDMessage(limit, chat.id);
 
-    error
-      ? tBot.sendMessage(chat.id, message)
-      : sendPhoto(tBot, chat.id, getKDTemplate(limit, message));
-  });
+      error
+        ? tBot.sendMessage(
+            chat.id,
+            message,
+            getBasicTelegramOptions(message_id)
+          )
+        : sendPhoto(tBot, chat.id, message_id, getKDTemplate(limit, message));
+    }
+  );
 }
 
 function initTeamEloListener() {
-  tBot.onText(/\/get\_team\_elo/, async ({ chat }) => {
+  tBot.onText(/\/get\_team\_elo/, async ({ chat, message_id }) => {
     const { message, error } = await getTeamEloMessage(chat.id);
 
     error
-      ? tBot.sendMessage(chat.id, message)
-      : sendPhoto(tBot, chat.id, getEloTemplate(message));
+      ? tBot.sendMessage(chat.id, message, getBasicTelegramOptions(message_id))
+      : sendPhoto(tBot, chat.id, message_id, getEloTemplate(message));
   });
 }
 
