@@ -1,13 +1,12 @@
 import {
   calculateAverage,
-  getPlayersLastMatchesId,
-  getPlayersMatchesStats,
+  extractPlayerStatsFromMatches,
 } from '../utils/index.js';
-import { messages, DEFAULT_MATCH_LIMIT } from '../config/config.js';
+import { messages, DEFAULT_MATCH_GET_LIMIT } from '../config/config.js';
 import { Team } from '../models/index.js';
 
 export const getTeamKDMessage = async (matchLimit, chat_id) => {
-  const limit = matchLimit || DEFAULT_MATCH_LIMIT;
+  const limit = matchLimit || DEFAULT_MATCH_GET_LIMIT;
   const team = await Team.findOne({ chat_id });
   const { players } = await team.populate('players');
   const isTeamEmpty = players.length === 0;
@@ -26,11 +25,16 @@ function prepareEmptyTeamResult(statAttribute) {
 }
 
 async function prepareProperResult(players, limit) {
-  const playersStats = players.sort((a, b) => b.elo - a.elo);
-  const playersId = playersStats.map(({ player_id }) => player_id);
-  const playersLastMatchesIds = await getPlayersLastMatchesId(playersId, limit);
-  const playersMatchesStats = (
-    await getPlayersMatchesStats(playersLastMatchesIds)
+  const lastPlayersMatches = await Promise.all(
+    players.map((player) =>
+      player
+        .populate({ path: 'matches', options: { limit } })
+        .then(({ matches }) => matches)
+    )
+  );
+  const playersMatchesStats = extractPlayerStatsFromMatches(
+    players,
+    lastPlayersMatches
   ).filter((arr) => !!arr.length);
 
   if (!playersMatchesStats.length) {
@@ -40,7 +44,7 @@ async function prepareProperResult(players, limit) {
     };
   }
 
-  const avgPlayersKD = getAvgPlayersKD(playersMatchesStats);
+  const avgPlayersKD = getAvgPlayersKD(players, playersMatchesStats);
   const playersKDMessage = formatMessage(avgPlayersKD);
   const avgTeamKD = calculateAverage(
     avgPlayersKD.map((avgPlayerKD) => Object.values(avgPlayerKD)[0])
@@ -52,12 +56,12 @@ async function prepareProperResult(players, limit) {
   };
 }
 
-function getAvgPlayersKD(playersMatchesStats) {
-  return playersMatchesStats.map((playerMatchesStats) => {
+function getAvgPlayersKD(players, playersMatchesStats) {
+  return playersMatchesStats.map((playerMatchesStats, index) => {
     const playerKDs = playerMatchesStats
       .filter(Boolean)
       .map(({ player_stats }) => +player_stats['K/D Ratio']);
-    return { [playerMatchesStats[0].nickname]: calculateAverage(playerKDs) };
+    return { [players[index].nickname]: calculateAverage(playerKDs) };
   });
 }
 
