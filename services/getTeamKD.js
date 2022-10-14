@@ -86,7 +86,9 @@ function getKDColorClass(kdValue) {
     return 'yellow';
   } else if (kdValue < 1.3) {
     return 'green';
-  } else {
+  } else if (kdValue < 1.5) {
     return 'aqua';
+  } else {
+    return 'purple';
   }
 }
