@@ -5,6 +5,7 @@ import {
   getPlayersStats,
   getPlayersLastMatchesId,
   getPlayersMatchesStats,
+  storePlayerMatchesInDB,
 } from '../utils/index.js';
 import { Player, Team, Match } from '../models/index.js';
 import { messages } from '../config/config.js';
@@ -28,13 +29,9 @@ export const addPlayer = async (playerNickname, chat_id) => {
         playersStats[0];
       if (error) return errorMessage;
       const player = new Player({ player_id, nickname, elo, lvl });
+      storePlayerMatchesInDB(player);
 
       team.players.push(player);
-      player.save().then(() => {
-        console.log(
-          `Player ${player.nickname} was added to the team from the Faceit API.`
-        );
-      });
     }
     return team.save().then(() => messages.addPlayer.success(playerNickname));
   } catch (e) {
