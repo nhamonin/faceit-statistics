@@ -1,11 +1,26 @@
-import nodeHtmlToImage from 'node-html-to-image';
+import puppeteer from 'puppeteer';
 
-function sendPhoto(tBot, chatId, html) {
+const browser = await puppeteer.launch({
+  args: [
+    '--disable-gpu',
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-accelerated-2d-canvas',
+    '--no-first-run',
+    '--no-zygote',
+  ],
+});
+const page = await browser.newPage();
+
+async function sendPhoto(tBot, chatId, html) {
   process.env['NTBA_FIX_350'] = 1;
 
-  nodeHtmlToImage({
-    html,
-  })
+  await page.setContent(html);
+  page
+    .screenshot({
+      fullPage: true,
+    })
     .then((image) => {
       console.log('The image was created successfully!');
       tBot.sendPhoto(chatId, image);
