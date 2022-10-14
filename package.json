@@ -24,11 +24,7 @@
     "mongoose": "^6.6.2",
     "node-fetch": "^3.2.10",
     "node-telegram-bot-api": "^0.59.0",
-<<<<<<< Updated upstream
-    "puppeteer": "^18.0.2"
-=======
     "puppeteer": "^18.2.1",
     "sleep": "^6.3.0"
->>>>>>> Stashed changes
   }
 }
