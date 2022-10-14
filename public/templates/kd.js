@@ -30,6 +30,9 @@ export const getKDTemplate = (limit, msg) =>
             .aqua {
               color: aqua;
             }
+            .purple {
+              color: #9400D3;
+            }
             .white {
               color: white;
             }
