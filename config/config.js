@@ -33,7 +33,7 @@ const messages = {
     "Welcome to the faceit stats bot! You are now able to add players to your list. Please do it via the command '/add_player nickname.'",
   addPlayer: {
     success: (nickname) =>
-      `Player ${nickname} was added.\nCheck out elo via /get_team_elo or K/D via /get_team_kd commands.`,
+      `Player ${nickname} was added.\nCheck out Elo rating via the /get_team_elo or K/D via /get_team_kd commands.`,
     exists: (nickname) =>
       `Sorry, but player ${nickname} already exists in your team. Try to add another player.`,
     notFound: (nickname) =>
@@ -41,13 +41,15 @@ const messages = {
   },
   deletePlayer: {
     success: (nickname) =>
-      `Player ${nickname} was deleted.\nCheck out elo via /get_team_elo or K/D via /get_team_kd commands.`,
+      `Player ${nickname} was deleted.\nCheck out Elo rating via the /get_team_elo or K/D via /get_team_kd commands.`,
     notExists: (nickname) =>
       `Sorry, but ${nickname} doesn't exists in your team.`,
+    lastPlayerWasDeleted:
+      "You just deleted the last player in your team. Please add at least one player via the '/add_player nickname' command to check the Elo rating or K/D of the team.",
   },
   updateTeamPlayers: {
     success:
-      'Team players was successfully updated. Check out elo via /get_team_elo or K/D via /get_team_kd commands.',
+      'Team players was successfully updated. Check out Elo rating via the /get_team_elo or K/D via /get_team_kd commands.',
     error:
       'Unfortunately, dut to the technical reasons it is impossible to update players right now. Please wait and try again later.',
   },

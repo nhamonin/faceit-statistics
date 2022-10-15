@@ -11,6 +11,8 @@ export const deletePlayer = async (playerNickname, chat_id) => {
       return messages.deletePlayer.notExists(playerNickname);
     }
 
+    const noPlayersInTeamAfterDeletion = players.length === 1;
+
     const playerInDB = await Player.findOne({ nickname: playerNickname });
 
     return Team.findOneAndUpdate(
@@ -28,7 +30,11 @@ export const deletePlayer = async (playerNickname, chat_id) => {
         if (teams.length) return;
         Player.findByIdAndRemove({ _id: playerInDB._id }, () => {});
       })
-      .then(() => messages.deletePlayer.success(playerNickname));
+      .then(() =>
+        noPlayersInTeamAfterDeletion
+          ? messages.deletePlayer.lastPlayerWasDeleted
+          : messages.deletePlayer.success(playerNickname)
+      );
   } catch (e) {
     console.log(e.message);
     return e.message;
