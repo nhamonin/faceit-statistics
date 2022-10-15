@@ -24,7 +24,8 @@ function prepareProperResult(players, statAttribute) {
   const playersStats = players.sort((a, b) => b.elo - a.elo);
   const playerEloMessage = formatMessage(playersStats);
   const playersElo = playersStats.map(({ elo }) => elo);
-  const avgTeamElo = calculateAverage(playersElo).toFixed(0);
+  const avgTeamElo =
+    playersElo.length > 1 ? calculateAverage(playersElo).toFixed(0) : null;
 
   return {
     error: false,

@@ -46,9 +46,12 @@ async function prepareProperResult(players, limit) {
 
   const avgPlayersKD = getAvgPlayersKD(players, playersMatchesStats);
   const playersKDMessage = formatMessage(avgPlayersKD);
-  const avgTeamKD = calculateAverage(
-    avgPlayersKD.map((avgPlayerKD) => Object.values(avgPlayerKD)[0])
-  ).toFixed(2);
+  const avgTeamKD =
+    avgPlayersKD.length > 1
+      ? calculateAverage(
+          avgPlayersKD.map((avgPlayerKD) => Object.values(avgPlayerKD)[0])
+        ).toFixed(2)
+      : null;
 
   return {
     error: false,
