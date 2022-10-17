@@ -13,7 +13,7 @@ import { storePlayerMatchesInDB } from './csgo/storePlayerMatchesInDB.js';
 import { extractPlayerStatsFromMatches } from './csgo/extractPlayerStatsFromMatches.js';
 // telegram
 import { getBasicTelegramOptions } from './telegram/telegram.js';
-//db
+// db
 import connectDB from './db/mongo.js';
 
 export {
