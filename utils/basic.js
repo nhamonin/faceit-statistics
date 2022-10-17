@@ -40,4 +40,9 @@ function isPlayerTeamMember(players, name) {
   return players.some(({ nickname }) => nickname === name);
 }
 
-export { sendPhoto, calculateAverage, isPlayerTeamMember };
+function groupByFive([a, b, c, d, e, ...rest]) {
+  if (!rest.length) return [[a, b, c, d, e].filter(Boolean)];
+  return [[a, b, c, d, e], ...groupByFive(rest)];
+}
+
+export { sendPhoto, calculateAverage, isPlayerTeamMember, groupByFive };

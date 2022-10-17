@@ -1,5 +1,10 @@
 // basic
-import { calculateAverage, isPlayerTeamMember, sendPhoto } from './basic.js';
+import {
+  calculateAverage,
+  isPlayerTeamMember,
+  sendPhoto,
+  groupByFive,
+} from './basic.js';
 // csgo
 import { getPlayersLastMatchesId } from './csgo/getPlayersLastMatchesId.js';
 import { getPlayersMatchesStats } from './csgo/getPlayersMatchesStats.js';
@@ -13,6 +18,7 @@ export {
   calculateAverage,
   isPlayerTeamMember,
   sendPhoto,
+  groupByFive,
   getPlayersLastMatchesId,
   getPlayersMatchesStats,
   getPlayersStats,
