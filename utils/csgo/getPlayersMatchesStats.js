@@ -9,12 +9,8 @@ export async function getPlayersMatchesStats(player_id, matchesIDs) {
 
   for (const matchesIDsGroup of matchesIDsGroups) {
     await Promise.all(
-      matchesIDsGroup.map((matchID) =>
-        matches
-          .getStatisticsOfAMatch(matchID)
-          .then((match) => matchesStats.push(match))
-      )
-    );
+      matchesIDsGroup.map((matchID) => matches.getStatisticsOfAMatch(matchID))
+    ).then((matches) => matchesStats.push(...matches));
   }
 
   return matchesStats.filter((data) =>
