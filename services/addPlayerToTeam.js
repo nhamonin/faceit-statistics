@@ -1,10 +1,6 @@
-import { Matches } from 'faceit-node-api';
-
 import {
   isPlayerTeamMember,
   getPlayersStats,
-  getPlayersLastMatchesId,
-  getPlayersMatchesStats,
   storePlayerMatchesInDB,
 } from '../utils/index.js';
 import { Player, Team, Match } from '../models/index.js';
@@ -29,7 +25,7 @@ export const addPlayer = async (playerNickname, chat_id) => {
         playersStats[0];
       if (error) return errorMessage;
       const player = new Player({ player_id, nickname, elo, lvl });
-      storePlayerMatchesInDB(player);
+      await storePlayerMatchesInDB(player);
 
       team.players.push(player);
     }
