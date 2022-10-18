@@ -9,7 +9,6 @@ export const matchSchema = new Schema(
     match_id: {
       type: String,
       required: true,
-      unique: true,
     },
     round_stats: {
       Map: {

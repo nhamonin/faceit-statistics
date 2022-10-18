@@ -11,9 +11,9 @@ export const updateTeamPlayers = async (chat_id) => {
 
     const playersStats = await getPlayersStats(teamNicknames);
 
-    playersStats.map(({ nickname, elo, lvl }) => {
-      Player.findOneAndUpdate({ nickname }, { elo, lvl });
-    });
+    for await (const { nickname, elo, lvl } of playersStats) {
+      Player.findOneAndUpdate({ nickname }, { elo, lvl }).then(() => {});
+    }
 
     return messages.updateTeamPlayers.success;
   } catch (e) {
