@@ -7,6 +7,19 @@ const teamSchema = new Schema(
       required: true,
       unique: true,
     },
+    type: {
+      type: String,
+      required: true,
+    },
+    username: {
+      type: String,
+    },
+    first_name: {
+      type: String,
+    },
+    title: {
+      type: String,
+    },
     name: {
       type: String,
       required: false,

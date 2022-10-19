@@ -4,6 +4,7 @@ import {
   isPlayerTeamMember,
   sendPhoto,
   groupByFive,
+  clearPeriodically,
 } from './basic.js';
 // csgo
 import { getPlayersLastMatchesId } from './csgo/getPlayersLastMatchesId.js';
@@ -21,6 +22,7 @@ export {
   isPlayerTeamMember,
   sendPhoto,
   groupByFive,
+  clearPeriodically,
   getPlayersLastMatchesId,
   getPlayersMatchesStats,
   getPlayersStats,

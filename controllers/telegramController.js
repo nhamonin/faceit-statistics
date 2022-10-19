@@ -20,7 +20,7 @@ const tBot = new TelegramBot(TELEGRAM_API_TOKEN, { polling: true });
 
 function initBotListener() {
   tBot.onText(/\/start/, async ({ chat, message_id }) => {
-    initTeam(chat.id);
+    initTeam(chat);
     tBot.sendMessage(
       chat.id,
       messages.start,
