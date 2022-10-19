@@ -2,6 +2,9 @@ import { getPlayersLastMatchesId, getPlayersMatchesStats } from '../index.js';
 import { DEFAULT_MATCH_STORE_LIMIT } from '../../config/config.js';
 import { Match } from '../../models/index.js';
 
+// TODO: add retention time
+const cache = new Set();
+
 export async function storePlayerMatchesInDB(player) {
   const { player_id } = player;
   const playerLastMatchesId = await getPlayersLastMatchesId(
@@ -14,16 +17,22 @@ export async function storePlayerMatchesInDB(player) {
     .exec();
   const matchesIDToSave = playerLastMatchesId.filter(
     (lastMatchID) =>
+      !cache.has(lastMatchID) &&
       !matchesInDB.some(({ match_id }) => match_id === lastMatchID)
   );
+  for (const lastMatchID of playerLastMatchesId) {
+    cache.add(lastMatchID);
+  }
   const matchesStats = await getPlayersMatchesStats(player_id, matchesIDToSave);
   const modelArr = [];
   matchesStats.map((matchesStats) =>
-    matchesStats.rounds.map((round) => modelArr.push(new Match(round)))
+    matchesStats.rounds.map((round) =>
+      modelArr.push(new Match({ _id: round.match_id, ...round }))
+    )
   );
 
-  Match.insertMany(modelArr);
-  player.matches.push(...[...matchesInDB, ...modelArr]);
+  await Match.insertMany(modelArr);
+  player.matches = playerLastMatchesId;
 
   try {
     player.save().then(() => {
