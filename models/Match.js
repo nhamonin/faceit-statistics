@@ -2,6 +2,9 @@ import mongoose, { Schema } from 'mongoose';
 
 export const matchSchema = new Schema(
   {
+    _id: {
+      type: String,
+    },
     best_of: {
       type: String,
       required: true,
@@ -9,6 +12,7 @@ export const matchSchema = new Schema(
     match_id: {
       type: String,
       required: true,
+      unique: true,
     },
     round_stats: {
       Map: {

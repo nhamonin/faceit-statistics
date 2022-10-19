@@ -19,7 +19,7 @@ export const playerSchema = new Schema(
       required: true,
     },
     matches: {
-      type: [{ type: Schema.Types.ObjectId, ref: 'Match' }],
+      type: [{ type: String, ref: 'Match' }],
       required: true,
     },
   },
