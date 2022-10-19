@@ -45,4 +45,21 @@ function groupByFive([a, b, c, d, e, ...rest]) {
   return [[a, b, c, d, e], ...groupByFive(rest)];
 }
 
-export { sendPhoto, calculateAverage, isPlayerTeamMember, groupByFive };
+function clearPeriodically(dataToClear, clearValue, ms) {
+  const MILLISECONDS_IN_SECOND = 1000;
+  const SECONDS_IN_MINUTE = 60;
+
+  const interval = setInterval(() => {
+    dataToClear = clearValue;
+  }, ms * MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE);
+
+  return interval;
+}
+
+export {
+  sendPhoto,
+  calculateAverage,
+  isPlayerTeamMember,
+  groupByFive,
+  clearPeriodically,
+};

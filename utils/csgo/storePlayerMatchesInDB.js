@@ -1,9 +1,16 @@
-import { getPlayersLastMatchesId, getPlayersMatchesStats } from '../index.js';
-import { DEFAULT_MATCH_STORE_LIMIT } from '../../config/config.js';
+import {
+  getPlayersLastMatchesId,
+  getPlayersMatchesStats,
+  clearPeriodically,
+} from '../index.js';
+import {
+  DEFAULT_MATCH_STORE_LIMIT,
+  CLEAR_CACHE_MINUTES,
+} from '../../config/config.js';
 import { Match } from '../../models/index.js';
 
-// TODO: add retention time
 const cache = new Set();
+clearPeriodically(cache, new Set(), CLEAR_CACHE_MINUTES);
 
 export async function storePlayerMatchesInDB(player) {
   const { player_id } = player;
