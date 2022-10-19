@@ -64,7 +64,7 @@ const messages = {
 };
 
 const DEFAULT_MATCH_GET_LIMIT = 20;
-const DEFAULT_MATCH_STORE_LIMIT = 50;
+const DEFAULT_MATCH_STORE_LIMIT = 20;
 
 export {
   FACEIT_API_KEY,

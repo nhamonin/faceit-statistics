@@ -4,8 +4,8 @@ import { Team } from '../models/index.js';
 
 export const getTeamEloMessage = async (chat_id) => {
   const team = await Team.findOne({ chat_id });
-  const { players } = await team.populate('players');
-  const isTeamEmpty = players?.length === 0;
+  const players = (await team.populate('players'))?.players;
+  const isTeamEmpty = !players || players?.length === 0;
   const statAttribute = 'Elo';
 
   return isTeamEmpty

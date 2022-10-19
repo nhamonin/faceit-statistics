@@ -14,6 +14,10 @@ export const matchSchema = new Schema(
       required: true,
       unique: true,
     },
+    finished_at: {
+      type: Number,
+      required: true,
+    },
     round_stats: {
       Map: {
         type: String,
