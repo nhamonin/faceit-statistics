@@ -27,9 +27,7 @@ function prepareEmptyTeamResult(statAttribute) {
 async function prepareProperResult(players, limit) {
   const lastPlayersMatches = await Promise.all(
     players.map((player) =>
-      player
-        .populate({ path: 'matches', options: { limit } })
-        .then(({ matches }) => matches)
+      player.populate('matches').then(({ matches }) => matches.slice(0, limit))
     )
   );
   const playersMatchesStats = extractPlayerStatsFromMatches(
