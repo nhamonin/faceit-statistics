@@ -8,6 +8,7 @@ import {
   addPlayer,
   deletePlayer,
   updateTeamPlayers,
+  getPlayerLastMatchesStats,
 } from '../services/index.js';
 import {
   TELEGRAM_API_TOKEN,
@@ -53,7 +54,7 @@ function updateTeamPlayersListener() {
   });
 }
 
-function initTeamKDListener() {
+function getTeamKDListener() {
   tBot.onText(
     /\/get\_team\_kd[\w@]* ?(\d*)/,
     async ({ chat, message_id }, match) => {
@@ -71,7 +72,7 @@ function initTeamKDListener() {
   );
 }
 
-function initTeamEloListener() {
+function getTeamEloListener() {
   tBot.onText(/\/get\_team\_elo/, async ({ chat, message_id }) => {
     const { message, error } = await getTeamEloMessage(chat.id);
 
@@ -81,11 +82,26 @@ function initTeamEloListener() {
   });
 }
 
+function getPLayerLastMatchesStatsListener() {
+  tBot.onText(
+    /\/get\_player\_last\_matches[\w@]* (\S*)/,
+    async ({ chat, message_id }, match) => {
+      const { message, error } = await getPlayerLastMatchesStats(
+        chat.id,
+        match[1]
+      );
+
+      tBot.sendMessage(chat.id, message, getBasicTelegramOptions(message_id));
+    }
+  );
+}
+
 export {
   initBotListener,
   addPlayerListener,
   deletePlayerListener,
   updateTeamPlayersListener,
-  initTeamKDListener,
-  initTeamEloListener,
+  getTeamKDListener,
+  getTeamEloListener,
+  getPLayerLastMatchesStatsListener,
 };

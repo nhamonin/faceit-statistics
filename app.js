@@ -6,8 +6,9 @@ import {
   addPlayerListener,
   deletePlayerListener,
   updateTeamPlayersListener,
-  initTeamKDListener,
-  initTeamEloListener,
+  getTeamKDListener,
+  getTeamEloListener,
+  getPLayerLastMatchesStatsListener,
 } from './controllers/telegramController.js';
 import { connectDB } from './utils/index.js';
 
@@ -19,5 +20,6 @@ initBotListener();
 addPlayerListener();
 deletePlayerListener();
 updateTeamPlayersListener();
-initTeamKDListener();
-initTeamEloListener();
+getTeamKDListener();
+getTeamEloListener();
+getPLayerLastMatchesStatsListener();
