@@ -3,7 +3,7 @@ import {
   getPlayersStats,
   storePlayerMatchesInDB,
 } from '../utils/index.js';
-import { Player, Team, Match } from '../models/index.js';
+import { Player, Team } from '../models/index.js';
 import { messages } from '../config/config.js';
 
 export const addPlayer = async (playerNickname, chat_id) => {
