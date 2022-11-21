@@ -91,7 +91,11 @@ function getPLayerLastMatchesStatsListener() {
         match[1]
       );
 
-      tBot.sendMessage(chat.id, message, getBasicTelegramOptions(message_id));
+      tBot.sendMessage(
+        chat.id,
+        message || error,
+        getBasicTelegramOptions(message_id)
+      );
     }
   );
 }

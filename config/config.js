@@ -60,6 +60,10 @@ const messages = {
     `${playerStatMessage}<br><br>${
       avgTeamStat ? `Avg Team ${statAttribute}: ${avgTeamStat}` : ''
     }`,
+  getPlayerLastMatches: {
+    notExists: (nickname) =>
+      `Sorry, but ${nickname} doesn't exists in your team.`,
+  },
   serverError: 'Oops, something went wrong. Try again later.',
 };
 

@@ -1,20 +1,30 @@
 import { Team } from '../models/index.js';
+import { messages } from '../config/config.js';
 
 export const getPlayerLastMatchesStats = async (chat_id, playerNickname) => {
-  const team = await Team.findOne({ chat_id });
-  const [player] = (await team.populate('players'))?.players.filter(
-    ({ nickname }) => nickname === playerNickname
-  );
-  const playerMatches = (await player.populate('matches'))?.matches;
+  try {
+    const team = await Team.findOne({ chat_id });
+    const [player] = (await team.populate('players'))?.players.filter(
+      ({ nickname }) => nickname === playerNickname
+    );
 
-  const message = formatMessage(playerMatches, player.player_id);
+    if (!player) {
+      return { error: messages.getPlayerLastMatches.notExists(playerNickname) };
+    }
 
-  return { message };
+    const playerMatches = (await player.populate('matches'))?.matches;
+
+    const message = formatMessage(playerMatches, player.player_id);
+
+    return { message };
+  } catch (e) {
+    return { error: messages.serverError };
+  }
 };
 
 function formatMessage(playerMatches, playerID) {
   return [
-    '<code>Result  Score  PlayerK/D  Map',
+    '<code>Result Score PlayerK/D    Map',
     ...playerMatches.map((match) => {
       const roundStats = match.round_stats;
       const playerTeam =
@@ -43,7 +53,7 @@ function formatMessage(playerMatches, playerID) {
         (player_stats['K/D Ratio'] >= 1 ? ' 🟢' : ' 🔴');
       const map = ' ' + roundStats.Map.replace('de_', '');
 
-      return `${result}  ${score}${playerKD} ${map}`;
+      return `${result} ${score}${playerKD} ${map}`;
     }),
     '</code>',
   ].join('\n');
