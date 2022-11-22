@@ -18,6 +18,7 @@ export const getPlayerLastMatchesStats = async (chat_id, playerNickname) => {
 
     return { message };
   } catch (e) {
+    console.log(e.message);
     return { error: messages.serverError };
   }
 };
@@ -33,6 +34,7 @@ function formatMessage(playerMatches, playerID) {
             team.players.some(({ player_id }) => player_id === playerID)
           )
         ];
+      if (!playerTeam) return;
       const result =
         roundStats.Winner === playerTeam.team_id ? ' W 🟢' : ' L 🔴';
       const score = roundStats.Score.split('/')
@@ -56,5 +58,7 @@ function formatMessage(playerMatches, playerID) {
       return `${result} ${score}${playerKD} ${map}`;
     }),
     '</code>',
-  ].join('\n');
+  ]
+    .filter(Boolean)
+    .join('\n');
 }

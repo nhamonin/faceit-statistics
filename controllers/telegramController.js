@@ -3,6 +3,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import { getEloTemplate, getKDTemplate } from '../public/templates/index.js';
 import {
   initTeam,
+  resetTeam,
   getTeamEloMessage,
   getTeamKDMessage,
   addPlayer,
@@ -25,6 +26,18 @@ function initBotListener() {
     tBot.sendMessage(
       chat.id,
       messages.start,
+      getBasicTelegramOptions(message_id)
+    );
+  });
+}
+
+function resetTeamListener() {
+  tBot.onText(/\/reset\_team/, async ({ chat, message_id }) => {
+    const { message, error } = await resetTeam(chat.id);
+
+    tBot.sendMessage(
+      chat.id,
+      message || error,
       getBasicTelegramOptions(message_id)
     );
   });
@@ -102,6 +115,7 @@ function getPLayerLastMatchesStatsListener() {
 
 export {
   initBotListener,
+  resetTeamListener,
   addPlayerListener,
   deletePlayerListener,
   updateTeamPlayersListener,
