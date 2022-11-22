@@ -1,4 +1,6 @@
-import { Player, Team } from '../models/index.js';
+import mongoose from 'mongoose';
+
+import { Match, Player, Team } from '../models/index.js';
 import { messages } from '../config/config.js';
 import { isPlayerTeamMember } from '../utils/index.js';
 
@@ -28,7 +30,19 @@ export const deletePlayer = async (playerNickname, chat_id) => {
           players: [{ _id: playerInDB._id }],
         });
         if (teams.length) return;
-        Player.findByIdAndRemove({ _id: playerInDB._id }, () => {});
+        Player.findByIdAndRemove({ _id: playerInDB._id }, async () => {
+          const { matches } = await playerInDB.populate('matches');
+
+          for await (const match of matches) {
+            const players = await Player.find({
+              matches: { $elemMatch: { $eq: match._id } },
+            });
+
+            if (players.length) continue;
+
+            Match.findByIdAndRemove({ _id: match._id }, () => {});
+          }
+        });
       })
       .then(() =>
         noPlayersInTeamAfterDeletion

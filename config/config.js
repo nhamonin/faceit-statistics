@@ -31,6 +31,12 @@ const lvlClasses = {
 const messages = {
   start:
     "Welcome to the faceit stats bot! You are now able to add players to your list. Please do it via the command '/add_player nickname.'",
+  resetTeam: {
+    success:
+      "Team has been successfully reset. Now you don't have any players. You can add some via the command '/add_player nickname.'",
+    notExists:
+      "You don't have a team to reset. Init it first via the command '/init_team.'",
+  },
   addPlayer: {
     success: (nickname) =>
       `Player ${nickname} was added.\nCheck out Elo rating via the /get_team_elo or K/D via /get_team_kd commands.`,
