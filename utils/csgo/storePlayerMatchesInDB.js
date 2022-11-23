@@ -6,11 +6,11 @@ import {
 import {
   DEFAULT_MATCH_STORE_LIMIT,
   CLEAR_CACHE_MINUTES,
+  CACHE,
 } from '../../config/config.js';
 import { Match } from '../../models/index.js';
 
-const cache = new Set();
-clearPeriodically(cache, new Set(), CLEAR_CACHE_MINUTES);
+clearPeriodically(CACHE, new Set(), CLEAR_CACHE_MINUTES);
 
 export async function storePlayerMatchesInDB(player) {
   const { player_id } = player;
@@ -24,11 +24,11 @@ export async function storePlayerMatchesInDB(player) {
     .exec();
   const matchesIDToSave = playerLastMatchesId.filter(
     (lastMatchID) =>
-      !cache.has(lastMatchID) &&
+      !CACHE.value.has(lastMatchID) &&
       !matchesInDB.some(({ match_id }) => match_id === lastMatchID)
   );
   for (const lastMatchID of playerLastMatchesId) {
-    cache.add(lastMatchID);
+    CACHE.value.add(lastMatchID);
   }
   const matchesStats = await getPlayersMatchesStats(player_id, matchesIDToSave);
   const modelArr = [];

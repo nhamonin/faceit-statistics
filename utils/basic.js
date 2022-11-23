@@ -2,23 +2,16 @@ import puppeteer from 'puppeteer';
 
 import { getBasicTelegramOptions } from '../utils/index.js';
 
-const browser = await puppeteer.launch({
-  args: [
-    '--disable-gpu',
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-    '--disable-dev-shm-usage',
-    '--disable-accelerated-2d-canvas',
-    '--no-first-run',
-    '--no-zygote',
-  ],
-});
-const page = await browser.newPage();
+let page = await getBrowserPage();
 
 async function sendPhoto(tBot, chatId, message_id, html) {
-  process.env['NTBA_FIX_350'] = 1;
+  if (page) {
+    await page.setContent(html);
+  } else {
+    page = await getBrowserPage();
+    await page.setContent(html);
+  }
 
-  await page.setContent(html);
   page
     .screenshot({
       fullPage: true,
@@ -30,6 +23,21 @@ async function sendPhoto(tBot, chatId, message_id, html) {
     .catch((e) => {
       console.log(e.message);
     });
+}
+
+async function getBrowserPage() {
+  const browser = await puppeteer.launch({
+    args: [
+      '--disable-gpu',
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--no-first-run',
+      '--no-zygote',
+    ],
+  });
+  return browser.newPage();
 }
 
 function calculateAverage(arr) {
@@ -50,7 +58,7 @@ function clearPeriodically(dataToClear, clearValue, ms) {
   const SECONDS_IN_MINUTE = 60;
 
   const interval = setInterval(() => {
-    dataToClear = clearValue;
+    dataToClear.value = clearValue;
   }, ms * MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE);
 
   return interval;

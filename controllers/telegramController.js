@@ -21,6 +21,9 @@ import { sendPhoto, getBasicTelegramOptions } from '../utils/index.js';
 const tBot = new TelegramBot(TELEGRAM_API_TOKEN, { polling: true });
 
 function initBotListener() {
+  process.env.NTBA_FIX_350 = 1;
+  process.env.NTBA_FIX_319 = 1;
+
   tBot.onText(/\/start/, async ({ chat, message_id }) => {
     initTeam(chat);
     tBot.sendMessage(
@@ -29,6 +32,8 @@ function initBotListener() {
       getBasicTelegramOptions(message_id)
     );
   });
+
+  tBot.on('polling_error', (msg) => console.log(msg));
 }
 
 function resetTeamListener() {
