@@ -1,7 +1,5 @@
-import mongoose from 'mongoose';
-
 import { Match, Player, Team } from '../models/index.js';
-import { messages } from '../config/config.js';
+import { messages, CACHE } from '../config/config.js';
 import { isPlayerTeamMember } from '../utils/index.js';
 
 export const deletePlayer = async (playerNickname, chat_id) => {
@@ -26,6 +24,7 @@ export const deletePlayer = async (playerNickname, chat_id) => {
       }
     )
       .then(async () => {
+        CACHE.value = new Set();
         const teams = await Team.find({
           players: [{ _id: playerInDB._id }],
         });

@@ -1,5 +1,5 @@
 import { Team } from '../models/index.js';
-import { messages } from '../config/config.js';
+import { messages, CACHE } from '../config/config.js';
 import { deletePlayer } from '../services/index.js';
 
 export const resetTeam = async (chat_id) => {
@@ -15,6 +15,8 @@ export const resetTeam = async (chat_id) => {
     players.forEach((player) => {
       deletePlayer(player.nickname, chat_id);
     });
+
+    CACHE.value = new Set();
 
     return { message: messages.resetTeam.success };
   } catch (e) {
