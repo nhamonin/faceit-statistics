@@ -26,7 +26,6 @@ export const addPlayer = async (playerNickname, chat_id) => {
       if (error) return errorMessage;
       const player = new Player({ player_id, nickname, elo, lvl });
       await storePlayerMatchesInDB(player);
-
       team.players.push(player);
     }
     return team.save().then(() => messages.addPlayer.success(playerNickname));
