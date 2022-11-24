@@ -20,6 +20,17 @@ import { sendPhoto, getBasicTelegramOptions } from '../utils/index.js';
 
 const tBot = new TelegramBot(TELEGRAM_API_TOKEN, { polling: true });
 
+function initTelegramListeners() {
+  initBotListener();
+  resetTeamListener();
+  addPlayerListener();
+  deletePlayerListener();
+  updateTeamPlayersListener();
+  getTeamKDListener();
+  getTeamEloListener();
+  getPLayerLastMatchesStatsListener();
+}
+
 function initBotListener() {
   process.env.NTBA_FIX_350 = 1;
   process.env.NTBA_FIX_319 = 1;
@@ -118,13 +129,4 @@ function getPLayerLastMatchesStatsListener() {
   );
 }
 
-export {
-  initBotListener,
-  resetTeamListener,
-  addPlayerListener,
-  deletePlayerListener,
-  updateTeamPlayersListener,
-  getTeamKDListener,
-  getTeamEloListener,
-  getPLayerLastMatchesStatsListener,
-};
+export { initTelegramListeners };
