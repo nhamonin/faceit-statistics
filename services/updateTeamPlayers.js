@@ -1,5 +1,5 @@
 import { Player, Team } from '../models/index.js';
-import { getPlayersStats } from '../utils/index.js';
+import { getPlayerInfo } from '../utils/index.js';
 import { messages } from '../config/config.js';
 
 export const updateTeamPlayers = async (chat_id) => {
@@ -9,10 +9,21 @@ export const updateTeamPlayers = async (chat_id) => {
       .populate('players')
       .then(({ players }) => players.map(({ nickname }) => nickname));
 
-    const playersStats = await getPlayersStats(teamNicknames);
+    const playersStats = await Promise.all(
+      teamNicknames.map((nickname) => getPlayerInfo(nickname))
+    );
 
-    for await (const { nickname, elo, lvl } of playersStats) {
-      Player.findOneAndUpdate({ nickname }, { elo, lvl }).then(() => {});
+    for await (const {
+      nickname,
+      elo,
+      lvl,
+      last20KD,
+      last50KD,
+    } of playersStats) {
+      Player.findOneAndUpdate(
+        { nickname },
+        { elo, lvl, last20KD, last50KD }
+      ).then(() => {});
     }
 
     return messages.updateTeamPlayers.success;
