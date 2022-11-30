@@ -6,6 +6,8 @@ import { getPlayerAvgKD } from './csgo/getPlayerAvgKD.js';
 import { getPlayerInfo } from './csgo/getPlayerInfo.js';
 // telegram
 import { getBasicTelegramOptions } from './telegram/telegram.js';
+// webhook
+import { webhookMgr } from './webhook/webhookMgr.js';
 // db
 import connectDB from './db/mongo.js';
 
@@ -17,5 +19,6 @@ export {
   getPlayerMatches,
   getPlayerAvgKD,
   getBasicTelegramOptions,
+  webhookMgr,
   connectDB,
 };

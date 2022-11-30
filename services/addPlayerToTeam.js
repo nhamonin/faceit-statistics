@@ -1,4 +1,8 @@
-import { isPlayerTeamMember, getPlayerInfo } from '../utils/index.js';
+import {
+  isPlayerTeamMember,
+  getPlayerInfo,
+  webhookMgr,
+} from '../utils/index.js';
 import { Player, Team } from '../models/index.js';
 import { messages } from '../config/config.js';
 
@@ -37,6 +41,7 @@ export const addPlayer = async (playerNickname, chat_id) => {
         last50KD,
       });
       player.save().then(() => {
+        webhookMgr.addPlayersToList([player.player_id]);
         console.log(
           `Player ${player.nickname} was added to the team from the Faceit API.`
         );

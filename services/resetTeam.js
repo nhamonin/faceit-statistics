@@ -1,6 +1,7 @@
 import { Team } from '../models/index.js';
 import { messages } from '../config/config.js';
 import { deletePlayer } from '../services/index.js';
+import { webhookMgr } from '../utils/index.js';
 
 export const resetTeam = async (chat_id) => {
   try {
@@ -11,10 +12,12 @@ export const resetTeam = async (chat_id) => {
     }
 
     const { players } = await team.populate('players');
+    const playersIDs = players.map(({ player_id }) => player_id);
 
     players.forEach((player) => {
       deletePlayer(player.nickname, chat_id);
     });
+    webhookMgr.removePlayersFromList(playersIDs);
 
     return { message: messages.resetTeam.success };
   } catch (e) {
