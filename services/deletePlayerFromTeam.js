@@ -1,6 +1,6 @@
 import { Player, Team } from '../models/index.js';
 import { messages } from '../config/config.js';
-import { isPlayerTeamMember } from '../utils/index.js';
+import { isPlayerTeamMember, webhookMgr } from '../utils/index.js';
 
 export const deletePlayer = async (playerNickname, chat_id) => {
   try {
@@ -28,7 +28,9 @@ export const deletePlayer = async (playerNickname, chat_id) => {
           players: [{ _id: playerInDB._id }],
         });
         if (teams.length) return;
-        Player.findByIdAndRemove({ _id: playerInDB._id }, () => {});
+        Player.findByIdAndRemove({ _id: playerInDB._id }, () => {
+          webhookMgr.removePlayersFromList([playerInDB.player_id]);
+        });
       })
       .then(() =>
         noPlayersInTeamAfterDeletion
