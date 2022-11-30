@@ -1,7 +1,4 @@
-import {
-  calculateAverage,
-  extractPlayerStatsFromMatches,
-} from '../utils/index.js';
+import { calculateAverage, getPlayerAvgKD } from '../utils/index.js';
 import { messages, DEFAULT_MATCH_GET_LIMIT } from '../config/config.js';
 import { Team } from '../models/index.js';
 
@@ -25,24 +22,7 @@ function prepareEmptyTeamResult(statAttribute) {
 }
 
 async function prepareProperResult(players, limit) {
-  const lastPlayersMatches = await Promise.all(
-    players.map((player) =>
-      player.populate('matches').then(({ matches }) => matches.slice(0, limit))
-    )
-  );
-  const playersMatchesStats = extractPlayerStatsFromMatches(
-    players,
-    lastPlayersMatches
-  ).filter((arr) => !!arr.length);
-
-  if (!playersMatchesStats.length) {
-    return {
-      error: true,
-      message: messages.emptyMatchesError,
-    };
-  }
-
-  const avgPlayersKD = getAvgPlayersKD(players, playersMatchesStats);
+  const avgPlayersKD = await getAvgPlayersKD(players, limit);
   const playersKDMessage = formatMessage(avgPlayersKD);
   const avgTeamKD =
     avgPlayersKD.length > 1
@@ -57,13 +37,24 @@ async function prepareProperResult(players, limit) {
   };
 }
 
-function getAvgPlayersKD(players, playersMatchesStats) {
-  return playersMatchesStats.map((playerMatchesStats, index) => {
-    const playerKDs = playerMatchesStats
-      .filter(Boolean)
-      .map(({ player_stats }) => +player_stats['K/D Ratio']);
-    return { [players[index].nickname]: calculateAverage(playerKDs) };
-  });
+async function getAvgPlayersKD(players, limit = 20) {
+  switch (limit) {
+    case 20:
+      return players.map(({ nickname, last20KD }) => ({
+        [nickname]: last20KD,
+      }));
+    case 50:
+      return players.map(({ nickname, last50KD }) => ({
+        [nickname]: last50KD,
+      }));
+    default:
+      const res = [];
+      for await (const { nickname, player_id } of players) {
+        const { lastKD } = await getPlayerAvgKD(player_id, [limit], true);
+        res.push({ [nickname]: lastKD });
+      }
+      return res;
+  }
 }
 
 function formatMessage(avgPlayersKD) {

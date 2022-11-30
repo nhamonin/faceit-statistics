@@ -17,7 +17,7 @@ async function sendPhoto(tBot, chatId, message_id, html) {
       fullPage: true,
     })
     .then((image) => {
-      console.log('The image was created successfully!');
+      console.log('+img');
       tBot.sendPhoto(chatId, image, getBasicTelegramOptions(message_id));
     })
     .catch((e) => {
@@ -40,34 +40,12 @@ async function getBrowserPage() {
   return browser.newPage();
 }
 
-function calculateAverage(arr) {
-  return arr.reduce((a, b) => a + b, 0) / arr.length;
+function calculateAverage(arr, digits = 2) {
+  return +(arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(digits);
 }
 
 function isPlayerTeamMember(players, name) {
   return players.some(({ nickname }) => nickname === name);
 }
 
-function groupByFive([a, b, c, d, e, ...rest]) {
-  if (!rest.length) return [[a, b, c, d, e].filter(Boolean)];
-  return [[a, b, c, d, e], ...groupByFive(rest)];
-}
-
-function clearPeriodically(dataToClear, clearValue, ms) {
-  const MILLISECONDS_IN_SECOND = 1000;
-  const SECONDS_IN_MINUTE = 60;
-
-  const interval = setInterval(() => {
-    dataToClear.value = clearValue;
-  }, ms * MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE);
-
-  return interval;
-}
-
-export {
-  sendPhoto,
-  calculateAverage,
-  isPlayerTeamMember,
-  groupByFive,
-  clearPeriodically,
-};
+export { sendPhoto, calculateAverage, isPlayerTeamMember };

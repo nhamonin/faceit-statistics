@@ -1,5 +1,6 @@
 import { Team } from '../models/index.js';
 import { messages } from '../config/config.js';
+import { getPlayerMatches } from '../utils/index.js';
 
 export const getPlayerLastMatchesStats = async (chat_id, playerNickname) => {
   try {
@@ -12,9 +13,8 @@ export const getPlayerLastMatchesStats = async (chat_id, playerNickname) => {
       return { error: messages.getPlayerLastMatches.notExists(playerNickname) };
     }
 
-    const playerMatches = (await player.populate('matches'))?.matches;
-
-    const message = formatMessage(playerMatches, player.player_id);
+    const playerMatches = await getPlayerMatches(player.player_id);
+    const message = formatMessage(playerMatches);
 
     return { message };
   } catch (e) {
@@ -23,21 +23,13 @@ export const getPlayerLastMatchesStats = async (chat_id, playerNickname) => {
   }
 };
 
-function formatMessage(playerMatches, playerID) {
+function formatMessage(playerMatches) {
   return [
     '<code>Result Score PlayerK/D    Map',
     ...playerMatches.map((match) => {
-      const roundStats = match.round_stats;
-      const playerTeam =
-        match.teams[
-          match.teams.findIndex((team) =>
-            team.players.some(({ player_id }) => player_id === playerID)
-          )
-        ];
-      if (!playerTeam) return;
-      const result =
-        roundStats.Winner === playerTeam.team_id ? ' W 🟢' : ' L 🔴';
-      const score = roundStats.Score.split('/')
+      const result = match.i10 === '1' ? ' W 🟢' : ' L 🔴';
+      const score = match.i18
+        .split('/')
         .map((teamScore, index) => {
           const prefix = index === 0 ? ' ' : '';
           teamScore = teamScore.trim();
@@ -46,19 +38,12 @@ function formatMessage(playerMatches, playerID) {
           );
         })
         .join('/');
-      const { player_stats } = playerTeam.players.find(
-        ({ player_id }) => player_id === playerID
-      );
       const playerKD =
-        '  ' +
-        (+player_stats['K/D Ratio']).toFixed(2) +
-        (player_stats['K/D Ratio'] >= 1 ? ' 🟢' : ' 🔴');
-      const map = ' ' + roundStats.Map.replace('de_', '');
+        '  ' + (+match.c2).toFixed(2) + (match.c2 >= 1 ? ' 🟢' : ' 🔴');
+      const map = ' ' + match.i1.replace('de_', '');
 
       return `${result} ${score}${playerKD} ${map}`;
     }),
     '</code>',
-  ]
-    .filter(Boolean)
-    .join('\n');
+  ].join('\n');
 }

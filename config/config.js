@@ -75,10 +75,6 @@ const messages = {
 
 const DEFAULT_MATCH_GET_LIMIT = 20;
 const DEFAULT_MATCH_STORE_LIMIT = 20;
-const CLEAR_CACHE_MINUTES = 5;
-const CACHE = {
-  value: new Set(),
-};
 
 export {
   FACEIT_API_KEY,
@@ -91,6 +87,4 @@ export {
   messages,
   DEFAULT_MATCH_GET_LIMIT,
   DEFAULT_MATCH_STORE_LIMIT,
-  CLEAR_CACHE_MINUTES,
-  CACHE,
 };

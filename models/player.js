@@ -18,8 +18,12 @@ export const playerSchema = new Schema(
       type: Number,
       required: true,
     },
-    matches: {
-      type: [{ type: String, ref: 'Match' }],
+    last20KD: {
+      type: Number,
+      required: true,
+    },
+    last50KD: {
+      type: Number,
       required: true,
     },
   },
