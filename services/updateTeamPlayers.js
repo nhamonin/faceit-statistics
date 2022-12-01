@@ -5,6 +5,7 @@ import { messages } from '../config/config.js';
 export const updateTeamPlayers = async (chat_id) => {
   try {
     const team = await Team.findOne({ chat_id });
+    if (!team) return messages.teamNotExistError;
     const teamNicknames = await team
       .populate('players')
       .then(({ players }) => players.map(({ nickname }) => nickname));

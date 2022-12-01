@@ -5,6 +5,7 @@ import { isPlayerTeamMember, webhookMgr } from '../utils/index.js';
 export const deletePlayer = async (playerNickname, chat_id) => {
   try {
     const team = await Team.findOne({ chat_id });
+    if (!team) return messages.teamNotExistError;
     const { players } = await team.populate('players');
 
     if (!isPlayerTeamMember(players, playerNickname)) {
@@ -25,7 +26,7 @@ export const deletePlayer = async (playerNickname, chat_id) => {
     )
       .then(async () => {
         const teams = await Team.find({
-          players: [{ _id: playerInDB._id }],
+          players: playerInDB._id,
         });
         if (teams.length) return;
         Player.findByIdAndRemove({ _id: playerInDB._id }, () => {
@@ -39,6 +40,6 @@ export const deletePlayer = async (playerNickname, chat_id) => {
       );
   } catch (e) {
     console.log(e.message);
-    return e.message;
+    return messages.serverError;
   }
 };

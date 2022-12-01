@@ -37,7 +37,7 @@ const messages = {
     success:
       "Team has been successfully reset. Now you don't have any players. You can add some via the command '/add_player nickname.'",
     notExists:
-      "You don't have a team to reset. Init it first via the command '/init_team.'",
+      "You don't have a team to reset. Init it first via the command '/start.'",
   },
   addPlayer: {
     success: (nickname) =>
@@ -46,6 +46,7 @@ const messages = {
       `Sorry, but player ${nickname} already exists in your team. Try to add another player.`,
     notFound: (nickname) =>
       `Sorry, but player ${nickname} doesn't exist. Try to add another player.`,
+    tooMany: "Sorry, but you can\'t add more players. Try to delete the existing one to add a new one.",
   },
   deletePlayer: {
     success: (nickname) =>
@@ -70,13 +71,15 @@ const messages = {
     }`,
   getPlayerLastMatches: {
     notExists: (nickname) =>
-      `Sorry, but ${nickname} doesn't exists in your team.`,
+      `Sorry, but ${nickname} doesn't exists. Try to check another player.`,
   },
+  teamNotExistError: "You don't have a team. Init it first via the command '/start.'",
   serverError: 'Oops, something went wrong. Try again later.',
 };
 
 const DEFAULT_MATCH_GET_LIMIT = 20;
 const DEFAULT_MATCH_STORE_LIMIT = 20;
+const MAX_PLAYERS_AMOUNT = 7;
 
 export {
   FACEIT_API_KEY,
@@ -91,4 +94,5 @@ export {
   messages,
   DEFAULT_MATCH_GET_LIMIT,
   DEFAULT_MATCH_STORE_LIMIT,
+  MAX_PLAYERS_AMOUNT
 };
