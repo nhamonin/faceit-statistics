@@ -131,7 +131,6 @@ function getPLayerLastMatchesStatsListener() {
     async ({ chat, message_id }, match) => {
       console.time(`getPlayer ${match[1]} LastMatchesStats`);
       const { message, error } = await getPlayerLastMatchesStats(
-        chat.id,
         match[1]
       );
 

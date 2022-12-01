@@ -1,19 +1,11 @@
-import { Team } from '../models/index.js';
 import { messages } from '../config/config.js';
-import { getPlayerMatches } from '../utils/index.js';
+import { getPlayerMatches, getPlayerInfo } from '../utils/index.js';
 
-export const getPlayerLastMatchesStats = async (chat_id, playerNickname) => {
+export const getPlayerLastMatchesStats = async (playerNickname) => {
   try {
-    const team = await Team.findOne({ chat_id });
-    const [player] = (await team.populate('players'))?.players.filter(
-      ({ nickname }) => nickname === playerNickname
-    );
-
-    if (!player) {
-      return { error: messages.getPlayerLastMatches.notExists(playerNickname) };
-    }
-
-    const playerMatches = await getPlayerMatches(player.player_id);
+    const { player_id } = await getPlayerInfo(playerNickname);
+    if (!player_id) return { error: messages.getPlayerLastMatches.notExists(playerNickname) };
+    const playerMatches = await getPlayerMatches(player_id);
     const message = formatMessage(playerMatches);
 
     return { message };
