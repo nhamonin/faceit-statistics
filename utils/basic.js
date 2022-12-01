@@ -45,7 +45,7 @@ function calculateAverage(arr, digits = 2) {
 }
 
 function isPlayerTeamMember(players, name) {
-  return players.some(({ nickname }) => nickname === name);
+  return players?.some(({ nickname }) => nickname === name);
 }
 
 export { sendPhoto, calculateAverage, isPlayerTeamMember };

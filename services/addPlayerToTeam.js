@@ -12,7 +12,7 @@ export const addPlayer = async (playerNickname, chat_id) => {
     if (!team) return messages.teamNotExistError;
     const { players } = await team.populate('players');
     const playerInDB = await Player.findOne({ nickname: playerNickname });
-    if (players.length + 1 > MAX_PLAYERS_AMOUNT) return messages.addPlayer.tooMany;
+    if (players?.length + 1 > MAX_PLAYERS_AMOUNT) return messages.addPlayer.tooMany;
 
     if (isPlayerTeamMember(players, playerNickname)) {
       return messages.addPlayer.exists(playerNickname);
