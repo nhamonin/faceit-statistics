@@ -7,9 +7,7 @@ export const resetTeam = async (chat_id) => {
   try {
     const team = await Team.findOne({ chat_id });
 
-    if (!team) {
-      return { error: messages.resetTeam.notExists };
-    }
+    if (!team) return { error: messages.resetTeam.notExists };
 
     const { players } = await team.populate('players');
     const playersIDs = players.map(({ player_id }) => player_id);
