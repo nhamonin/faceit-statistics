@@ -2,6 +2,10 @@ import mongoose, { Schema } from 'mongoose';
 
 export const playerSchema = new Schema(
   {
+    _id: {
+      type: String,
+      required: true,
+    },
     player_id: {
       type: String,
       required: true,

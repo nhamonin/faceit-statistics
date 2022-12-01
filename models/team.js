@@ -25,7 +25,7 @@ const teamSchema = new Schema(
       required: false,
     },
     players: {
-      type: [{ type: Schema.Types.ObjectId, ref: 'Player' }],
+      type: [{ type: String, ref: 'Player' }],
       required: true,
     },
   },

@@ -33,6 +33,7 @@ export const addPlayer = async (playerNickname, chat_id) => {
       } = playerInfo;
       if (error) return errorMessage;
       const player = new Player({
+        _id: nickname,
         player_id,
         nickname,
         elo,
