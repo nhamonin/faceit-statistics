@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "dotenv": "^16.0.2",
+    "express": "^4.18.2",
     "faceit-node-api": "^1.0.0",
     "mongodb": "4.10",
     "mongoose": "^6.6.2",

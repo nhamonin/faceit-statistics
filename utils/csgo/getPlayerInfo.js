@@ -22,7 +22,7 @@ export async function getPlayerInfo(playerNickname) {
     console.log(e.message);
     return {
       error: true,
-      errorMessage: messages.addPlayer.notFound(nickname),
+      errorMessage: messages.addPlayer.notFound(playerNickname),
     };
   }
 }
