@@ -13,6 +13,12 @@ const authorizationHeader = {
 function changeWebhookPlayersList(action) {
   return async function (playersIDs) {
     const webhookData = await getWebhookData();
+
+    if (!webhookData) {
+      console.log('Webhook data error, please update API key');
+      return;
+    }
+
     const body = createBodyFromWebhookData(playersIDs, action, webhookData);
     const response = await fetch(url, {
       headers: {
