@@ -28,16 +28,10 @@ export function webhookListener() {
         ...data.payload.teams[1].roster,
       ].map(({ id }) => id);
 
-      // TODO: delete
-      console.log(playedPlayersID);
-
       for await (const player_id of playedPlayersID) {
         const teams = await Team.find({
           players: player_id,
         });
-
-        // TODO: delete
-        console.log(teams, player_id);
 
         if (teams.length) {
           for await (const team of teams) {
