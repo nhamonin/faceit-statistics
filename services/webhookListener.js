@@ -2,6 +2,8 @@ import path from 'path';
 
 import express from 'express';
 
+import { Team } from '../models/index.js';
+
 export function webhookListener() {
   const app = express();
   app.use(express.json());
