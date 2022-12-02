@@ -15,6 +15,8 @@ export function webhookListener() {
   app.post('/webhook', async (req, res) => {
     const data = req.body;
 
+    console.log(`Webhook of type ${data.event} received successfully!`)
+
     if (data.event === 'match_status_finished') {
       console.log('match finished webhook received');
 
