@@ -3,6 +3,7 @@ import path from 'path';
 import express from 'express';
 
 import { Team } from '../models/index.js';
+import { updateTeamPlayers } from '../services/index.js';
 
 export function webhookListener() {
   const app = express();
@@ -17,7 +18,7 @@ export function webhookListener() {
   app.post('/webhook', async (req, res) => {
     const data = req.body;
 
-    console.log(`Webhook of type ${data.event} received successfully!`)
+    console.log(`Webhook of type ${data.event} received successfully!`);
 
     if (data.event === 'match_status_finished') {
       console.log('match finished webhook received');
@@ -27,10 +28,16 @@ export function webhookListener() {
         ...data.payload.teams[1].roster,
       ].map(({ id }) => id);
 
+      // TODO: delete
+      console.log(playedPlayersID);
+
       for await (const player_id of playedPlayersID) {
         const teams = await Team.find({
           players: player_id,
         });
+
+        // TODO: delete
+        console.log(teams, player_id);
 
         if (!teams.length) {
           res.sendStatus(404);
