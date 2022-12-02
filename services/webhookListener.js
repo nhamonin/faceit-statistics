@@ -39,12 +39,10 @@ export function webhookListener() {
         // TODO: delete
         console.log(teams, player_id);
 
-        if (!teams.length) {
-          res.sendStatus(404);
-        }
-
-        for await (const team of teams) {
-          updateTeamPlayers(team.chat_id);
+        if (teams.length) {
+          for await (const team of teams) {
+            updateTeamPlayers(team.chat_id);
+          }
         }
       }
     }
