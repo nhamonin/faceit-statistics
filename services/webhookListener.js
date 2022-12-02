@@ -1,3 +1,5 @@
+import path from 'path';
+
 import express from 'express';
 
 export function webhookListener() {
@@ -5,7 +7,9 @@ export function webhookListener() {
   app.use(express.json());
 
   app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.sendFile(
+      path.join(process.cwd(), 'public', 'templates', '/index.html')
+    );
   });
 
   app.post('/webhook', async (req, res) => {
