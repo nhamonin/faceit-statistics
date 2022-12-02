@@ -21,8 +21,8 @@ export function webhookListener() {
       console.log('match finished webhook received');
 
       const playedPlayersID = [
-        ...data.teams[0].roster,
-        ...data.teams[1].roster,
+        ...data.payload.teams[0].roster,
+        ...data.payload.teams[1].roster,
       ].map(({ id }) => id);
 
       for await (const player_id of playedPlayersID) {
