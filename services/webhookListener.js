@@ -14,14 +14,14 @@ export function webhookListener() {
     if (data.event === 'match_status_finished') {
       console.log('match finished webhook received');
 
-      const playedPlayersNicknames = [
+      const playedPlayersID = [
         ...data.teams[0].roster,
         ...data.teams[1].roster,
-      ].map(({ nickname }) => nickname);
+      ].map(({ player_id }) => player_id);
 
-      for await (const nickname of playedPlayersNicknames) {
+      for await (const player_id of playedPlayersID) {
         const teams = await Team.find({
-          players: [{ nickname }],
+          players: player_id,
         });
 
         if (!teams.length) {
