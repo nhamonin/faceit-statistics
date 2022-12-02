@@ -21,7 +21,7 @@ export function webhookListener() {
       const playedPlayersID = [
         ...data.teams[0].roster,
         ...data.teams[1].roster,
-      ].map(({ player_id }) => player_id);
+      ].map(({ id }) => id);
 
       for await (const player_id of playedPlayersID) {
         const teams = await Team.find({
