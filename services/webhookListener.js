@@ -41,7 +41,6 @@ export function webhookListener() {
 
         if (!teams.length) {
           res.sendStatus(404);
-          return;
         }
 
         for await (const team of teams) {
