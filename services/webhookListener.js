@@ -18,15 +18,21 @@ export function webhookListener() {
   app.post('/webhook', async (req, res) => {
     const data = req.body;
 
-    console.log(`Webhook of type ${data.event} received successfully!`);
+    console.log(
+      `Webhook of type ${data.event} received successfully!`,
+      new Date().toLocaleString()
+    );
 
     if (data.event === 'match_status_finished') {
-      console.log('match finished webhook received');
-
-      const playedPlayersID = [
+      const players = [
         ...data.payload.teams[0].roster,
         ...data.payload.teams[1].roster,
-      ].map(({ id }) => id);
+      ];
+
+      const playedPlayersID = players.map(({ id }) => id);
+      const playedPlayersNicknames = players.map(({ nickname }) => nickname);
+
+      console.log(playedPlayersNicknames);
 
       for await (const player_id of playedPlayersID) {
         const teams = await Team.find({

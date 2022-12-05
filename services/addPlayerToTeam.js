@@ -20,7 +20,8 @@ export const addPlayer = async (playerNickname, chat_id) => {
     } else if (playerInDB) {
       team.players.push(playerInDB);
       console.log(
-        `Player ${playerInDB.nickname} was added to the team from the DB.`
+        `Player ${playerInDB.nickname} was added to the team from the DB.`,
+        new Date().toLocaleString()
       );
     } else {
       const playerInfo = await getPlayerInfo(playerNickname);
@@ -47,7 +48,8 @@ export const addPlayer = async (playerNickname, chat_id) => {
       player.save().then(() => {
         webhookMgr.addPlayersToList([player.player_id]);
         console.log(
-          `Player ${player.nickname} was added to the team from the Faceit API.`
+          `Player ${player.nickname} was added to the team from the Faceit API.`,
+          new Date().toLocaleString()
         );
       });
       team.players.push(player);

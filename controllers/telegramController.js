@@ -49,8 +49,6 @@ function initBotListener() {
     );
     console.timeEnd('initTeam time');
   });
-
-  tBot.on('polling_error', (msg) => console.log(msg));
 }
 
 function resetTeamListener() {
@@ -142,6 +140,7 @@ function getPLayerLastMatchesStatsListener() {
         getBasicTelegramOptions(message_id)
       );
       console.timeEnd(`getPlayer ${match[1]} LastMatchesStats`);
+      console.log(new Date().toLocaleString());
     }
   );
 }
