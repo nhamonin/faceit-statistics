@@ -2,13 +2,17 @@ import { config } from 'dotenv';
 config();
 
 const {
+  ENVIRONMENT,
   FACEIT_API_KEY,
   FACEIT_WEBHOOK_ID,
+  FACEIT_WEBHOOK_ID_TEST,
   FACEIT_WEBHOOK_API_KEY,
   TELEGRAM_API_TOKEN,
+  TELEGRAM_API_TOKEN_TEST,
   MONGO_DB_NAME,
   MONGO_DB_PASSWORD,
   MONGO_DB_CLUSTER_NAME,
+  MONGO_DB_CLUSTER_NAME_TEST,
 } = process.env;
 
 const allowedCompetitionNames = [
@@ -46,7 +50,8 @@ const messages = {
       `Sorry, but player ${nickname} already exists in your team. Try to add another player.`,
     notFound: (nickname) =>
       `Sorry, but player ${nickname} doesn't exist. Try to add another player.`,
-    tooMany: "Sorry, but you can\'t add more players. Try to delete the existing one to add a new one.",
+    tooMany:
+      "Sorry, but you can't add more players. Try to delete the existing one to add a new one.",
   },
   deletePlayer: {
     success: (nickname) =>
@@ -73,7 +78,8 @@ const messages = {
     notExists: (nickname) =>
       `Sorry, but ${nickname} doesn't exists. Try to check another player.`,
   },
-  teamNotExistError: "You don't have a team. Init it first via the command '/start.'",
+  teamNotExistError:
+    "You don't have a team. Init it first via the command '/start.'",
   serverError: 'Oops, something went wrong. Try again later.',
 };
 
@@ -82,17 +88,21 @@ const DEFAULT_MATCH_STORE_LIMIT = 20;
 const MAX_PLAYERS_AMOUNT = 7;
 
 export {
+  ENVIRONMENT,
   FACEIT_API_KEY,
   FACEIT_WEBHOOK_ID,
+  FACEIT_WEBHOOK_ID_TEST,
   FACEIT_WEBHOOK_API_KEY,
   TELEGRAM_API_TOKEN,
+  TELEGRAM_API_TOKEN_TEST,
   MONGO_DB_NAME,
   MONGO_DB_PASSWORD,
   MONGO_DB_CLUSTER_NAME,
+  MONGO_DB_CLUSTER_NAME_TEST,
   allowedCompetitionNames,
   lvlClasses,
   messages,
   DEFAULT_MATCH_GET_LIMIT,
   DEFAULT_MATCH_STORE_LIMIT,
-  MAX_PLAYERS_AMOUNT
+  MAX_PLAYERS_AMOUNT,
 };

@@ -1,11 +1,15 @@
 import fetch from 'node-fetch';
 
 import {
+  ENVIRONMENT,
   FACEIT_WEBHOOK_ID,
+  FACEIT_WEBHOOK_ID_TEST,
   FACEIT_WEBHOOK_API_KEY,
 } from '../../config/config.js';
 
-const url = `https://api.faceit.com/webhooks/v1/subscriptions/${FACEIT_WEBHOOK_ID}`;
+const faceitWebhookID =
+  ENVIRONMENT === 'PRODUCTION' ? FACEIT_WEBHOOK_ID : FACEIT_WEBHOOK_ID_TEST;
+const url = `https://api.faceit.com/webhooks/v1/subscriptions/${faceitWebhookID}`;
 const authorizationHeader = {
   Authorization: `Bearer ${FACEIT_WEBHOOK_API_KEY}`,
 };
