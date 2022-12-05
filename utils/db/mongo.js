@@ -1,13 +1,19 @@
 import mongoose from 'mongoose';
 
 import {
+  ENVIRONMENT,
   MONGO_DB_NAME,
   MONGO_DB_PASSWORD,
   MONGO_DB_CLUSTER_NAME,
+  MONGO_DB_CLUSTER_NAME_TEST,
 } from '../../config/config.js';
 
 export default function connectDB() {
-  const uri = `mongodb+srv://${MONGO_DB_NAME}:${MONGO_DB_PASSWORD}@cluster0.cqna7jk.mongodb.net/${MONGO_DB_CLUSTER_NAME}?retryWrites=true&w=majority`;
+  const mongoCluster =
+    ENVIRONMENT === 'PRODUCTION'
+      ? MONGO_DB_CLUSTER_NAME
+      : MONGO_DB_CLUSTER_NAME_TEST;
+  const uri = `mongodb+srv://${MONGO_DB_NAME}:${MONGO_DB_PASSWORD}@cluster0.cqna7jk.mongodb.net/${mongoCluster}?retryWrites=true&w=majority`;
 
   mongoose
     .connect(uri)

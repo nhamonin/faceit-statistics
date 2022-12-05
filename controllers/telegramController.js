@@ -12,13 +12,17 @@ import {
   getPlayerLastMatchesStats,
 } from '../services/index.js';
 import {
+  ENVIRONMENT,
   TELEGRAM_API_TOKEN,
+  TELEGRAM_API_TOKEN_TEST,
   DEFAULT_MATCH_GET_LIMIT,
   messages,
 } from '../config/config.js';
 import { sendPhoto, getBasicTelegramOptions } from '../utils/index.js';
 
-const tBot = new TelegramBot(TELEGRAM_API_TOKEN, { polling: true });
+const tToken =
+  ENVIRONMENT === 'PRODUCTION' ? TELEGRAM_API_TOKEN : TELEGRAM_API_TOKEN_TEST;
+const tBot = new TelegramBot(tToken, { polling: true });
 
 function initTelegramListeners() {
   initBotListener();
@@ -130,9 +134,7 @@ function getPLayerLastMatchesStatsListener() {
     /\/get\_player\_last\_matches[\w@]* (\S*)/,
     async ({ chat, message_id }, match) => {
       console.time(`getPlayer ${match[1]} LastMatchesStats`);
-      const { message, error } = await getPlayerLastMatchesStats(
-        match[1]
-      );
+      const { message, error } = await getPlayerLastMatchesStats(match[1]);
 
       tBot.sendMessage(
         chat.id,
