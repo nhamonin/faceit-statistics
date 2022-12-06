@@ -17,6 +17,7 @@ export function webhookListener() {
 
   app.post('/webhook', async (req, res) => {
     const data = req.body;
+    console.log(data);
 
     console.log(
       `Webhook of type ${data.event} received successfully!`,
