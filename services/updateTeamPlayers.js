@@ -9,7 +9,6 @@ export const updateTeamPlayers = async (chat_id) => {
     const teamNicknames = await team
       .populate('players')
       .then(({ players }) => players.map(({ nickname }) => nickname));
-
     const playersStats = await Promise.all(
       teamNicknames.map((nickname) => getPlayerInfo(nickname))
     );
