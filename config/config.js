@@ -86,6 +86,7 @@ const messages = {
 const DEFAULT_MATCH_GET_LIMIT = 20;
 const DEFAULT_MATCH_STORE_LIMIT = 20;
 const MAX_PLAYERS_AMOUNT = 7;
+const bots = {};
 
 export {
   ENVIRONMENT,
@@ -105,4 +106,5 @@ export {
   DEFAULT_MATCH_GET_LIMIT,
   DEFAULT_MATCH_STORE_LIMIT,
   MAX_PLAYERS_AMOUNT,
+  bots,
 };

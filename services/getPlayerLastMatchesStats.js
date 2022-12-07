@@ -4,7 +4,8 @@ import { getPlayerMatches, getPlayerInfo } from '../utils/index.js';
 export const getPlayerLastMatchesStats = async (playerNickname) => {
   try {
     const { player_id } = await getPlayerInfo(playerNickname);
-    if (!player_id) return { error: messages.getPlayerLastMatches.notExists(playerNickname) };
+    if (!player_id)
+      return { error: messages.getPlayerLastMatches.notExists(playerNickname) };
     const playerMatches = await getPlayerMatches(player_id);
     const message = formatMessage(playerMatches);
 

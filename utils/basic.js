@@ -1,8 +1,27 @@
 import puppeteer from 'puppeteer';
 
 import { getBasicTelegramOptions } from '../utils/index.js';
+import { bots } from '../config/config.js';
 
 let page = await getBrowserPage();
+
+function adjustConsoleLog() {
+  const oldConsoleLog = console.log;
+  const tBot = bots.telegram;
+  const logsChatID = -886965844;
+
+  console.log = function () {
+    oldConsoleLog(...[...arguments]);
+    tBot.sendMessage(logsChatID, [...arguments].join(', '), {
+      disable_notification: true,
+    });
+  };
+}
+
+function logEvent(chat, action) {
+  const name = chat.username || chat.title;
+  console.log(`${name}: ${action}. Date: ${new Date().toLocaleString()}`);
+}
 
 async function sendPhoto(tBot, chatId, message_id, html) {
   if (page) {
@@ -48,4 +67,10 @@ function isPlayerTeamMember(players, name) {
   return players?.some(({ nickname }) => nickname === name);
 }
 
-export { sendPhoto, calculateAverage, isPlayerTeamMember };
+export {
+  adjustConsoleLog,
+  logEvent,
+  sendPhoto,
+  calculateAverage,
+  isPlayerTeamMember,
+};
