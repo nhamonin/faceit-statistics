@@ -22,16 +22,14 @@ export const updateTeamPlayers = async (chat_id) => {
       last20KD,
       last50KD,
     } of playersStats) {
-      Player.findOneAndUpdate(
+      await Player.findOneAndUpdate(
         { player_id },
         { nickname, elo, lvl, last20KD, last50KD }
-      ).then(() => {
-        updatedPlayers.push(nickname);
-      });
+      ).then(() => {});
     }
 
     console.log(
-      `Players: ${updatedPlayers.join(', ')} were updated.`,
+      `Players of the team ${team.username || team.title} were updated.`,
       new Date().toLocaleString()
     );
 
