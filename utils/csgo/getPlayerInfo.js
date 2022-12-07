@@ -3,11 +3,13 @@ import { Players } from 'faceit-node-api';
 import { messages } from '../../config/config.js';
 import { getPlayerAvgKD } from '../index.js';
 
-export async function getPlayerInfo(playerNickname) {
+export async function getPlayerInfo({ playerNickname, playerID }) {
   try {
     const players = new Players();
-    const response = await players.getPlayerDetailsByNickname(playerNickname);
-    const { nickname, player_id, games } = response;
+    const playerDetails = playerID
+      ? await players.getPlayerDetailsByPlayerID(playerID)
+      : await players.getPlayerDetailsByNickname(playerNickname);
+    const { nickname, player_id, games } = playerDetails;
     const { last20KD, last50KD } = await getPlayerAvgKD(player_id, [20, 50]);
 
     return {

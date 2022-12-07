@@ -24,7 +24,7 @@ export const addPlayer = async (playerNickname, chat_id) => {
         new Date().toLocaleString()
       );
     } else {
-      const playerInfo = await getPlayerInfo(playerNickname);
+      const playerInfo = await getPlayerInfo({ playerNickname });
       const {
         player_id,
         nickname,
