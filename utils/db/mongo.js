@@ -17,6 +17,6 @@ export default function connectDB() {
 
   mongoose
     .connect(uri)
-    .then(() => console.log('Connected to DB'))
+    .then(() => console.log('Connected to DB', new Date().toLocaleString()))
     .catch((e) => console.log(e.message));
 }

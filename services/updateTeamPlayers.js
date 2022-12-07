@@ -23,7 +23,12 @@ export const updateTeamPlayers = async (chat_id) => {
       Player.findOneAndUpdate(
         { nickname },
         { elo, lvl, last20KD, last50KD }
-      ).then(() => {});
+      ).then(() => {
+        console.log(
+          `Player ${nickname} was updated.`,
+          new Date().toLocaleString()
+        );
+      });
     }
 
     return messages.updateTeamPlayers.success;
