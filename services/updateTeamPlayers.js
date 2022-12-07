@@ -12,6 +12,7 @@ export const updateTeamPlayers = async (chat_id) => {
     const playersStats = await Promise.all(
       teamPlayerIDs.map((player_id) => getPlayerInfo({ playerID: player_id }))
     );
+    const updatedPlayers = [];
 
     for await (const {
       player_id,
@@ -25,12 +26,14 @@ export const updateTeamPlayers = async (chat_id) => {
         { player_id },
         { nickname, elo, lvl, last20KD, last50KD }
       ).then(() => {
-        console.log(
-          `Player ${nickname} was updated.`,
-          new Date().toLocaleString()
-        );
+        updatedPlayers.push(nickname);
       });
     }
+
+    console.log(
+      `Players: ${updatedPlayers.join(', ')} were updated.`,
+      new Date().toLocaleString()
+    );
 
     return messages.updateTeamPlayers.success;
   } catch (e) {
