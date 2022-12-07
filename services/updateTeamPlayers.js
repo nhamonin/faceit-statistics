@@ -6,14 +6,15 @@ export const updateTeamPlayers = async (chat_id) => {
   try {
     const team = await Team.findOne({ chat_id });
     if (!team) return messages.teamNotExistError;
-    const teamNicknames = await team
+    const teamPlayerIDs = await team
       .populate('players')
-      .then(({ players }) => players.map(({ nickname }) => nickname));
+      .then(({ players }) => players.map(({ player_id }) => player_id));
     const playersStats = await Promise.all(
-      teamNicknames.map((nickname) => getPlayerInfo(nickname))
+      teamPlayerIDs.map((player_id) => getPlayerInfo({ playerID: player_id }))
     );
 
     for await (const {
+      player_id,
       nickname,
       elo,
       lvl,
@@ -21,8 +22,8 @@ export const updateTeamPlayers = async (chat_id) => {
       last50KD,
     } of playersStats) {
       Player.findOneAndUpdate(
-        { nickname },
-        { elo, lvl, last20KD, last50KD }
+        { player_id },
+        { nickname, elo, lvl, last20KD, last50KD }
       ).then(() => {
         console.log(
           `Player ${nickname} was updated.`,

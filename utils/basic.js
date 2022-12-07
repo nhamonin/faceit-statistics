@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 
 import { getBasicTelegramOptions } from '../utils/index.js';
-import { bots } from '../config/config.js';
+import { bots, ENVIRONMENT } from '../config/config.js';
 
 let page = await getBrowserPage();
 
@@ -12,6 +12,7 @@ function adjustConsoleLog() {
 
   console.log = function () {
     oldConsoleLog(...[...arguments]);
+    if (ENVIRONMENT !== 'PRODUCTION') return;
     tBot.sendMessage(logsChatID, [...arguments].join(', '), {
       disable_notification: true,
     });
