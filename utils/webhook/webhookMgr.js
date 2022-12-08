@@ -6,13 +6,11 @@ import {
   FACEIT_WEBHOOK_ID_TEST,
   FACEIT_WEBHOOK_API_KEY,
 } from '../../config/config.js';
+import { getCurrentBearerToken } from '../index.js';
 
 const faceitWebhookID =
   ENVIRONMENT === 'PRODUCTION' ? FACEIT_WEBHOOK_ID : FACEIT_WEBHOOK_ID_TEST;
 const url = `https://api.faceit.com/webhooks/v1/subscriptions/${faceitWebhookID}`;
-const authorizationHeader = {
-  Authorization: `Bearer ${FACEIT_WEBHOOK_API_KEY}`,
-};
 
 function changeWebhookPlayersList(action) {
   return async function (playersIDs) {
@@ -26,7 +24,7 @@ function changeWebhookPlayersList(action) {
     const body = createBodyFromWebhookData(playersIDs, action, webhookData);
     const response = await fetch(url, {
       headers: {
-        ...authorizationHeader,
+        ...getAuthorizationHeader(),
         'Content-Type': 'application/json',
       },
       method: 'PUT',
@@ -40,9 +38,10 @@ function changeWebhookPlayersList(action) {
 
 async function getWebhookData() {
   const response = await fetch(url, {
-    headers: authorizationHeader,
+    headers: getAuthorizationHeader(),
   });
   const webhookData = await response.json();
+  getCurrentBearerToken();
 
   return webhookData.payload;
 }
@@ -81,6 +80,16 @@ function createBodyFromWebhookData(playersIDs, action, webhookData) {
   }
 
   return JSON.stringify({ ...body, restrictions });
+}
+
+function getAuthorizationHeader() {
+  console.log(process.env.DYNAMIC_WEBHOOK_API_KEY || FACEIT_WEBHOOK_API_KEY);
+
+  return {
+    Authorization: `Bearer ${
+      process.env.DYNAMIC_WEBHOOK_API_KEY || FACEIT_WEBHOOK_API_KEY
+    }`,
+  };
 }
 
 export const webhookMgr = {
