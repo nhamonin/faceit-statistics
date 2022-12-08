@@ -15,6 +15,7 @@ import { getTelegramBot } from './telegram/telegram.js';
 import { getBasicTelegramOptions } from './telegram/telegram.js';
 // webhook
 import { webhookMgr } from './webhook/webhookMgr.js';
+import { getCurrentBearerToken } from './webhook/getCurrentBearerToken.js';
 // db
 import connectDB from './db/mongo.js';
 
@@ -30,5 +31,6 @@ export {
   getTelegramBot,
   getBasicTelegramOptions,
   webhookMgr,
+  getCurrentBearerToken,
   connectDB,
 };
