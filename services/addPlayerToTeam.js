@@ -56,7 +56,7 @@ export const addPlayer = async (playerNickname, chat_id) => {
     }
     return team.save().then(() => messages.addPlayer.success(playerNickname));
   } catch (e) {
-    console.log(e);
+    console.log(e.message);
     return messages.serverError;
   }
 };
