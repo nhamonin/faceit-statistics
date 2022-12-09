@@ -37,7 +37,7 @@ async function sendPhoto(tBot, chatId, message_id, html) {
       fullPage: true,
     })
     .then((image) => {
-      console.log('+img', new Date().toLocaleString());
+      console.log('image was generated successfully', new Date().toLocaleString());
       tBot.sendPhoto(chatId, image, getBasicTelegramOptions(message_id));
     })
     .catch((e) => {
