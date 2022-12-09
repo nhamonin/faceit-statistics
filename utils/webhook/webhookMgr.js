@@ -41,7 +41,10 @@ async function getWebhookData() {
     headers: getAuthorizationHeader(),
   });
   const webhookData = await response.json();
-  getCurrentBearerToken();
+  if (!webhookData.payload) {
+    const bearerToken = await getCurrentBearerToken();
+    console.log(bearerToken);
+  }
 
   return webhookData.payload;
 }
