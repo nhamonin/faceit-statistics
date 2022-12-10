@@ -1,6 +1,7 @@
 import puppeteer from 'puppeteer-extra';
 import recaptchaPlugin from 'puppeteer-extra-plugin-recaptcha';
 import stealthPlugin from 'puppeteer-extra-plugin-stealth';
+import Xvfb from 'xvfb';
 
 import {
   ENVIRONMENT,
@@ -32,12 +33,17 @@ const nextButtonSelector =
 const waitUntil = 'networkidle2';
 
 export async function getCurrentBearerToken() {
+  const xvfb = new Xvfb({
+    silent: true,
+    xvfb_args: ['-screen', '0', '1280x720x24', '-ac'],
+  });
+  xvfb.start((err) => {
+    if (err) console.error(err);
+  });
   const browser = await puppeteer.launch({
     headless: false,
-    args: ['--no-sandbox', '--incognito'],
-    env: {
-      DISPLAY: ':10.0',
-    },
+    defaultViewport: null,
+    args: ['--no-sandbox', '--start-fullscreen', '--display=' + xvfb._display],
   });
   const [page] = await browser.pages();
   let bearerToken = null;
@@ -65,6 +71,7 @@ export async function getCurrentBearerToken() {
     console.log('Error while getting webhook token via puppeteer: ', e.message);
   }
   await browser.close();
+  xvfb.stop();
 
   if (bearerToken)
     console.log(

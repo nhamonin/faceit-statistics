@@ -27,6 +27,7 @@
     "node-telegram-bot-api": "^0.59.0",
     "puppeteer-extra": "^3.3.4",
     "puppeteer-extra-plugin-recaptcha": "^3.6.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.1"
+    "puppeteer-extra-plugin-stealth": "^2.11.1",
+    "xvfb": "^0.4.0"
   }
 }
