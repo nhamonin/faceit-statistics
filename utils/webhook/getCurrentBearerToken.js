@@ -43,7 +43,7 @@ export async function getCurrentBearerToken() {
   const browser = await puppeteer.launch({
     headless: false,
     defaultViewport: null,
-    args: ['--no-sandbox', '--start-fullscreen', '--display=' + xvfb._display],
+    args: ['--no-sandbox', '--display=' + xvfb._display],
   });
   const [page] = await browser.pages();
   let bearerToken = null;
