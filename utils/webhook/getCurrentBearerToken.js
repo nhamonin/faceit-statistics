@@ -68,6 +68,9 @@ export async function getCurrentBearerToken() {
     });
     await clickNextButtonAndWait(page, 1500);
   } catch (e) {
+    await page.screenshot({
+      path: 'error.jpg',
+    });
     console.log('Error while getting webhook token via puppeteer: ', e.message);
   }
   await browser.close();
