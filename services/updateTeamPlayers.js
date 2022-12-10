@@ -12,7 +12,6 @@ export const updateTeamPlayers = async (chat_id) => {
     const playersStats = await Promise.all(
       teamPlayerIDs.map((player_id) => getPlayerInfo({ playerID: player_id }))
     );
-    const updatedPlayers = [];
 
     for await (const {
       player_id,
