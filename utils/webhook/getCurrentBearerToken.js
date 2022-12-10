@@ -35,6 +35,9 @@ export async function getCurrentBearerToken() {
   const browser = await puppeteer.launch({
     headless: false,
     args: ['--no-sandbox', '--incognito'],
+    env: {
+      DISPLAY: ':10.0',
+    },
   });
   const [page] = await browser.pages();
   let bearerToken = null;
