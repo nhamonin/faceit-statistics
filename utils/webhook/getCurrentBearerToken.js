@@ -34,9 +34,9 @@ const waitUntil = 'networkidle2';
 export async function getCurrentBearerToken() {
   const browser = await puppeteer.launch({
     headless: false,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    args: ['--no-sandbox', '--incognito'],
   });
-  const page = await browser.newPage();
+  const [page] = await browser.pages();
   let bearerToken = null;
   try {
     await page.goto(webhookEditURL, { waitUntil });
