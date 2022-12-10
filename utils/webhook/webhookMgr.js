@@ -37,13 +37,14 @@ function changeWebhookPlayersList(action) {
 }
 
 async function getWebhookData() {
-  const response = await fetch(url, {
-    headers: getAuthorizationHeader(),
-  });
-  const webhookData = await response.json();
+  const response = await fetchWebhookData();
+  let webhookData = await response.json();
+
   if (!webhookData.payload) {
-    const bearerToken = await getCurrentBearerToken();
-    console.log(bearerToken);
+    process.env.DYNAMIC_WEBHOOK_API_KEY = await getCurrentBearerToken();
+
+    const response = await fetchWebhookData();
+    webhookData = await response.json();
   }
 
   return webhookData.payload;
@@ -93,6 +94,12 @@ function getAuthorizationHeader() {
       process.env.DYNAMIC_WEBHOOK_API_KEY || FACEIT_WEBHOOK_API_KEY
     }`,
   };
+}
+
+async function fetchWebhookData() {
+  return await fetch(url, {
+    headers: getAuthorizationHeader(),
+  });
 }
 
 export const webhookMgr = {
