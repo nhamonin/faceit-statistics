@@ -56,11 +56,16 @@ export async function getCurrentBearerToken() {
     });
     await clickNextButtonAndWait(page, 1500);
   } catch (e) {
-    console.log('error', e);
+    console.log('Error while getting webhook token via puppeteer: ', e.message);
   }
   await browser.close();
 
-  return bearerToken.slice(7);
+  if (bearerToken)
+    console.log(
+      'success on getting webhook token via puppeteer. Date: ',
+      new Date().toLocaleString()
+    );
+  return bearerToken?.slice(7);
 }
 
 async function clickNextButtonAndWait(page, ms) {
