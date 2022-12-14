@@ -1,12 +1,15 @@
 import {
   isPlayerTeamMember,
   getPlayerInfo,
+  getTeamNicknames,
   webhookMgr,
+  getBasicTelegramOptions,
 } from '../utils/index.js';
 import { Player, Team } from '../models/index.js';
 import { messages, MAX_PLAYERS_AMOUNT } from '../config/config.js';
+import { mainMenuMarkup } from '../config/telegramReplyMarkup/index.js';
 
-export const addPlayer = async (playerNickname, chat_id) => {
+export const addPlayer = async (playerNickname, chat_id, message_id) => {
   try {
     const team = await Team.findOne({ chat_id });
     if (!team) return messages.teamNotExistError;
@@ -54,7 +57,16 @@ export const addPlayer = async (playerNickname, chat_id) => {
       });
       team.players.push(player);
     }
-    return team.save().then(() => messages.addPlayer.success(playerNickname));
+    return team.save().then((team) => ({
+      message: messages.addPlayer.success(
+        playerNickname,
+        getTeamNicknames(team).join(', ')
+      ),
+      options: {
+        ...getBasicTelegramOptions(message_id),
+        ...mainMenuMarkup,
+      },
+    }));
   } catch (e) {
     console.log(e.message);
     return messages.serverError;
