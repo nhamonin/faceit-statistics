@@ -32,7 +32,7 @@ const nextButtonSelector =
 const waitUntil = 'networkidle2';
 
 export async function getCurrentBearerToken() {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   let bearerToken = null;
   try {
