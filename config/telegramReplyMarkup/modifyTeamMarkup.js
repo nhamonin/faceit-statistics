@@ -8,7 +8,7 @@ export const modifyTeamMarkup = {
         },
         {
           text: 'Delete player',
-          callback_data: 'deletePlayer',
+          callback_data: 'deletePlayerMenu',
         },
       ],
       [
