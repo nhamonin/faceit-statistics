@@ -71,10 +71,23 @@ function isPlayerTeamMember(players, name) {
   return players?.some(({ nickname }) => nickname === name);
 }
 
+function chunk(arr, len) {
+  let chunks = [],
+    i = 0,
+    n = arr.length;
+
+  while (i < n) {
+    chunks.push(arr.slice(i, (i += len)));
+  }
+
+  return chunks;
+}
+
 export {
   adjustConsoleLog,
   logEvent,
   sendPhoto,
   calculateAverage,
   isPlayerTeamMember,
+  chunk,
 };

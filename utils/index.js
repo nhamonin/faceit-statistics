@@ -5,6 +5,7 @@ import {
   isPlayerTeamMember,
   sendPhoto,
   logEvent,
+  chunk,
 } from './basic.js';
 // csgo
 import { getPlayerMatches } from './csgo/getPlayerMatches.js';
@@ -27,6 +28,7 @@ export {
   isPlayerTeamMember,
   sendPhoto,
   logEvent,
+  chunk,
   getPlayerInfo,
   getPlayerMatches,
   getPlayerAvgKD,

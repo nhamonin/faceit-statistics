@@ -1,6 +1,10 @@
 import { Player, Team } from '../models/index.js';
 import { messages } from '../config/config.js';
-import { isPlayerTeamMember, webhookMgr } from '../utils/index.js';
+import {
+  isPlayerTeamMember,
+  webhookMgr,
+  getTeamNicknames,
+} from '../utils/index.js';
 
 export const deletePlayer = async (playerNickname, chat_id) => {
   try {
@@ -33,11 +37,17 @@ export const deletePlayer = async (playerNickname, chat_id) => {
           webhookMgr.removePlayersFromList([playerInDB.player_id]);
         });
       })
-      .then(() =>
-        noPlayersInTeamAfterDeletion
+      .then(async () => {
+        const updatedTeam = await Team.findOne({ chat_id });
+        await updatedTeam.populate('players');
+
+        return noPlayersInTeamAfterDeletion
           ? messages.deletePlayer.lastPlayerWasDeleted
-          : messages.deletePlayer.success(playerNickname)
-      );
+          : messages.deletePlayer.success(
+              playerNickname,
+              getTeamNicknames(updatedTeam).join(', ')
+            );
+      });
   } catch (e) {
     console.log(e.message);
     return messages.serverError;

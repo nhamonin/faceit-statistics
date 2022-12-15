@@ -16,6 +16,7 @@ import {
   modifyTeamMarkup,
   mainMenuMarkup,
   deletePlayerMarkup,
+  addPlayerOnlyMarkup,
 } from '../config/telegramReplyMarkup/index.js';
 import {
   sendPhoto,
@@ -59,7 +60,7 @@ function initBotListener() {
 
 // Handle callback queries
 tBot.on('callback_query', async (callbackQuery) => {
-  const action = callbackQuery.data;
+  const action = callbackQuery.data.split('?')[0];
   const msg = callbackQuery.message;
   const opts = {
     chat_id: msg.chat.id,
@@ -73,47 +74,6 @@ tBot.on('callback_query', async (callbackQuery) => {
   const teamNicknames = getTeamNicknames(team);
 
   switch (action) {
-    case 'addPlayer':
-      tBot
-        .sendMessage(opts.chat_id, 'Send a nickname of the player', {
-          reply_markup: { force_reply: true },
-        })
-        .then(({ message_id, chat }) => {
-          tBot.onReplyToMessage(
-            opts.chat_id,
-            message_id,
-            async ({ text: nickname, message_id }) => {
-              const { message, options } = await addPlayer(
-                nickname,
-                opts.chat_id,
-                message_id
-              );
-              logEvent(chat, `Add player: ${nickname}`);
-              tBot.sendMessage(opts.chat_id, message, options);
-            }
-          );
-        });
-      break;
-    case 'modifyTeamMarkup':
-      tBot.editMessageText(
-        `Your team: <b>${teamNicknames}</b>.\nSelect one of the options below:`,
-        {
-          ...opts,
-          ...modifyTeamMarkup,
-        }
-      );
-      break;
-    case 'deletePlayer':
-      tBot.editMessageText(
-        `Your team: <b>${teamNicknames.join(
-          ', '
-        )}</b>.\nChose a player you want to delete:`,
-        {
-          ...opts,
-          ...deletePlayerMarkup(teamNicknames),
-        }
-      );
-      break;
     case 'mainMenu':
       tBot.editMessageText(
         `Your team: <b>${teamNicknames.join(
@@ -124,6 +84,66 @@ tBot.on('callback_query', async (callbackQuery) => {
           ...mainMenuMarkup,
         }
       );
+      break;
+    case 'modifyTeamMarkup':
+      tBot.editMessageText(
+        `Your team: <b>${teamNicknames.join(
+          ', '
+        )}</b>.\nSelect one of the options below:`,
+        {
+          ...opts,
+          ...modifyTeamMarkup,
+        }
+      );
+      break;
+    case 'addPlayer':
+      tBot
+        .sendMessage(opts.chat_id, 'Send a nickname of the player', {
+          reply_markup: { force_reply: true },
+        })
+        .then(({ message_id, chat }) => {
+          tBot.onReplyToMessage(
+            opts.chat_id,
+            message_id,
+            async ({ text: nickname, message_id }) => {
+              const message = await addPlayer(
+                nickname,
+                opts.chat_id,
+                message_id
+              );
+              logEvent(chat, `Add player: ${nickname}`);
+              tBot.sendMessage(opts.chat_id, message, {
+                ...getBasicTelegramOptions(message_id),
+                ...modifyTeamMarkup,
+              });
+            }
+          );
+        });
+      break;
+    case 'deletePlayerMenu':
+      tBot.editMessageText(
+        `Your team: <b>${teamNicknames.join(
+          ', '
+        )}</b>.\nChose a player you want to delete:`,
+        {
+          ...opts,
+          ...deletePlayerMarkup(teamNicknames),
+        }
+      );
+      break;
+    case 'deletePlayer':
+      const nickname = callbackQuery.data.split('?')[1];
+      const message = await deletePlayer(nickname, opts.chat_id);
+      const options =
+        message === messages.deletePlayer.lastPlayerWasDeleted
+          ? addPlayerOnlyMarkup
+          : modifyTeamMarkup;
+      logEvent(msg.chat, 'Delete player');
+      tBot.editMessageText(message, {
+        ...opts,
+        ...options,
+      });
+      break;
   }
 });
 
