@@ -12,6 +12,8 @@ import { getPlayerMatches } from './csgo/getPlayerMatches.js';
 import { getPlayerAvgKD } from './csgo/getPlayerAvgKD.js';
 import { getPlayerInfo } from './csgo/getPlayerInfo.js';
 import { getTeamNicknames } from './csgo/getTeamNicknames.js';
+import { getTeamKDWrapper } from './csgo/getTeamKDWrapper.js';
+import { getPlayerLastMatchesWrapper } from './csgo/getPlayerLastMatchesWrapper.js';
 // telegram
 import { getTelegramBot } from './telegram/telegram.js';
 import { getBasicTelegramOptions } from './telegram/telegram.js';
@@ -33,6 +35,8 @@ export {
   getPlayerMatches,
   getPlayerAvgKD,
   getTeamNicknames,
+  getTeamKDWrapper,
+  getPlayerLastMatchesWrapper,
   getTelegramBot,
   getBasicTelegramOptions,
   getCallbackTelegramOptions,

@@ -47,23 +47,23 @@ You can check stats or modify your team.`
       : 'Welcome to the faceit stats bot! You are now able to add players to your list.',
   resetTeam: {
     success:
-      "Team has been successfully reset. Now you don't have any players. You can add some via the command '/add_player nickname.'",
+      "Team has been successfully reset. Now you don't have any players. You can add some via the button below.",
     notExists:
       "You don't have a team to reset. Init it first via the command '/start.'",
   },
   addPlayer: {
     success: (nickname, teamNicknames) =>
-      `Player <b>${nickname}</b> was added.\nYour team: <b>${teamNicknames}</b>`,
+      `Player <b>${nickname}</b> was added.\nYour team: <b>${teamNicknames}</b>.`,
     exists: (nickname, teamNicknames) =>
-      `Sorry, but player <b>${nickname}</b> already exists in your team. Try to add another player.\nYour team: <b>${teamNicknames}</b>`,
+      `Sorry, but player <b>${nickname}</b> already exists in your team. Try to add another player.\nYour team: <b>${teamNicknames}</b>.`,
     notFound: (nickname, teamNicknames) =>
-      `Sorry, but player <b>${nickname}</b> doesn't exist. Try to add another player.\nYour team: <b>${teamNicknames}</b>`,
+      `Sorry, but player <b>${nickname}</b> doesn't exist. Try to add another player.\nYour team: <b>${teamNicknames}</b>.`,
     tooMany: (teamNicknames) =>
-      `Sorry, but you can't add more players. Try to delete the existing one to add a new one.\nYour team: <b>${teamNicknames}</b>`,
+      `Sorry, but you can't add more players. Try to delete the existing one to add a new one.\nYour team: <b>${teamNicknames}</b>.`,
   },
   deletePlayer: {
     success: (nickname, teamNicknames) =>
-      `Player <b>${nickname}</b> was deleted.\nYour team: <b>${teamNicknames}</b>`,
+      `Player <b>${nickname}</b> was deleted.\nYour team: <b>${teamNicknames}</b>.`,
     notExists: (nickname) =>
       `Sorry, but <b>${nickname}</b> doesn't exists in your team.`,
     lastPlayerWasDeleted:
