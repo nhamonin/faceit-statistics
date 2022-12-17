@@ -1,6 +1,7 @@
 import {
   isPlayerTeamMember,
   getPlayerInfo,
+  getTeamNicknames,
   webhookMgr,
 } from '../utils/index.js';
 import { Player, Team } from '../models/index.js';
@@ -12,11 +13,12 @@ export const addPlayer = async (playerNickname, chat_id) => {
     if (!team) return messages.teamNotExistError;
     const { players } = await team.populate('players');
     const playerInDB = await Player.findOne({ nickname: playerNickname });
+    const playersNicknames = getTeamNicknames(team).join(', ');
     if (players?.length + 1 > MAX_PLAYERS_AMOUNT)
-      return messages.addPlayer.tooMany;
+      return messages.addPlayer.tooMany(playersNicknames);
 
     if (isPlayerTeamMember(players, playerNickname)) {
-      return messages.addPlayer.exists(playerNickname);
+      return messages.addPlayer.exists(playerNickname, playersNicknames);
     } else if (playerInDB) {
       team.players.push(playerInDB);
       console.log(
@@ -24,7 +26,10 @@ export const addPlayer = async (playerNickname, chat_id) => {
         new Date().toLocaleString()
       );
     } else {
-      const playerInfo = await getPlayerInfo({ playerNickname });
+      const playerInfo = await getPlayerInfo({
+        playerNickname,
+        playersNicknames,
+      });
       const {
         player_id,
         nickname,
@@ -54,7 +59,14 @@ export const addPlayer = async (playerNickname, chat_id) => {
       });
       team.players.push(player);
     }
-    return team.save().then(() => messages.addPlayer.success(playerNickname));
+    return team
+      .save()
+      .then((team) =>
+        messages.addPlayer.success(
+          playerNickname,
+          getTeamNicknames(team).join(', ')
+        )
+      );
   } catch (e) {
     console.log(e.message);
     return messages.serverError;

@@ -39,31 +39,35 @@ const lvlClasses = {
 };
 
 const messages = {
-  start:
-    "Welcome to the faceit stats bot! You are now able to add players to your list. Please do it via the command '/add_player nickname.'",
+  start: (players) =>
+    players.length
+      ? `Welcome back!
+Your team: <b>${players.join(', ')}</b>.
+You can check stats or modify your team.`
+      : 'Welcome to the faceit stats bot! You are now able to add players to your list.',
   resetTeam: {
     success:
-      "Team has been successfully reset. Now you don't have any players. You can add some via the command '/add_player nickname.'",
+      "Team has been successfully reset. Now you don't have any players. You can add some via the button below.",
     notExists:
       "You don't have a team to reset. Init it first via the command '/start.'",
   },
   addPlayer: {
-    success: (nickname) =>
-      `Player ${nickname} was added.\nCheck out Elo rating via the /get_team_elo or K/D via /get_team_kd commands.`,
-    exists: (nickname) =>
-      `Sorry, but player ${nickname} already exists in your team. Try to add another player.`,
-    notFound: (nickname) =>
-      `Sorry, but player ${nickname} doesn't exist. Try to add another player.`,
-    tooMany:
-      "Sorry, but you can't add more players. Try to delete the existing one to add a new one.",
+    success: (nickname, teamNicknames) =>
+      `Player <b>${nickname}</b> was added.\nYour team: <b>${teamNicknames}</b>.`,
+    exists: (nickname, teamNicknames) =>
+      `Sorry, but player <b>${nickname}</b> already exists in your team. Try to add another player.\nYour team: <b>${teamNicknames}</b>.`,
+    notFound: (nickname, teamNicknames) =>
+      `Sorry, but player <b>${nickname}</b> doesn't exist. Try to add another player.\nYour team: <b>${teamNicknames}</b>.`,
+    tooMany: (teamNicknames) =>
+      `Sorry, but you can't add more players. Try to delete the existing one to add a new one.\nYour team: <b>${teamNicknames}</b>.`,
   },
   deletePlayer: {
-    success: (nickname) =>
-      `Player ${nickname} was deleted.\nCheck out Elo rating via the /get_team_elo or K/D via /get_team_kd commands.`,
+    success: (nickname, teamNicknames) =>
+      `Player <b>${nickname}</b> was deleted.\nYour team: <b>${teamNicknames}</b>.`,
     notExists: (nickname) =>
-      `Sorry, but ${nickname} doesn't exists in your team.`,
+      `Sorry, but <b>${nickname}</b> doesn't exists in your team.`,
     lastPlayerWasDeleted:
-      "You just deleted the last player in your team. Please add at least one player via the '/add_player nickname' command to check the Elo rating or K/D of the team.",
+      'You just deleted the last player in your team. Please add at least one player via the button below',
   },
   updateTeamPlayers: {
     success:
@@ -114,5 +118,5 @@ export {
   DEFAULT_MATCH_GET_LIMIT,
   DEFAULT_MATCH_STORE_LIMIT,
   MAX_PLAYERS_AMOUNT,
-  bots
+  bots,
 };

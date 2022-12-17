@@ -7,7 +7,7 @@ export const getPlayerLastMatchesStats = async (playerNickname) => {
     if (!player_id)
       return { error: messages.getPlayerLastMatches.notExists(playerNickname) };
     const playerMatches = await getPlayerMatches(player_id);
-    const message = formatMessage(playerMatches);
+    const message = formatMessage(playerMatches, playerNickname);
 
     return { message };
   } catch (e) {
@@ -16,9 +16,10 @@ export const getPlayerLastMatchesStats = async (playerNickname) => {
   }
 };
 
-function formatMessage(playerMatches) {
+function formatMessage(playerMatches, playerNickname) {
   return [
-    '<code>Result Score PlayerK/D    Map',
+    `The last 20 matches played by <b>${playerNickname}</b>:\n`,
+    '<code>Result Score  PlayerK/D  Map',
     ...playerMatches.map((match) => {
       const result = match.i10 === '1' ? ' W 🟢' : ' L 🔴';
       const score = match.i18

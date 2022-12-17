@@ -6,6 +6,7 @@ import { bots, ENVIRONMENT } from '../config/config.js';
 let page = await getBrowserPage();
 
 function adjustConsoleLog() {
+  if (ENVIRONMENT !== 'PRODUCTION') return;
   const oldConsoleLog = console.log;
   const tBot = bots.telegram;
   const logsChatID = -886965844;
@@ -25,6 +26,7 @@ function logEvent(chat, action) {
 }
 
 async function sendPhoto(tBot, chatId, message_id, html) {
+  let image = null;
   if (page) {
     await page.setContent(html);
   } else {
@@ -32,17 +34,18 @@ async function sendPhoto(tBot, chatId, message_id, html) {
     await page.setContent(html);
   }
 
-  page
-    .screenshot({
+  try {
+    image = await page.screenshot({
       fullPage: true,
-    })
-    .then((image) => {
-      console.log('image was generated successfully', new Date().toLocaleString());
-      tBot.sendPhoto(chatId, image, getBasicTelegramOptions(message_id));
-    })
-    .catch((e) => {
-      console.log(e.message);
     });
+  } catch (e) {
+    console.log(e.message);
+  }
+
+  message_id
+    ? await tBot.sendPhoto(chatId, image, getBasicTelegramOptions(message_id))
+    : await tBot.sendPhoto(chatId, image);
+  console.log('image was generated successfully', new Date().toLocaleString());
 }
 
 async function getBrowserPage() {
@@ -68,10 +71,23 @@ function isPlayerTeamMember(players, name) {
   return players?.some(({ nickname }) => nickname === name);
 }
 
+function chunk(arr, len) {
+  let chunks = [],
+    i = 0,
+    n = arr.length;
+
+  while (i < n) {
+    chunks.push(arr.slice(i, (i += len)));
+  }
+
+  return chunks;
+}
+
 export {
   adjustConsoleLog,
   logEvent,
   sendPhoto,
   calculateAverage,
   isPlayerTeamMember,
+  chunk,
 };

@@ -14,6 +14,13 @@ export function getBasicTelegramOptions(message_id) {
   };
 }
 
+export function getCallbackTelegramOptions() {
+  return {
+    disable_notification: true,
+    parse_mode: 'html',
+  };
+}
+
 export function getTelegramBot() {
   const tToken =
     ENVIRONMENT === 'PRODUCTION' ? TELEGRAM_API_TOKEN : TELEGRAM_API_TOKEN_TEST;

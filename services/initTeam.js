@@ -14,8 +14,12 @@ export const initTeam = async ({ id, first_name, username, title, type }) => {
         title,
         players: [],
       });
-      team.save();
+      await team.save();
     }
+
+    const { players } = await team.populate('players');
+
+    return players.map(({ nickname }) => nickname);
   } catch (e) {
     console.log(e.message);
     return messages.serverError;
