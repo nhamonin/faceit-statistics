@@ -41,10 +41,9 @@ async function getWebhookData() {
   let webhookData = await response.json();
 
   if (!webhookData.payload) {
-    process.env.DYNAMIC_WEBHOOK_API_KEY = await getCurrentBearerToken();
-
-    const response = await fetchWebhookData();
-    webhookData = await response.json();
+    // process.env.DYNAMIC_WEBHOOK_API_KEY = await getCurrentBearerToken();
+    // const response = await fetchWebhookData();
+    // webhookData = await response.json();
   }
 
   return webhookData.payload;

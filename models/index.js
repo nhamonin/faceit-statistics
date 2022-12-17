@@ -1,4 +1,4 @@
-import { Player } from './Player.js';
-import { Team } from './Team.js';
+import { Player } from './player.js';
+import { Team } from './team.js';
 
 export { Player, Team };

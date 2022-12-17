@@ -1,3 +1,4 @@
+import { Team } from '../models/index.js';
 import { getEloTemplate, getKDTemplate } from '../public/templates/index.js';
 import {
   initTeam,
@@ -11,8 +12,21 @@ import {
 } from '../services/index.js';
 import { DEFAULT_MATCH_GET_LIMIT, messages, bots } from '../config/config.js';
 import {
+  startActionMarkup,
+  modifyTeamMarkup,
+  mainMenuMarkup,
+  deletePlayerMarkup,
+  addPlayerOnlyMarkup,
+  getStatsMarkup,
+  getTeamKDMenu,
+  lastPlayerMatchesMarkup,
+} from '../config/telegramReplyMarkup/index.js';
+import {
   sendPhoto,
   getBasicTelegramOptions,
+  getTeamKDWrapper,
+  getPlayerLastMatchesWrapper,
+  getTeamNicknames,
   getTelegramBot,
   logEvent,
 } from '../utils/index.js';
@@ -23,7 +37,6 @@ const tBot = bots.telegram;
 function initTelegramListeners() {
   initBotListener();
   resetTeamListener();
-  addPlayerListener();
   deletePlayerListener();
   updateTeamPlayersListener();
   getTeamKDListener();
@@ -36,15 +49,219 @@ function initBotListener() {
   process.env.NTBA_FIX_319 = 1;
 
   tBot.onText(/\/start/, async ({ chat, message_id }) => {
-    initTeam(chat);
+    const players = await initTeam(chat);
     logEvent(chat, 'Init team');
-    tBot.sendMessage(
-      chat.id,
-      messages.start,
-      getBasicTelegramOptions(message_id)
-    );
+    tBot.sendMessage(chat.id, messages.start(players), {
+      ...getBasicTelegramOptions(message_id),
+      ...startActionMarkup(players),
+    });
+  });
+
+  tBot.on('polling_error', (err) => {
+    console.log(err);
   });
 }
+
+tBot.on('callback_query', async (callbackQuery) => {
+  const action = callbackQuery.data.split('?')[0];
+  const msg = callbackQuery.message;
+  const opts = {
+    chat_id: msg.chat.id,
+    message_id: msg.message_id,
+    parse_mode: 'html',
+    reply_markup: { force_reply: true },
+  };
+  const team = await Team.findOne({ chat_id: opts.chat_id }).populate(
+    'players'
+  );
+  const teamNicknames = getTeamNicknames(team);
+
+  switch (action) {
+    case 'mainMenu':
+      tBot.editMessageText(
+        `Your team: <b>${teamNicknames.join(
+          ', '
+        )}</b>.\nChose a player you want to delete:`,
+        {
+          ...opts,
+          ...mainMenuMarkup,
+        }
+      );
+      break;
+    case 'modifyTeamMarkup':
+      tBot.editMessageText(
+        `Your team: <b>${teamNicknames.join(
+          ', '
+        )}</b>.\nSelect one of the options below:`,
+        {
+          ...opts,
+          ...modifyTeamMarkup,
+        }
+      );
+      break;
+    case 'addPlayer':
+      tBot
+        .sendMessage(opts.chat_id, 'Send a nickname of the player', {
+          reply_markup: { force_reply: true },
+        })
+        .then(({ message_id, chat }) => {
+          tBot.onReplyToMessage(
+            opts.chat_id,
+            message_id,
+            async ({ text: nickname, message_id }) => {
+              const message = await addPlayer(
+                nickname,
+                opts.chat_id,
+                message_id
+              );
+              logEvent(chat, `Add player: ${nickname}`);
+              tBot.sendMessage(opts.chat_id, message, {
+                ...getBasicTelegramOptions(message_id),
+                ...modifyTeamMarkup,
+              });
+            }
+          );
+        });
+      break;
+    case 'deletePlayerMenu':
+      tBot.editMessageText(
+        `Your team: <b>${teamNicknames.join(
+          ', '
+        )}</b>.\nChose a player you want to delete:`,
+        {
+          ...opts,
+          ...deletePlayerMarkup(teamNicknames),
+        }
+      );
+      break;
+    case 'deletePlayer':
+      const nickname = callbackQuery.data.split('?')[1];
+      message = await deletePlayer(nickname, opts.chat_id);
+      const options =
+        message === messages.deletePlayer.lastPlayerWasDeleted
+          ? addPlayerOnlyMarkup
+          : modifyTeamMarkup;
+      logEvent(msg.chat, 'Delete player');
+      tBot.editMessageText(message, {
+        ...opts,
+        ...options,
+      });
+      break;
+    case 'resetTeam':
+      const data = await resetTeam(opts.chat_id);
+      message = data.message;
+      logEvent(msg.chat, 'Reset team');
+      tBot.editMessageText(message || data?.error, {
+        ...opts,
+        ...addPlayerOnlyMarkup,
+      });
+      break;
+    case 'getStats':
+      tBot.editMessageText(
+        `Your team: <b>${teamNicknames.join(
+          ', '
+        )}</b>.\nSelect one of the options below:`,
+        {
+          ...opts,
+          ...getStatsMarkup,
+        }
+      );
+      break;
+    case 'getTeamKDMenu':
+      tBot.editMessageText('Select one of the options below:', {
+        ...opts,
+        ...getTeamKDMenu,
+      });
+      break;
+    case 'getTeamKD':
+      const amount = callbackQuery.data.split('?')[1];
+
+      if (amount !== 'custom') {
+        getTeamKDWrapper(tBot, amount, opts);
+      } else {
+        tBot
+          .sendMessage(
+            opts.chat_id,
+            'Send custom amount of the last matches:',
+            {
+              reply_markup: { force_reply: true },
+            }
+          )
+          .then(({ message_id }) => {
+            tBot.onReplyToMessage(
+              opts.chat_id,
+              message_id,
+              async ({ text: amount, message_id }) => {
+                getTeamKDWrapper(tBot, amount, opts, message_id);
+              }
+            );
+          });
+      }
+      break;
+    case 'getTeamElo':
+      const { message, error } = await getTeamEloMessage(opts.chat_id);
+      logEvent(msg.chat, 'Get team Elo');
+      error
+        ? await tBot.sendMessage(
+            opts.chat_id,
+            message,
+            getBasicTelegramOptions(message_id)
+          )
+        : await sendPhoto(tBot, opts.chat_id, null, getEloTemplate(message));
+      await tBot.deleteMessage(opts.chat_id, opts.message_id);
+      await tBot.sendMessage(
+        opts.chat_id,
+        'Done! Select one of the options below:',
+        {
+          ...opts,
+          ...getStatsMarkup,
+        }
+      );
+      break;
+    case 'getPlayerLastMatchesMenu':
+      tBot.sendMessage(
+        opts.chat_id,
+        'Select option below:',
+        lastPlayerMatchesMarkup(teamNicknames)
+      );
+      break;
+    case 'getPlayerLastMatches':
+      const callbackNickname = callbackQuery.data.split('?')[1];
+
+      if (callbackNickname !== 'custom') {
+        await getPlayerLastMatchesWrapper(
+          tBot,
+          callbackNickname,
+          msg.chat,
+          opts,
+          teamNicknames
+        );
+      } else {
+        tBot
+          .sendMessage(opts.chat_id, 'Send player nickname:', {
+            reply_markup: { force_reply: true },
+          })
+          .then(async ({ message_id: bot_message_id }) => {
+            await tBot.onReplyToMessage(
+              opts.chat_id,
+              bot_message_id,
+              async ({ text: nickname, message_id }) => {
+                await getPlayerLastMatchesWrapper(
+                  tBot,
+                  nickname,
+                  msg.chat,
+                  opts,
+                  teamNicknames
+                );
+                tBot.deleteMessage(opts.chat_id, message_id);
+                tBot.deleteMessage(opts.chat_id, bot_message_id);
+              }
+            );
+          });
+      }
+      break;
+  }
+});
 
 function resetTeamListener() {
   tBot.onText(/\/reset\_team/, async ({ chat, message_id }) => {
@@ -55,14 +272,6 @@ function resetTeamListener() {
       message || error,
       getBasicTelegramOptions(message_id)
     );
-  });
-}
-
-function addPlayerListener() {
-  tBot.onText(/\/add\_player.* (\S*)/, async ({ chat, message_id }, match) => {
-    const message = await addPlayer(match[1], chat.id);
-    logEvent(chat, 'Add player');
-    tBot.sendMessage(chat.id, message, getBasicTelegramOptions(message_id));
   });
 }
 
