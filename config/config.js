@@ -84,7 +84,7 @@ You can check stats or modify your team.`
     }`,
   getPlayerLastMatches: {
     notExists: (nickname) =>
-      `Sorry, but ${nickname} doesn't exists. Try to check another player.`,
+      `Sorry, but player with nickname <b>${nickname}</b> doesn't exists. Try to check another player.`,
   },
   teamNotExistError:
     "You don't have a team. Init it first via the command '/start.'",
