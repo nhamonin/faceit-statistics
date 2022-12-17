@@ -75,6 +75,7 @@ tBot.on('callback_query', async (callbackQuery) => {
     'players'
   );
   const teamNicknames = getTeamNicknames(team);
+  let message = '';
 
   switch (action) {
     case 'mainMenu':
