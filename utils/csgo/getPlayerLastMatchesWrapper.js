@@ -9,9 +9,9 @@ export async function getPlayerLastMatchesWrapper(
   opts,
   teamNicknames
 ) {
-  const lastMatchesData = await getPlayerLastMatchesStats(callbackNickname);
+  const { message, error } = await getPlayerLastMatchesStats(callbackNickname);
   logEvent(chat, 'Get player last matches stats');
-  await tBot.editMessageText(lastMatchesData.message, {
+  await tBot.editMessageText(message || error, {
     ...opts,
     ...lastPlayerMatchesMarkup(teamNicknames),
   });
