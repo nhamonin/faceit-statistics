@@ -75,7 +75,6 @@ tBot.on('callback_query', async (callbackQuery) => {
     'players'
   );
   const teamNicknames = getTeamNicknames(team);
-  let message = '';
 
   switch (action) {
     case 'mainMenu':
@@ -136,26 +135,29 @@ tBot.on('callback_query', async (callbackQuery) => {
       );
       break;
     case 'deletePlayer':
-      const nickname = callbackQuery.data.split('?')[1];
-      message = await deletePlayer(nickname, opts.chat_id);
-      const options =
-        message === messages.deletePlayer.lastPlayerWasDeleted
-          ? addPlayerOnlyMarkup
-          : modifyTeamMarkup;
-      logEvent(msg.chat, 'Delete player');
-      tBot.editMessageText(message, {
-        ...opts,
-        ...options,
-      });
+      {
+        const nickname = callbackQuery.data.split('?')[1];
+        const message = await deletePlayer(nickname, opts.chat_id);
+        const options =
+          message === messages.deletePlayer.lastPlayerWasDeleted
+            ? addPlayerOnlyMarkup
+            : modifyTeamMarkup;
+        logEvent(msg.chat, 'Delete player');
+        tBot.editMessageText(message, {
+          ...opts,
+          ...options,
+        });
+      }
       break;
     case 'resetTeam':
-      const data = await resetTeam(opts.chat_id);
-      message = data.message;
-      logEvent(msg.chat, 'Reset team');
-      tBot.editMessageText(message || data?.error, {
-        ...opts,
-        ...addPlayerOnlyMarkup,
-      });
+      {
+        const { message, error } = await resetTeam(opts.chat_id);
+        logEvent(msg.chat, 'Reset team');
+        tBot.editMessageText(message || error, {
+          ...opts,
+          ...addPlayerOnlyMarkup,
+        });
+      }
       break;
     case 'getStats':
       tBot.editMessageText(
@@ -175,49 +177,53 @@ tBot.on('callback_query', async (callbackQuery) => {
       });
       break;
     case 'getTeamKD':
-      const amount = callbackQuery.data.split('?')[1];
+      {
+        const amount = callbackQuery.data.split('?')[1];
 
-      if (amount !== 'custom') {
-        getTeamKDWrapper(tBot, amount, opts);
-      } else {
-        tBot
-          .sendMessage(
-            opts.chat_id,
-            'Send custom amount of the last matches:',
-            {
-              reply_markup: { force_reply: true },
-            }
-          )
-          .then(({ message_id }) => {
-            tBot.onReplyToMessage(
+        if (amount !== 'custom') {
+          getTeamKDWrapper(tBot, amount, opts);
+        } else {
+          tBot
+            .sendMessage(
               opts.chat_id,
-              message_id,
-              async ({ text: amount, message_id }) => {
-                getTeamKDWrapper(tBot, amount, opts, message_id);
+              'Send custom amount of the last matches:',
+              {
+                reply_markup: { force_reply: true },
               }
-            );
-          });
+            )
+            .then(({ message_id }) => {
+              tBot.onReplyToMessage(
+                opts.chat_id,
+                message_id,
+                async ({ text: amount, message_id }) => {
+                  getTeamKDWrapper(tBot, amount, opts, message_id);
+                }
+              );
+            });
+        }
       }
       break;
     case 'getTeamElo':
-      const { message, error } = await getTeamEloMessage(opts.chat_id);
-      logEvent(msg.chat, 'Get team Elo');
-      error
-        ? await tBot.sendMessage(
-            opts.chat_id,
-            message,
-            getBasicTelegramOptions(message_id)
-          )
-        : await sendPhoto(tBot, opts.chat_id, null, getEloTemplate(message));
-      await tBot.deleteMessage(opts.chat_id, opts.message_id);
-      await tBot.sendMessage(
-        opts.chat_id,
-        'Done! Select one of the options below:',
-        {
-          ...opts,
-          ...getStatsMarkup,
-        }
-      );
+      {
+        const { message, error } = await getTeamEloMessage(opts.chat_id);
+        logEvent(msg.chat, 'Get team Elo');
+        error
+          ? await tBot.sendMessage(
+              opts.chat_id,
+              message,
+              getBasicTelegramOptions(message_id)
+            )
+          : await sendPhoto(tBot, opts.chat_id, null, getEloTemplate(message));
+        await tBot.deleteMessage(opts.chat_id, opts.message_id);
+        await tBot.sendMessage(
+          opts.chat_id,
+          'Done! Select one of the options below:',
+          {
+            ...opts,
+            ...getStatsMarkup,
+          }
+        );
+      }
       break;
     case 'getPlayerLastMatchesMenu':
       tBot.sendMessage(
@@ -227,38 +233,40 @@ tBot.on('callback_query', async (callbackQuery) => {
       );
       break;
     case 'getPlayerLastMatches':
-      const callbackNickname = callbackQuery.data.split('?')[1];
+      {
+        const nickname = callbackQuery.data.split('?')[1];
 
-      if (callbackNickname !== 'custom') {
-        await getPlayerLastMatchesWrapper(
-          tBot,
-          callbackNickname,
-          msg.chat,
-          opts,
-          teamNicknames
-        );
-      } else {
-        tBot
-          .sendMessage(opts.chat_id, 'Send player nickname:', {
-            reply_markup: { force_reply: true },
-          })
-          .then(async ({ message_id: bot_message_id }) => {
-            await tBot.onReplyToMessage(
-              opts.chat_id,
-              bot_message_id,
-              async ({ text: nickname, message_id }) => {
-                await getPlayerLastMatchesWrapper(
-                  tBot,
-                  nickname,
-                  msg.chat,
-                  opts,
-                  teamNicknames
-                );
-                tBot.deleteMessage(opts.chat_id, message_id);
-                tBot.deleteMessage(opts.chat_id, bot_message_id);
-              }
-            );
-          });
+        if (nickname !== 'custom') {
+          await getPlayerLastMatchesWrapper(
+            tBot,
+            nickname,
+            msg.chat,
+            opts,
+            teamNicknames
+          );
+        } else {
+          tBot
+            .sendMessage(opts.chat_id, 'Send player nickname:', {
+              reply_markup: { force_reply: true },
+            })
+            .then(async ({ message_id: bot_message_id }) => {
+              await tBot.onReplyToMessage(
+                opts.chat_id,
+                bot_message_id,
+                async ({ text: nickname, message_id }) => {
+                  await getPlayerLastMatchesWrapper(
+                    tBot,
+                    nickname,
+                    msg.chat,
+                    opts,
+                    teamNicknames
+                  );
+                  tBot.deleteMessage(opts.chat_id, message_id);
+                  tBot.deleteMessage(opts.chat_id, bot_message_id);
+                }
+              );
+            });
+        }
       }
       break;
   }
