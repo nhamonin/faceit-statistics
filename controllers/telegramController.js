@@ -78,26 +78,30 @@ tBot.on('callback_query', async (callbackQuery) => {
 
   switch (action) {
     case 'mainMenu':
-      tBot.editMessageText(
-        `Your team: <b>${teamNicknames.join(
-          ', '
-        )}</b>.\nChose a player you want to delete:`,
-        {
-          ...opts,
-          ...mainMenuMarkup,
-        }
-      );
+      try {
+        tBot.editMessageText(
+          `Your team: <b>${teamNicknames.join(
+            ', '
+          )}</b>.\nChose a player you want to delete:`,
+          {
+            ...opts,
+            ...mainMenuMarkup,
+          }
+        );
+      } catch (e) {}
       break;
     case 'modifyTeamMarkup':
-      tBot.editMessageText(
-        `Your team: <b>${teamNicknames.join(
-          ', '
-        )}</b>.\nSelect one of the options below:`,
-        {
-          ...opts,
-          ...modifyTeamMarkup,
-        }
-      );
+      try {
+        tBot.editMessageText(
+          `Your team: <b>${teamNicknames.join(
+            ', '
+          )}</b>.\nSelect one of the options below:`,
+          {
+            ...opts,
+            ...modifyTeamMarkup,
+          }
+        );
+      } catch (e) {}
       break;
     case 'addPlayer':
       tBot
@@ -124,15 +128,17 @@ tBot.on('callback_query', async (callbackQuery) => {
         });
       break;
     case 'deletePlayerMenu':
-      tBot.editMessageText(
-        `Your team: <b>${teamNicknames.join(
-          ', '
-        )}</b>.\nChose a player you want to delete:`,
-        {
-          ...opts,
-          ...deletePlayerMarkup(teamNicknames),
-        }
-      );
+      try {
+        tBot.editMessageText(
+          `Your team: <b>${teamNicknames.join(
+            ', '
+          )}</b>.\nChose a player you want to delete:`,
+          {
+            ...opts,
+            ...deletePlayerMarkup(teamNicknames),
+          }
+        );
+      } catch (e) {}
       break;
     case 'deletePlayer':
       {
@@ -143,38 +149,46 @@ tBot.on('callback_query', async (callbackQuery) => {
             ? addPlayerOnlyMarkup
             : modifyTeamMarkup;
         logEvent(msg.chat, 'Delete player');
-        tBot.editMessageText(message, {
-          ...opts,
-          ...options,
-        });
+        try {
+          tBot.editMessageText(message, {
+            ...opts,
+            ...options,
+          });
+        } catch (e) {}
       }
       break;
     case 'resetTeam':
       {
         const { message, error } = await resetTeam(opts.chat_id);
         logEvent(msg.chat, 'Reset team');
-        tBot.editMessageText(message || error, {
-          ...opts,
-          ...addPlayerOnlyMarkup,
-        });
+        try {
+          tBot.editMessageText(message || error, {
+            ...opts,
+            ...addPlayerOnlyMarkup,
+          });
+        } catch (e) {}
       }
       break;
     case 'getStats':
-      tBot.editMessageText(
-        `Your team: <b>${teamNicknames.join(
-          ', '
-        )}</b>.\nSelect one of the options below:`,
-        {
-          ...opts,
-          ...getStatsMarkup,
-        }
-      );
+      try {
+        tBot.editMessageText(
+          `Your team: <b>${teamNicknames.join(
+            ', '
+          )}</b>.\nSelect one of the options below:`,
+          {
+            ...opts,
+            ...getStatsMarkup,
+          }
+        );
+      } catch (e) {}
       break;
     case 'getTeamKDMenu':
-      tBot.editMessageText('Select one of the options below:', {
-        ...opts,
-        ...getTeamKDMenu,
-      });
+      try {
+        tBot.editMessageText('Select one of the options below:', {
+          ...opts,
+          ...getTeamKDMenu,
+        });
+      } catch (e) {}
       break;
     case 'getTeamKD':
       {

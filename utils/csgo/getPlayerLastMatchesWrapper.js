@@ -11,8 +11,10 @@ export async function getPlayerLastMatchesWrapper(
 ) {
   const { message, error } = await getPlayerLastMatchesStats(callbackNickname);
   logEvent(chat, 'Get player last matches stats');
-  await tBot.editMessageText(message || error, {
-    ...opts,
-    ...lastPlayerMatchesMarkup(teamNicknames),
-  });
+  try {
+    await tBot.editMessageText(message || error, {
+      ...opts,
+      ...lastPlayerMatchesMarkup(teamNicknames),
+    });
+  } catch (e) {}
 }
