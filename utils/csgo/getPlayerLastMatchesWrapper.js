@@ -4,12 +4,12 @@ import { lastPlayerMatchesMarkup } from '../../config/telegramReplyMarkup/index.
 
 export async function getPlayerLastMatchesWrapper(
   tBot,
-  callbackNickname,
+  nickname,
   chat,
   opts,
   teamNicknames
 ) {
-  const { message, error } = await getPlayerLastMatchesStats(callbackNickname);
+  const { message, error } = await getPlayerLastMatchesStats(nickname);
   logEvent(chat, 'Get player last matches stats');
   try {
     await tBot.editMessageText(message || error, {
