@@ -2,8 +2,8 @@ import path from 'path';
 
 import express from 'express';
 
-import { Team } from '../models/index.js';
-import { updateTeamPlayers } from '../services/index.js';
+import { Team } from '#models';
+import { updateTeamPlayers } from '#services';
 
 export function webhookListener() {
   const app = express();

@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer-extra';
 
-import { getBasicTelegramOptions } from '../utils/index.js';
-import { bots, ENVIRONMENT } from '../config/config.js';
+import { getBasicTelegramOptions } from '#utils';
+import { bots, ENVIRONMENT } from '#config';
 
 let page = await getBrowserPage();
 

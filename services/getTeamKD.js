@@ -1,6 +1,6 @@
-import { calculateAverage, getPlayerAvgKD } from '../utils/index.js';
-import { messages, DEFAULT_MATCH_GET_LIMIT } from '../config/config.js';
-import { Team } from '../models/index.js';
+import { calculateAverage, getPlayerAvgKD } from '#utils';
+import { messages, DEFAULT_MATCH_GET_LIMIT } from '#config';
+import { Team } from '#models';
 
 export const getTeamKDMessage = async (matchLimit, chat_id) => {
   const limit = matchLimit || DEFAULT_MATCH_GET_LIMIT;

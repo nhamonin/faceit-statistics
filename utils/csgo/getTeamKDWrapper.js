@@ -1,7 +1,7 @@
-import { getTeamKDMessage } from '../../services/index.js';
-import { sendPhoto } from '../index.js';
-import { getKDTemplate } from '../../public/templates/index.js';
-import { getTeamKDMenu } from '../../config/telegramReplyMarkup/index.js';
+import { getTeamKDMessage } from '#services';
+import { sendPhoto } from '#utils';
+import { getKDTemplate } from '#templates';
+import { getTeamKDMenu } from '#telegramReplyMarkup';
 
 export async function getTeamKDWrapper(tBot, amount, opts, message_id) {
   const { message, error } = await getTeamKDMessage(amount, opts.chat_id);

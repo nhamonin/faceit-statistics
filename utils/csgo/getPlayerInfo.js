@@ -1,6 +1,6 @@
 import { Players } from 'faceit-node-api';
 
-import { messages } from '../../config/config.js';
+import { messages } from '#config';
 import { getPlayerAvgKD } from '../index.js';
 
 export async function getPlayerInfo({

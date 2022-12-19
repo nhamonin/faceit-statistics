@@ -1,4 +1,4 @@
-import { calculateAverage, getPlayerMatches } from '../index.js';
+import { calculateAverage, getPlayerMatches } from '#utils';
 
 export async function getPlayerAvgKD(player_id, numberArr, staticVariableName) {
   const maxNumber = Math.max(...numberArr);

@@ -1,7 +1,7 @@
-import { Team } from '../models/index.js';
-import { messages } from '../config/config.js';
-import { deletePlayer } from '../services/index.js';
-import { webhookMgr } from '../utils/index.js';
+import { Team } from '#models';
+import { messages } from '#config';
+import { deletePlayer } from '#services';
+import { webhookMgr } from '#utils';
 
 export const resetTeam = async (chat_id) => {
   try {

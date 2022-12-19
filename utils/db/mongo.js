@@ -6,7 +6,7 @@ import {
   MONGO_DB_PASSWORD,
   MONGO_DB_CLUSTER_NAME,
   MONGO_DB_CLUSTER_NAME_TEST,
-} from '../../config/config.js';
+} from '#config';
 
 export default function connectDB() {
   const mongoCluster =

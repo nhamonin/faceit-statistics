@@ -1,5 +1,5 @@
-import { Team } from '../models/index.js';
-import { messages } from '../config/config.js';
+import { Team } from '#models';
+import { messages } from '#config';
 
 export const initTeam = async ({ id, first_name, username, title, type }) => {
   try {

@@ -1,13 +1,13 @@
-import { Team } from '../models/index.js';
-import { getEloTemplate } from '../public/templates/index.js';
+import { Team } from '#models';
+import { getEloTemplate } from '#templates';
 import {
   initTeam,
   resetTeam,
   getTeamEloMessage,
   addPlayer,
   deletePlayer,
-} from '../services/index.js';
-import { messages, bots } from '../config/config.js';
+} from '#services';
+import { messages, bots } from '#config';
 import {
   startActionMarkup,
   modifyTeamMarkup,
@@ -17,7 +17,7 @@ import {
   getStatsMarkup,
   getTeamKDMenu,
   lastPlayerMatchesMarkup,
-} from '../config/telegramReplyMarkup/index.js';
+} from '#telegramReplyMarkup';
 import {
   sendPhoto,
   getBasicTelegramOptions,
@@ -26,12 +26,12 @@ import {
   getTeamNicknames,
   getTelegramBot,
   logEvent,
-} from '../utils/index.js';
+} from '#utils';
 
 bots.telegram = getTelegramBot();
 const tBot = bots.telegram;
 
-function initBotListener() {
+function initTelegramBotListener() {
   process.env.NTBA_FIX_350 = 1;
   process.env.NTBA_FIX_319 = 1;
 
@@ -276,4 +276,4 @@ tBot.on('callback_query', async (callbackQuery) => {
   }
 });
 
-export { initBotListener };
+export { initTelegramBotListener };
