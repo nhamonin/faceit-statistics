@@ -86,6 +86,10 @@ You can check stats or modify your team.`
     notExists: (nickname) =>
       `Sorry, but player with nickname <b>${nickname}</b> doesn't exists. Try to check another player.`,
   },
+  getTeamKD: {
+    validationError:
+      'Bad value error: Your input must be an integer number greater than 0.',
+  },
   teamNotExistError:
     "You don't have a team. Init it first via the command '/start.'",
   serverError: 'Oops, something went wrong. Try again later.',
