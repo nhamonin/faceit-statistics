@@ -4,7 +4,7 @@ import {
   ENVIRONMENT,
   TELEGRAM_API_TOKEN,
   TELEGRAM_API_TOKEN_TEST,
-} from '../../config/config.js';
+} from '#config';
 
 export function getBasicTelegramOptions(message_id) {
   return {

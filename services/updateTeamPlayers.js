@@ -1,6 +1,6 @@
-import { Player, Team } from '../models/index.js';
-import { getPlayerInfo } from '../utils/index.js';
-import { messages } from '../config/config.js';
+import { Player, Team } from '#models';
+import { getPlayerInfo } from '#utils';
+import { messages } from '#config';
 
 export const updateTeamPlayers = async (chat_id) => {
   try {

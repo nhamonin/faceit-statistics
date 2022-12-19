@@ -3,9 +3,9 @@ import {
   getPlayerInfo,
   getTeamNicknames,
   webhookMgr,
-} from '../utils/index.js';
-import { Player, Team } from '../models/index.js';
-import { messages, MAX_PLAYERS_AMOUNT } from '../config/config.js';
+} from '#utils';
+import { Player, Team } from '#models';
+import { messages, MAX_PLAYERS_AMOUNT } from '#config';
 
 export const addPlayer = async (playerNickname, chat_id) => {
   try {

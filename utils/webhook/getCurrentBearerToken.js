@@ -10,7 +10,7 @@ import {
   FACEIT_WEBHOOK_ID,
   FACEIT_WEBHOOK_ID_TEST,
   HCAPTCHA_API_KEY,
-} from '../../config/config.js';
+} from '#config';
 
 puppeteer.use(stealthPlugin());
 puppeteer.use(

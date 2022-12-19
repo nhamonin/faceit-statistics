@@ -1,10 +1,6 @@
-import { Player, Team } from '../models/index.js';
-import { messages } from '../config/config.js';
-import {
-  isPlayerTeamMember,
-  webhookMgr,
-  getTeamNicknames,
-} from '../utils/index.js';
+import { Player, Team } from '#models';
+import { messages } from '#config';
+import { isPlayerTeamMember, webhookMgr, getTeamNicknames } from '#utils';
 
 export const deletePlayer = async (playerNickname, chat_id) => {
   try {

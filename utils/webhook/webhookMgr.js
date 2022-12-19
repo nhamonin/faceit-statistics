@@ -5,8 +5,8 @@ import {
   FACEIT_WEBHOOK_ID,
   FACEIT_WEBHOOK_ID_TEST,
   FACEIT_WEBHOOK_API_KEY,
-} from '../../config/config.js';
-import { getCurrentBearerToken } from '../index.js';
+} from '#config';
+import { getCurrentBearerToken } from '#utils';
 
 const faceitWebhookID =
   ENVIRONMENT === 'PRODUCTION' ? FACEIT_WEBHOOK_ID : FACEIT_WEBHOOK_ID_TEST;

@@ -1,5 +1,5 @@
-import { messages } from '../config/config.js';
-import { getPlayerMatches, getPlayerInfo } from '../utils/index.js';
+import { messages } from '#config';
+import { getPlayerMatches, getPlayerInfo } from '#utils';
 
 export const getPlayerLastMatchesStats = async (playerNickname) => {
   try {

@@ -1,4 +1,4 @@
-import { chunk } from '../../utils/index.js';
+import { chunk } from '#utils';
 
 const numberOfButtonsInRows = 3;
 

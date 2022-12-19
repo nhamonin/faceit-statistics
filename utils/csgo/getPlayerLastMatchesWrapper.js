@@ -1,6 +1,6 @@
-import { getPlayerLastMatchesStats } from '../../services/index.js';
-import { logEvent } from '../index.js';
-import { lastPlayerMatchesMarkup } from '../../config/telegramReplyMarkup/index.js';
+import { getPlayerLastMatchesStats } from '#services';
+import { logEvent } from '#utils';
+import { lastPlayerMatchesMarkup } from '#telegramReplyMarkup';
 
 export async function getPlayerLastMatchesWrapper(
   tBot,
