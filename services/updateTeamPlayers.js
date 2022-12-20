@@ -5,6 +5,7 @@ import { messages } from '#config';
 const cache = new Set();
 export const updateTeamPlayers = async (chat_id) => {
   if (cache.has(chat_id)) return;
+  cache.add(chat_id);
   try {
     const team = await Team.findOne({ chat_id });
     if (!team) return messages.teamNotExistError;
@@ -33,7 +34,6 @@ export const updateTeamPlayers = async (chat_id) => {
       `Players of the team ${team.username || team.title} were updated.`,
       new Date().toLocaleString()
     );
-    cache.add(chat_id);
     setTimeout(() => {
       cache.delete(chat_id);
     }, 1000 * 60 * 5);
