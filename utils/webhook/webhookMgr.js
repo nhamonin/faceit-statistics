@@ -14,7 +14,7 @@ const url = `https://api.faceit.com/webhooks/v1/subscriptions/${faceitWebhookID}
 
 function changeWebhookPlayersList(action) {
   return async function (playersIDs) {
-    const webhookData = await getWebhookData();
+    const webhookData = await getWebhookDataPayload();
 
     if (!webhookData) {
       console.log('Webhook data error, please update API key');
@@ -36,17 +36,21 @@ function changeWebhookPlayersList(action) {
   };
 }
 
-async function getWebhookData() {
-  const response = await fetchWebhookData();
-  let webhookData = await response.json();
+async function getWebhookDataPayload() {
+  let webhookData = await getWebhookData();
 
   if (!webhookData.payload) {
-    // process.env.DYNAMIC_WEBHOOK_API_KEY = await getCurrentBearerToken();
-    // const response = await fetchWebhookData();
-    // webhookData = await response.json();
+    const resObj = await getCurrentBearerToken();
+    process.env.DYNAMIC_WEBHOOK_API_KEY = resObj.token;
+    webhookData = await getWebhookData();
   }
 
   return webhookData.payload;
+}
+
+async function getWebhookData() {
+  let response = await fetchWebhookData();
+  return await response.json();
 }
 
 function createBodyFromWebhookData(playersIDs, action, webhookData) {

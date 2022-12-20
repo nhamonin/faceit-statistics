@@ -19,42 +19,36 @@ puppeteer.use(
       id: '2captcha',
       token: HCAPTCHA_API_KEY,
     },
-    solveScoreBased: true,
-    solveInactiveChallenges: true,
   })
 );
 
 const webhookID =
   ENVIRONMENT === 'PRODUCTION' ? FACEIT_WEBHOOK_ID : FACEIT_WEBHOOK_ID_TEST;
 const webhookEditURL = `https://developers.faceit.com/apps/${FACEIT_APP_ID}/webhooks/${webhookID}/edit`;
-const nextButtonSelector =
-  '.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary';
 const waitUntil = 'networkidle2';
 
 export async function getCurrentBearerToken() {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   let bearerToken = null;
   try {
+    page.on('response', async (res) => {
+      if (res.url() === 'https://api.faceit.com/auth/v1/oauth/token') {
+        try {
+          const response = await res.json();
+          bearerToken = {
+            token: response.access_token,
+            expiresIn: response.expires_in,
+          };
+        } catch (e) {}
+      }
+    });
     await page.goto(webhookEditURL, { waitUntil });
     await fillCredentials(page, 200);
     await page.click('button[type="submit"]');
     await new Promise((r) => setTimeout(r, 1000));
     await page.solveRecaptchas();
     await page.click('button[type="submit"]');
-    await page.waitForSelector('.jss17');
-    await page.goto(webhookEditURL, { waitUntil });
-    await clickNextButtonAndWait(page, 500);
-    await clickNextButtonAndWait(page, 500);
-    await clickNextButtonAndWait(page, 500);
-    page.on('request', (request) => {
-      if (request.isInterceptResolutionHandled()) return;
-      const requestHeaders = request.headers();
-      if (requestHeaders.authorization) {
-        bearerToken = requestHeaders.authorization;
-      }
-    });
-    await clickNextButtonAndWait(page, 1500);
   } catch (e) {
     console.log('Error while getting webhook token via puppeteer: ', e.message);
   }
@@ -62,16 +56,10 @@ export async function getCurrentBearerToken() {
 
   if (bearerToken)
     console.log(
-      'success on getting webhook token via puppeteer. Date: ',
+      'Success on getting webhook token via puppeteer. Date: ',
       new Date().toLocaleString()
     );
-  return bearerToken?.slice(7);
-}
-
-async function clickNextButtonAndWait(page, ms) {
-  await page.waitForSelector(nextButtonSelector);
-  await page.click(nextButtonSelector);
-  await new Promise((r) => setTimeout(r, ms));
+  return bearerToken;
 }
 
 async function fillCredentials(page, ms) {
