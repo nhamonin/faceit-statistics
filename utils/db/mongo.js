@@ -8,7 +8,7 @@ import {
   MONGO_DB_CLUSTER_NAME_TEST,
 } from '#config';
 
-export default function connectDB() {
+export default async function connectDB() {
   const mongoCluster =
     ENVIRONMENT === 'PRODUCTION'
       ? MONGO_DB_CLUSTER_NAME
