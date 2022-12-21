@@ -29,13 +29,13 @@ export function webhookListener() {
 
     switch (data.event) {
       case 'match_status_finished':
-        players = [
+        const playersRoster = [
           ...data.payload.teams[0].roster,
           ...data.payload.teams[1].roster,
         ];
 
-        playersIDs = players.map(({ id }) => id);
-        playersNicknames = players.map(({ nickname }) => nickname);
+        playersIDs = playersRoster.map(({ id }) => id);
+        playersNicknames = playersRoster.map(({ nickname }) => nickname);
         console.log(playersNicknames);
 
         for await (const player_id of playersIDs) {
