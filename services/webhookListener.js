@@ -105,11 +105,12 @@ export function webhookListener() {
           Object.keys(lifetime).map((mapName) => {
             const winrateMatches = lifetime[mapName].reduce(
               (accumulator, currentValue) =>
-                accumulator + currentValue.winrate * currentValue.matches,
+                accumulator + currentValue?.winrate * currentValue?.matches,
               0
             );
             const totalMatches = lifetime[mapName].reduce(
-              (accumulator, currentValue) => accumulator + currentValue.matches,
+              (accumulator, currentValue) =>
+                accumulator + currentValue?.matches,
               0
             );
 
@@ -124,28 +125,28 @@ export function webhookListener() {
           team1Result.push({
             mapName,
             totalWinrate: +(
-              team1Stats.lifetime[mapName].totalWinrate -
-              team2Stats.lifetime[mapName].totalWinrate
+              team1Stats.lifetime[mapName]?.totalWinrate -
+              team2Stats.lifetime[mapName]?.totalWinrate
             ).toFixed(2),
             totalMatches:
-              team1Stats.lifetime[mapName].totalMatches -
-              team2Stats.lifetime[mapName].totalMatches,
+              team1Stats.lifetime[mapName]?.totalMatches -
+              team2Stats.lifetime[mapName]?.totalMatches,
           });
 
           team2Result.push({
             mapName,
             totalWinrate: +(
-              team2Stats.lifetime[mapName].totalWinrate -
-              team1Stats.lifetime[mapName].totalWinrate
+              team2Stats.lifetime[mapName]?.totalWinrate -
+              team1Stats.lifetime[mapName]?.totalWinrate
             ).toFixed(2),
             totalMatches:
-              team2Stats.lifetime[mapName].totalMatches -
-              team1Stats.lifetime[mapName].totalMatches,
+              team2Stats.lifetime[mapName]?.totalMatches -
+              team1Stats.lifetime[mapName]?.totalMatches,
           });
         });
 
-        team1Result.sort((a, b) => b.totalWinrate - a.totalWinrate);
-        team2Result.sort((a, b) => b.totalWinrate - a.totalWinrate);
+        team1Result.sort((a, b) => b?.totalWinrate - a?.totalWinrate);
+        team2Result.sort((a, b) => b?.totalWinrate - a?.totalWinrate);
 
         console.log(
           JSON.stringify(dbPlayersTeam1),
