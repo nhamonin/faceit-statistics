@@ -7,7 +7,7 @@ import { connectDB, adjustConsoleLog } from '#utils';
 
 Faceit.setApiKey(FACEIT_API_KEY);
 
-connectDB();
+await connectDB();
 adjustConsoleLog();
 initTelegramBotListener();
 webhookListener();
