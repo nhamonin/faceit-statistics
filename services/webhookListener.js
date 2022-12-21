@@ -146,15 +146,15 @@ export function webhookListener() {
 
         team1Result.sort((a, b) => b.totalWinrate - a.totalWinrate);
         team2Result.sort((a, b) => b.totalWinrate - a.totalWinrate);
+
+        console.log(
+          JSON.stringify(dbPlayersTeam1),
+          JSON.stringify(dbPlayersTeam2),
+          JSON.stringify(team1Result),
+          JSON.stringify(team2Result)
+        );
         break;
     }
-
-    console.log(
-      JSON.stringify(dbPlayersTeam1),
-      JSON.stringify(dbPlayersTeam2),
-      JSON.stringify(team1Result),
-      JSON.stringify(team2Result)
-    );
 
     res.sendStatus(200);
   });
