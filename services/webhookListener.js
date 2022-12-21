@@ -149,7 +149,12 @@ export function webhookListener() {
         break;
     }
 
-    console.log(dbPlayersTeam1, dbPlayersTeam2, team1Result, team2Result);
+    console.log(
+      JSON.stringify(dbPlayersTeam1),
+      JSON.stringify(dbPlayersTeam2),
+      JSON.stringify(team1Result),
+      JSON.stringify(team2Result)
+    );
 
     res.sendStatus(200);
   });
