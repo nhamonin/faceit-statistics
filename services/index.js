@@ -7,7 +7,7 @@ import { getTeamEloMessage } from './getTeamElo.js';
 import { getTeamKDMessage } from './getTeamKD.js';
 import { getPlayerLastMatchesStats } from './getPlayerLastMatchesStats.js';
 import { webhookListener } from './webhookListener.js';
-import { handleMatchStatusReady } from './webhookListener.js';
+import { handleMatchObjectCreated } from './webhookListener.js';
 
 export {
   initTeam,
@@ -19,5 +19,5 @@ export {
   getTeamKDMessage,
   getPlayerLastMatchesStats,
   webhookListener,
-  handleMatchStatusReady,
+  handleMatchObjectCreated,
 };
