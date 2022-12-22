@@ -11,6 +11,7 @@ import {
   allowedTeamsToGetMapPickerNotifications,
 } from '#config';
 import { getTelegramBot } from '#utils';
+import { clearInterval } from 'timers';
 
 const cache = new Set();
 const tBot = getTelegramBot();
@@ -62,12 +63,19 @@ export function webhookListener() {
       case 'match_object_created':
         const match_id = data.payload.id;
         const matches = new Matches();
-        const matchData = await matches.getMatchDetails(match_id);
-        try {
-          handleMatchStatusReady(matchData, cache);
-        } catch (e) {
-          console.log(e);
-        }
+          const interval = setInterval(async () => {
+            const matchData = await matches.getMatchDetails(match_id);
+
+            if (matchData.teams.faction1) {
+              clearInterval(interval);
+
+              try {
+                handleMatchStatusReady(matchData, cache);
+              } catch (e) {
+                console.log(e);
+              }
+            }
+          }, 1000);
         break;
     }
 
