@@ -57,7 +57,7 @@ export function webhookListener() {
           }
         }
         break;
-      case 'match_object_created':
+      case 'match_status_ready':
         try {
           handleMatchStatusReady(data, cache);
         } catch (e) {
