@@ -147,7 +147,7 @@ export async function handleMatchObjectCreated(data, cache = new Set()) {
       );
     }
     console
-      .log(JSON.stringify(team1Stats, team2Stats))
+      .log(JSON.stringify(team1Stats), JSON.stringify(team2Stats));
 
       [(team1Stats, team2Stats)].map(({ lifetime }) => {
         Object.keys(lifetime).map((mapName) => {
