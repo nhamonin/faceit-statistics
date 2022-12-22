@@ -60,17 +60,15 @@ export function webhookListener() {
         }
         break;
       case 'match_object_created':
-        {
-          const match_id = data.payload.id;
-          const matches = new Matches();
-          const data = await matches.getMatchDetails(match_id);
-          try {
-            handleMatchStatusReady(data, cache);
-          } catch (e) {
-            console.log(e);
-          }
-          break;
+        const match_id = data.payload.id;
+        const matches = new Matches();
+        const data = await matches.getMatchDetails(match_id);
+        try {
+          handleMatchStatusReady(data, cache);
+        } catch (e) {
+          console.log(e);
         }
+        break;
     }
 
     res.sendStatus(200);
