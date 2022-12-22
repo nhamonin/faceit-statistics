@@ -63,19 +63,14 @@ export function webhookListener() {
       case 'match_object_created':
         const match_id = data.payload.id;
         const matches = new Matches();
-          const interval = setInterval(async () => {
-            const matchData = await matches.getMatchDetails(match_id);
+        const interval = setInterval(async () => {
+          const matchData = await matches.getMatchDetails(match_id);
 
-            if (matchData.teams.faction1 && matchData.teams.faction2) {
-              clearInterval(interval);
-
-              try {
-                handleMatchStatusReady(matchData, cache);
-              } catch (e) {
-                console.log(e);
-              }
-            }
-          }, 1000);
+          if (matchData.teams.faction1 && matchData.teams.faction2) {
+            clearInterval(interval);
+            handleMatchObjectCreated(matchData, cache);
+          }
+        }, 1000);
         break;
     }
 
@@ -85,131 +80,142 @@ export function webhookListener() {
   app.listen(80, () => {});
 }
 
-export async function handleMatchStatusReady(data, cache = new Set()) {
+export async function handleMatchObjectCreated(data, cache = new Set()) {
   if (cache.has(data.match_id)) return;
   cache.add(data.match_id);
   setTimeout(() => {
     cache.delete(data.match_id);
   }, 1000 * 60 * 5);
 
-  console.log(data);
-  const team1 = data.teams.faction1.roster;
-  const team2 = data.teams.faction2.roster;
-  console.log(JSON.stringify(team1), JSON.stringify(team2));
-  const team1playersIDs = team1.map(({ id }) => id);
-  const team2playersIDs = team2.map(({ id }) => id);
-  const dbPlayersTeam1 = [];
-  const dbPlayersTeam2 = [];
-  const team1Stats = {
-    lifetime: {},
-  };
-  const team2Stats = {
-    lifetime: {},
-  };
-  const team1Result = [];
-  const team2Result = [];
-  const players = new Players();
-  const teamsObj = {
-    0: [team1playersIDs, dbPlayersTeam1, team1Stats],
-    1: [team2playersIDs, dbPlayersTeam2, team2Stats],
-  };
+  try {
+    const team1 = data.teams.faction1.roster;
+    const team2 = data.teams.faction2.roster;
+    console.log(JSON.stringify(team1), JSON.stringify(team2));
+    const team1playersIDs = team1.map(({ id }) => id);
+    const team2playersIDs = team2.map(({ id }) => id);
+    const dbPlayersTeam1 = [];
+    const dbPlayersTeam2 = [];
+    const team1Stats = {
+      lifetime: {},
+    };
+    const team2Stats = {
+      lifetime: {},
+    };
+    const team1Result = [];
+    const team2Result = [];
+    const players = new Players();
+    const teamsObj = {
+      0: [team1playersIDs, dbPlayersTeam1, team1Stats],
+      1: [team2playersIDs, dbPlayersTeam2, team2Stats],
+    };
 
-  [team1Stats, team2Stats].map(({ lifetime }) => {
-    currentMapPool.map((map_id) => {
-      lifetime[map_id] = [];
+    [team1Stats, team2Stats].map(({ lifetime }) => {
+      currentMapPool.map((map_id) => {
+        lifetime[map_id] = [];
+      });
     });
-  });
 
-  for await (const teamObjKey of Object.keys(teamsObj)) {
-    const variablesArr = teamsObj[teamObjKey];
+    for await (const teamObjKey of Object.keys(teamsObj)) {
+      const variablesArr = teamsObj[teamObjKey];
 
-    await Promise.all(
-      variablesArr[0].map(async (player_id) => {
-        const player = await Player.findOne({ player_id });
-        if (player)
-          variablesArr[1].push({ nickname: player.nickname, _id: player._id });
-        const stats = await players.getStatisticsOfAPlayer(player_id, game_id);
-        console.log('133 stats:', JSON.stringify(stats));
-        currentMapPool.map((map_id) => {
-          variablesArr[2].lifetime[map_id].push(
-            stats.segments
-              .filter(({ mode, label }) => mode === '5v5' && label === map_id)
-              .map(({ stats }) => ({
-                winrate: +stats['Win Rate %'],
-                matches: +stats['Matches'],
-              }))[0]
+      await Promise.all(
+        variablesArr[0].map(async (player_id) => {
+          const player = await Player.findOne({ player_id });
+          if (player)
+            variablesArr[1].push({
+              nickname: player.nickname,
+              _id: player._id,
+            });
+          const stats = await players.getStatisticsOfAPlayer(
+            player_id,
+            game_id
           );
-        });
-      })
-    );
-  }
-
-  [team1Stats, team2Stats].map(({ lifetime }) => {
-    Object.keys(lifetime).map((mapName) => {
-      const winrateMatches = lifetime[mapName].reduce(
-        (accumulator, currentValue) =>
-          accumulator + currentValue?.winrate * currentValue?.matches,
-        0
+          console.log(player_id);
+          console.log(game_id);
+          console.log('133 stats:', JSON.stringify(stats));
+          currentMapPool.map((map_id) => {
+            variablesArr[2].lifetime[map_id].push(
+              stats.segments
+                .filter(({ mode, label }) => mode === '5v5' && label === map_id)
+                .map(({ stats }) => ({
+                  winrate: +stats['Win Rate %'],
+                  matches: +stats['Matches'],
+                }))[0]
+            );
+          });
+        })
       );
-      const totalMatches = lifetime[mapName].reduce(
-        (accumulator, currentValue) => accumulator + currentValue?.matches,
-        0
-      );
+    }
 
-      lifetime[mapName] = {
-        totalWinrate: +(winrateMatches / totalMatches).toFixed(2),
-        totalMatches,
-      };
-    });
-  });
+    [team1Stats, team2Stats].map(({ lifetime }) => {
+      Object.keys(lifetime).map((mapName) => {
+        const winrateMatches = lifetime[mapName].reduce(
+          (accumulator, currentValue) =>
+            accumulator + currentValue?.winrate * currentValue?.matches,
+          0
+        );
+        const totalMatches = lifetime[mapName].reduce(
+          (accumulator, currentValue) => accumulator + currentValue?.matches,
+          0
+        );
 
-  currentMapPool.map((mapName) => {
-    team1Result.push({
-      mapName,
-      totalWinrate: +(
-        team1Stats.lifetime[mapName]?.totalWinrate -
-        team2Stats.lifetime[mapName]?.totalWinrate
-      ).toFixed(2),
-      totalMatches:
-        team1Stats.lifetime[mapName]?.totalMatches -
-        team2Stats.lifetime[mapName]?.totalMatches,
+        lifetime[mapName] = {
+          totalWinrate: +(winrateMatches / totalMatches).toFixed(2),
+          totalMatches,
+        };
+      });
     });
 
-    team2Result.push({
-      mapName,
-      totalWinrate: +(
-        team2Stats.lifetime[mapName]?.totalWinrate -
-        team1Stats.lifetime[mapName]?.totalWinrate
-      ).toFixed(2),
-      totalMatches:
-        team2Stats.lifetime[mapName]?.totalMatches -
-        team1Stats.lifetime[mapName]?.totalMatches,
+    currentMapPool.map((mapName) => {
+      team1Result.push({
+        mapName,
+        totalWinrate: +(
+          team1Stats.lifetime[mapName]?.totalWinrate -
+          team2Stats.lifetime[mapName]?.totalWinrate
+        ).toFixed(2),
+        totalMatches:
+          team1Stats.lifetime[mapName]?.totalMatches -
+          team2Stats.lifetime[mapName]?.totalMatches,
+      });
+
+      team2Result.push({
+        mapName,
+        totalWinrate: +(
+          team2Stats.lifetime[mapName]?.totalWinrate -
+          team1Stats.lifetime[mapName]?.totalWinrate
+        ).toFixed(2),
+        totalMatches:
+          team2Stats.lifetime[mapName]?.totalMatches -
+          team1Stats.lifetime[mapName]?.totalMatches,
+      });
     });
-  });
 
-  team1Result.sort((a, b) => b?.totalWinrate - a?.totalWinrate);
-  team2Result.sort((a, b) => b?.totalWinrate - a?.totalWinrate);
+    team1Result.sort((a, b) => b?.totalWinrate - a?.totalWinrate);
+    team2Result.sort((a, b) => b?.totalWinrate - a?.totalWinrate);
 
-  const neededVariables = dbPlayersTeam1.length
-    ? [dbPlayersTeam1, team1Result]
-    : [dbPlayersTeam2, team2Result];
-  const teamsToSendNotification = new Set();
+    const neededVariables = dbPlayersTeam1.length
+      ? [dbPlayersTeam1, team1Result]
+      : [dbPlayersTeam2, team2Result];
+    const teamsToSendNotification = new Set();
 
-  for await (const player of neededVariables[0]) {
-    const teams = await Team.find({
-      players: player._id,
-    });
+    for await (const player of neededVariables[0]) {
+      const teams = await Team.find({
+        players: player._id,
+      });
 
-    teamsToSendNotification.add(...teams.map(({ chat_id }) => chat_id));
+      teamsToSendNotification.add(...teams.map(({ chat_id }) => chat_id));
+    }
+
+    [...teamsToSendNotification, 146612362]
+      .filter((chat_id) =>
+        allowedTeamsToGetMapPickerNotifications.includes(chat_id)
+      )
+      .map((chat_id) => {
+        tBot.sendMessage(chat_id, prettifyMapPickerData(neededVariables[1]));
+      });
+  } catch (e) {
+    console.log(e);
   }
-
-  [...teamsToSendNotification, 146612362]
-    .filter((chat_id) =>
-      allowedTeamsToGetMapPickerNotifications.includes(chat_id)
-    )
-    .map((chat_id) => {
-      tBot.sendMessage(chat_id, prettifyMapPickerData(neededVariables[1]));
-    });
 }
 
 function prettifyMapPickerData(teamResult) {
