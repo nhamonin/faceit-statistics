@@ -1,7 +1,7 @@
 import path from 'path';
 
 import express from 'express';
-import { Players } from 'faceit-node-api';
+import { Players, Matches } from 'faceit-node-api';
 
 import { Team, Player } from '#models';
 import { updateTeamPlayers } from '#services';
@@ -59,13 +59,18 @@ export function webhookListener() {
           }
         }
         break;
-      case 'match_status_ready':
-        try {
-          handleMatchStatusReady(data, cache);
-        } catch (e) {
-          console.log(e);
+      case 'match_object_created':
+        {
+          const match_id = data.payload.id;
+          const matches = new Matches();
+          const data = await matches.getMatchDetails(match_id);
+          try {
+            handleMatchStatusReady(data, cache);
+          } catch (e) {
+            console.log(e);
+          }
+          break;
         }
-        break;
     }
 
     res.sendStatus(200);
@@ -75,15 +80,15 @@ export function webhookListener() {
 }
 
 export async function handleMatchStatusReady(data, cache = new Set()) {
-  if (cache.has(data.transaction_id)) return;
-  cache.add(data.transaction_id);
+  if (cache.has(data.match_id)) return;
+  cache.add(data.match_id);
   setTimeout(() => {
-    cache.delete(data.transaction_id);
+    cache.delete(data.match_id);
   }, 1000 * 60 * 5);
 
   console.time('matchStatusReady time');
-  const team1 = data.payload.teams[0].roster;
-  const team2 = data.payload.teams[1].roster;
+  const team1 = data.teams.fraction1.roster;
+  const team2 = data.teams.fraction2.roster;
   const team1playersIDs = team1.map(({ id }) => id);
   const team2playersIDs = team2.map(({ id }) => id);
   const dbPlayersTeam1 = [];
