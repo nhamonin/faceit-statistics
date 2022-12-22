@@ -117,6 +117,7 @@ export async function handleMatchObjectCreated(data, cache = new Set()) {
 
     for await (const teamObjKey of Object.keys(teamsObj)) {
       const variablesArr = teamsObj[teamObjKey];
+      console.log(JSON.stringify(variablesArr[0]));
 
       await Promise.all(
         variablesArr[0].map(async (player_id) => {
@@ -130,9 +131,7 @@ export async function handleMatchObjectCreated(data, cache = new Set()) {
             player_id,
             game_id
           );
-          console.log(player_id);
-          console.log(game_id);
-          console.log('133 stats:', JSON.stringify(stats));
+          console.log('player stats:', JSON.stringify(stats));
           currentMapPool.map((map_id) => {
             variablesArr[2].lifetime[map_id].push(
               stats.segments
