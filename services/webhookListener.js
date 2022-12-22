@@ -128,6 +128,7 @@ export async function handleMatchStatusReady(data, cache = new Set()) {
         if (player)
           variablesArr[1].push({ nickname: player.nickname, _id: player._id });
         const stats = await players.getStatisticsOfAPlayer(player_id, game_id);
+        console.log(JSON.stringify(stats));
         currentMapPool.map((map_id) => {
           variablesArr[2].lifetime[map_id].push(
             stats.segments
