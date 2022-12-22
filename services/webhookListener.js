@@ -85,8 +85,8 @@ export async function handleMatchStatusReady(data, cache = new Set()) {
   }, 1000 * 60 * 5);
 
   console.time('matchStatusReady time');
-  const team1 = data.teams.fraction1.roster;
-  const team2 = data.teams.fraction2.roster;
+  const team1 = data.teams.faction1.roster;
+  const team2 = data.teams.faction2.roster;
   const team1playersIDs = team1.map(({ id }) => id);
   const team2playersIDs = team2.map(({ id }) => id);
   const dbPlayersTeam1 = [];
