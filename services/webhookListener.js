@@ -62,9 +62,9 @@ export function webhookListener() {
       case 'match_object_created':
         const match_id = data.payload.id;
         const matches = new Matches();
-        const data = await matches.getMatchDetails(match_id);
+        const matchData = await matches.getMatchDetails(match_id);
         try {
-          handleMatchStatusReady(data, cache);
+          handleMatchStatusReady(matchData, cache);
         } catch (e) {
           console.log(e);
         }
