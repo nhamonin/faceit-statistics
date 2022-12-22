@@ -35,7 +35,7 @@ export function webhookListener() {
     );
     let playersIDs, playersNicknames;
 
-    console.log(data);
+    console.log(JSON.stringify(data));
 
     switch (data.event) {
       case 'match_status_finished':
@@ -66,7 +66,7 @@ export function webhookListener() {
           const interval = setInterval(async () => {
             const matchData = await matches.getMatchDetails(match_id);
 
-            if (matchData.teams.faction1) {
+            if (matchData.teams.faction1 && matchData.teams.faction2) {
               clearInterval(interval);
 
               try {
@@ -92,10 +92,10 @@ export async function handleMatchStatusReady(data, cache = new Set()) {
     cache.delete(data.match_id);
   }, 1000 * 60 * 5);
 
-  console.time('matchStatusReady time');
   console.log(data);
   const team1 = data.teams.faction1.roster;
   const team2 = data.teams.faction2.roster;
+  console.log(JSON.stringify(team1), JSON.stringify(team2));
   const team1playersIDs = team1.map(({ id }) => id);
   const team2playersIDs = team2.map(({ id }) => id);
   const dbPlayersTeam1 = [];
@@ -113,6 +113,7 @@ export async function handleMatchStatusReady(data, cache = new Set()) {
     0: [team1playersIDs, dbPlayersTeam1, team1Stats],
     1: [team2playersIDs, dbPlayersTeam2, team2Stats],
   };
+
   [team1Stats, team2Stats].map(({ lifetime }) => {
     currentMapPool.map((map_id) => {
       lifetime[map_id] = [];
@@ -128,7 +129,7 @@ export async function handleMatchStatusReady(data, cache = new Set()) {
         if (player)
           variablesArr[1].push({ nickname: player.nickname, _id: player._id });
         const stats = await players.getStatisticsOfAPlayer(player_id, game_id);
-        console.log(JSON.stringify(stats));
+        console.log('133 stats:', JSON.stringify(stats));
         currentMapPool.map((map_id) => {
           variablesArr[2].lifetime[map_id].push(
             stats.segments
@@ -202,15 +203,13 @@ export async function handleMatchStatusReady(data, cache = new Set()) {
     teamsToSendNotification.add(...teams.map(({ chat_id }) => chat_id));
   }
 
-  [...teamsToSendNotification]
+  [...teamsToSendNotification, 146612362]
     .filter((chat_id) =>
       allowedTeamsToGetMapPickerNotifications.includes(chat_id)
     )
     .map((chat_id) => {
       tBot.sendMessage(chat_id, prettifyMapPickerData(neededVariables[1]));
     });
-
-  console.timeEnd('matchStatusReady time');
 }
 
 function prettifyMapPickerData(teamResult) {
