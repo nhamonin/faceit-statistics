@@ -34,6 +34,8 @@ export function webhookListener() {
     );
     let playersIDs, playersNicknames;
 
+    console.log(data);
+
     switch (data.event) {
       case 'match_status_finished':
         const playersRoster = [
