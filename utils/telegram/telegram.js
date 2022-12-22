@@ -1,5 +1,7 @@
 import TelegramBot from 'node-telegram-bot-api';
 
+import { bots } from '#config';
+
 import {
   ENVIRONMENT,
   TELEGRAM_API_TOKEN,
@@ -24,5 +26,7 @@ export function getCallbackTelegramOptions() {
 export function getTelegramBot() {
   const tToken =
     ENVIRONMENT === 'PRODUCTION' ? TELEGRAM_API_TOKEN : TELEGRAM_API_TOKEN_TEST;
-  return new TelegramBot(tToken, { polling: true });
+  if (bots.telegram) return bots.telegram;
+  bots.telegram = new TelegramBot(tToken, { polling: true });
+  return bots.telegram;
 }

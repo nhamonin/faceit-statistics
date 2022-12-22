@@ -7,7 +7,7 @@ import {
   addPlayer,
   deletePlayer,
 } from '#services';
-import { messages, bots } from '#config';
+import { messages } from '#config';
 import {
   startActionMarkup,
   modifyTeamMarkup,
@@ -28,8 +28,7 @@ import {
   logEvent,
 } from '#utils';
 
-bots.telegram = getTelegramBot();
-const tBot = bots.telegram;
+const tBot = getTelegramBot();
 
 function initTelegramBotListener() {
   process.env.NTBA_FIX_350 = 1;
