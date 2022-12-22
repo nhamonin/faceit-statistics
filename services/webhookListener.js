@@ -127,43 +127,46 @@ export async function handleMatchObjectCreated(data, cache = new Set()) {
               nickname: player.nickname,
               _id: player._id,
             });
-          const stats = await players.getStatisticsOfAPlayer(
-            player_id,
-            game_id
-          );
-          console.log('player stats:', JSON.stringify(stats));
-          currentMapPool.map((map_id) => {
-            variablesArr[2].lifetime[map_id].push(
-              stats.segments
-                .filter(({ mode, label }) => mode === '5v5' && label === map_id)
-                .map(({ stats }) => ({
-                  winrate: +stats['Win Rate %'],
-                  matches: +stats['Matches'],
-                }))[0]
-            );
-          });
+          await players
+            .getStatisticsOfAPlayer(player_id, game_id)
+            .then((stats) => {
+              currentMapPool.map((map_id) => {
+                variablesArr[2].lifetime[map_id].push(
+                  stats.segments
+                    .filter(
+                      ({ mode, label }) => mode === '5v5' && label === map_id
+                    )
+                    .map(({ stats }) => ({
+                      winrate: +stats['Win Rate %'],
+                      matches: +stats['Matches'],
+                    }))[0]
+                );
+              });
+            });
         })
       );
     }
+    console
+      .log(JSON.stringify(team1Stats, team2Stats))
 
-    [team1Stats, team2Stats].map(({ lifetime }) => {
-      Object.keys(lifetime).map((mapName) => {
-        const winrateMatches = lifetime[mapName].reduce(
-          (accumulator, currentValue) =>
-            accumulator + currentValue?.winrate * currentValue?.matches,
-          0
-        );
-        const totalMatches = lifetime[mapName].reduce(
-          (accumulator, currentValue) => accumulator + currentValue?.matches,
-          0
-        );
+      [(team1Stats, team2Stats)].map(({ lifetime }) => {
+        Object.keys(lifetime).map((mapName) => {
+          const winrateMatches = lifetime[mapName].reduce(
+            (accumulator, currentValue) =>
+              accumulator + currentValue?.winrate * currentValue?.matches,
+            0
+          );
+          const totalMatches = lifetime[mapName].reduce(
+            (accumulator, currentValue) => accumulator + currentValue?.matches,
+            0
+          );
 
-        lifetime[mapName] = {
-          totalWinrate: +(winrateMatches / totalMatches).toFixed(2),
-          totalMatches,
-        };
+          lifetime[mapName] = {
+            totalWinrate: +(winrateMatches / totalMatches).toFixed(2),
+            totalMatches,
+          };
+        });
       });
-    });
 
     currentMapPool.map((mapName) => {
       team1Result.push({
