@@ -207,18 +207,22 @@ export async function handleMatchObjectCreated(data, cache = new Set()) {
         allowedTeamsToGetMapPickerNotifications.includes(chat_id)
       )
       .map((chat_id) => {
-        tBot.sendMessage(chat_id, prettifyMapPickerData(neededVariables[1]));
+        tBot.sendMessage(chat_id, prettifyMapPickerData(neededVariables));
       });
   } catch (e) {
     console.log(e);
   }
 }
 
-function prettifyMapPickerData(teamResult) {
-  return teamResult
-    .map(
+function prettifyMapPickerData(neededVariables) {
+  return [
+    'Best maps for: ' +
+      neededVariables[0].map(({ nickname }) => nickname).join(', ') +
+      ':',
+    '',
+    ...neededVariables[1].map(
       ({ mapName, totalWinrate, totalMatches }) =>
         `${mapName} | ${totalWinrate}% | ${totalMatches}`
-    )
-    .join('\n');
+    ),
+  ].join('\n');
 }
