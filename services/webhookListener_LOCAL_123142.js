@@ -30,10 +30,12 @@ export function webhookListener() {
     const data = req.body;
 
     console.log(
-      `Webhook of type ${data.event} was received successfully!`,
+      `Webhook of type ${data.event} received successfully!`,
       new Date().toLocaleString()
     );
     let playersIDs, playersNicknames;
+
+    console.log(JSON.stringify(data));
 
     switch (data.event) {
       case 'match_status_finished':
@@ -44,6 +46,7 @@ export function webhookListener() {
 
         playersIDs = playersRoster.map(({ id }) => id);
         playersNicknames = playersRoster.map(({ nickname }) => nickname);
+        console.log(playersNicknames);
 
         for await (const player_id of playersIDs) {
           const teams = await Team.find({
@@ -87,8 +90,9 @@ export async function handleMatchObjectCreated(data, cache = new Set()) {
   try {
     const team1 = data.teams.faction1.roster;
     const team2 = data.teams.faction2.roster;
-    const team1playersIDs = team1.map(({ player_id }) => player_id);
-    const team2playersIDs = team2.map(({ player_id }) => player_id);
+    console.log(JSON.stringify(team1), JSON.stringify(team2));
+    const team1playersIDs = team1.map(({ id }) => id);
+    const team2playersIDs = team2.map(({ id }) => id);
     const dbPlayersTeam1 = [];
     const dbPlayersTeam2 = [];
     const team1Stats = {
@@ -113,6 +117,7 @@ export async function handleMatchObjectCreated(data, cache = new Set()) {
 
     for await (const teamObjKey of Object.keys(teamsObj)) {
       const variablesArr = teamsObj[teamObjKey];
+      console.log(JSON.stringify(variablesArr[0]));
 
       await Promise.all(
         variablesArr[0].map(async (player_id) => {
@@ -134,33 +139,34 @@ export async function handleMatchObjectCreated(data, cache = new Set()) {
                     .map(({ stats }) => ({
                       winrate: +stats['Win Rate %'],
                       matches: +stats['Matches'],
-                    }))[0] || { winrate: 0, matches: 0 }
+                    }))[0]
                 );
               });
             });
         })
       );
     }
+    console
+      .log(JSON.stringify(team1Stats), JSON.stringify(team2Stats));
 
-    [team1Stats, team2Stats].map(({ lifetime }) => {
-      Object.keys(lifetime).map((mapName) => {
-        const winrateMatches = lifetime[mapName].reduce(
-          (accumulator, currentValue) =>
-            accumulator + currentValue?.winrate * currentValue?.matches,
-          0
-        );
-        const totalMatches =
-          lifetime[mapName].reduce(
+      [(team1Stats, team2Stats)].map(({ lifetime }) => {
+        Object.keys(lifetime).map((mapName) => {
+          const winrateMatches = lifetime[mapName].reduce(
+            (accumulator, currentValue) =>
+              accumulator + currentValue?.winrate * currentValue?.matches,
+            0
+          );
+          const totalMatches = lifetime[mapName].reduce(
             (accumulator, currentValue) => accumulator + currentValue?.matches,
             0
-          ) || 0;
+          );
 
-        lifetime[mapName] = {
-          totalWinrate: +(winrateMatches / totalMatches).toFixed(2) || 0,
-          totalMatches,
-        };
+          lifetime[mapName] = {
+            totalWinrate: +(winrateMatches / totalMatches).toFixed(2),
+            totalMatches,
+          };
+        });
       });
-    });
 
     currentMapPool.map((mapName) => {
       team1Result.push({

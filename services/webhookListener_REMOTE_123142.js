@@ -30,7 +30,7 @@ export function webhookListener() {
     const data = req.body;
 
     console.log(
-      `Webhook of type ${data.event} was received successfully!`,
+      `Webhook of type ${data.event} received successfully!`,
       new Date().toLocaleString()
     );
     let playersIDs, playersNicknames;

@@ -30,7 +30,7 @@ export function webhookListener() {
     const data = req.body;
 
     console.log(
-      `Webhook of type ${data.event} was received successfully!`,
+      `Webhook of type ${data.event} received successfully!`,
       new Date().toLocaleString()
     );
     let playersIDs, playersNicknames;
@@ -141,6 +141,19 @@ export async function handleMatchObjectCreated(data, cache = new Set()) {
         })
       );
     }
+<<<<<<< HEAD
+    console
+      .log(JSON.stringify(team1Stats), JSON.stringify(team2Stats));
+
+      [(team1Stats, team2Stats)].map(({ lifetime }) => {
+        Object.keys(lifetime).map((mapName) => {
+          const winrateMatches = lifetime[mapName].reduce(
+            (accumulator, currentValue) =>
+              accumulator + currentValue?.winrate * currentValue?.matches,
+            0
+          );
+          const totalMatches = lifetime[mapName].reduce(
+=======
 
     [team1Stats, team2Stats].map(({ lifetime }) => {
       Object.keys(lifetime).map((mapName) => {
@@ -151,6 +164,7 @@ export async function handleMatchObjectCreated(data, cache = new Set()) {
         );
         const totalMatches =
           lifetime[mapName].reduce(
+>>>>>>> cf2fb3df590ae10365227f19d92346098084b4d7
             (accumulator, currentValue) => accumulator + currentValue?.matches,
             0
           ) || 0;
