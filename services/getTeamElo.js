@@ -38,13 +38,11 @@ function formatMessage(playersStats) {
   return playersStats
     .map(
       (playerStats) =>
-        `${playerStats.nickname}: <span class='float-right'>${
+        `<div class="player-elo-block"><span>${
+          playerStats.nickname
+        }:</span> <span class=${lvlClasses[playerStats.lvl]}>${
           playerStats.elo
-        } elo <span class=${lvlClasses[playerStats.lvl]}>(${
-          playerStats.lvl.toString().length === 2
-            ? playerStats.lvl
-            : '&nbsp;' + playerStats.lvl + '&nbsp;'
-        } lvl)</span></span>`
+        } elo</span></div>`
     )
-    .join('<br>');
+    .join('');
 }

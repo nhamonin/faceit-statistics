@@ -37,16 +37,16 @@ const allowedCompetitionNames = [
   'CS:GO 5v5',
 ];
 const lvlClasses = {
-  1: 'white',
-  2: 'green',
-  3: 'green',
-  4: 'yellow',
-  5: 'yellow',
-  6: 'yellow',
-  7: 'yellow',
-  8: 'orange',
-  9: 'orange',
-  10: 'red',
+  1: 'first',
+  2: 'second',
+  3: 'third',
+  4: 'fourth',
+  5: 'fifth',
+  6: 'sixth',
+  7: 'seventh',
+  8: 'eighth',
+  9: 'ninth',
+  10: 'tenth',
 };
 
 const messages = {
@@ -90,8 +90,8 @@ You can check stats or modify your team.`
     `Please add at least one player via '/add_player nickname' command to check ${attribute}.`,
   emptyMatchesError: 'Your teammates have no matches in CS:GO.',
   getTeamStats: (playerStatMessage, statAttribute, avgTeamStat) =>
-    `${playerStatMessage}<br><br>${
-      avgTeamStat ? `Avg Team ${statAttribute}: ${avgTeamStat}` : ''
+    `${playerStatMessage}<br>${
+      avgTeamStat ? `<div>Avg Team ${statAttribute}: ${avgTeamStat}</div>` : ''
     }`,
   getPlayerLastMatches: {
     notExists: (nickname) =>
