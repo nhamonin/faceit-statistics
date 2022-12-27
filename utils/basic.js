@@ -76,6 +76,26 @@ function chunk(arr, len) {
   return chunks;
 }
 
+function regulateWinrate(value) {
+  if (value <= 65 && value >= 35) {
+    return value;
+  } else if (value >= 65) {
+    return 65;
+  } else {
+    return 35;
+  }
+}
+
+function regulateAvg(value) {
+  if (value <= 25 && value >= 15) {
+    return value;
+  } else if (value >= 25) {
+    return 25;
+  } else {
+    return 15;
+  }
+}
+
 export {
   adjustConsoleLog,
   logEvent,
@@ -83,4 +103,6 @@ export {
   calculateAverage,
   isPlayerTeamMember,
   chunk,
+  regulateWinrate,
+  regulateAvg,
 };
