@@ -10,6 +10,7 @@ import {
   FACEIT_WEBHOOK_ID,
   FACEIT_WEBHOOK_ID_TEST,
   HCAPTCHA_API_KEY,
+  puppeteerArgs,
 } from '#config';
 
 puppeteer.use(stealthPlugin());
@@ -28,7 +29,10 @@ const webhookEditURL = `https://developers.faceit.com/apps/${FACEIT_APP_ID}/webh
 const waitUntil = 'networkidle2';
 
 export async function getCurrentBearerToken() {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: puppeteerArgs,
+  });
   const page = await browser.newPage();
   let bearerToken = null;
   try {

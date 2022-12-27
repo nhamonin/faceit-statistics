@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer-extra';
 
 import { getBasicTelegramOptions } from '#utils';
-import { bots, ENVIRONMENT } from '#config';
+import { bots, ENVIRONMENT, puppeteerArgs } from '#config';
 
 let page = await getBrowserPage();
 
@@ -50,16 +50,7 @@ async function sendPhoto(tBot, chatId, message_id, html) {
 
 async function getBrowserPage() {
   const browser = await puppeteer.launch({
-    headless: true,
-    args: [
-      '--disable-gpu',
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-accelerated-2d-canvas',
-      '--no-first-run',
-      '--no-zygote',
-    ],
+    args: puppeteerArgs,
   });
 
   return browser.newPage();

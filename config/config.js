@@ -111,6 +111,15 @@ const DEFAULT_MATCH_STORE_LIMIT = 20;
 const MAX_PLAYERS_AMOUNT = 7;
 const bots = {};
 const allowedTeamsToGetMapPickerNotifications = [146612362, 392067613];
+const puppeteerArgs = [
+  '--disable-gpu',
+  '--no-sandbox',
+  '--disable-setuid-sandbox',
+  '--disable-dev-shm-usage',
+  '--disable-accelerated-2d-canvas',
+  '--no-first-run',
+  '--no-zygote',
+];
 
 export {
   ENVIRONMENT,
@@ -138,4 +147,5 @@ export {
   MAX_PLAYERS_AMOUNT,
   bots,
   allowedTeamsToGetMapPickerNotifications,
+  puppeteerArgs,
 };
