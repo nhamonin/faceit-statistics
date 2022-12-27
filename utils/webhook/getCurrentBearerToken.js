@@ -30,7 +30,7 @@ const waitUntil = 'networkidle2';
 
 export async function getCurrentBearerToken() {
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     args: puppeteerArgs,
   });
   const page = await browser.newPage();
