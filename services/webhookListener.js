@@ -34,23 +34,26 @@ export function webhookListener() {
       case 'match_status_finished':
         {
           const match_id = data.payload.id;
-          const matchData = await matches.getMatchDetails(match_id);
-          const winner = matchData.results.winner;
-          const pickedMap = matchData.voting.map.pick;
-          const predictedData = predictions
-            .get(match_id)
-            [winner === 'faction1' ? 0 : 1].filter(
-              (predictionObj) => predictionObj.mapName === pickedMap
-            );
-          const match = new Match({
-            match_id,
-            winratePredictedValue: predictedData.totalWinrate > 0,
-            avgPredictedValue: predictedData.totalPoints > 0,
-          });
-          match.save().then(async () => {
-            const matchPrediction = await MatchPrediction.findOneAndUpdate();
-            matchPrediction?.matches?.push(match);
-          });
+          if (predictedData.has(match_id)) {
+            const matchData = await matches.getMatchDetails(match_id);
+            const winner = matchData.results.winner;
+            const pickedMap = matchData.voting.map.pick;
+            const predictedData = predictions
+              .get(match_id)
+              [winner === 'faction1' ? 0 : 1].filter(
+                (predictionObj) => predictionObj.mapName === pickedMap
+              );
+            const match = new Match({
+              match_id,
+              winratePredictedValue: predictedData.totalWinrate > 0,
+              avgPredictedValue: predictedData.totalPoints > 0,
+            });
+            match.save().then(async () => {
+              const matchPrediction = await MatchPrediction.findOneAndUpdate();
+              matchPrediction?.matches?.push(match);
+              predictions.delete(match_id);
+            });
+          }
 
           const playersRoster = [
             ...data.payload.teams[0].roster,

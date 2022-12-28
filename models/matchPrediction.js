@@ -15,7 +15,7 @@ export const matchPredictionSchema = new Schema(
           const correctlyPredictedValues = this.matches.filter(
             (match) => match.winratePredictedValue
           ).length;
-          return correctlyPredictedValues / this.matches.length;
+          return (correctlyPredictedValues / this.matches.length) * 100;
         },
       },
     },
@@ -32,7 +32,7 @@ export const matchPredictionSchema = new Schema(
           const correctlyPredictedValues = this.matches.filter(
             (match) => match.avgPredictedValue
           ).length;
-          return correctlyPredictedValues / this.matches.length;
+          return (correctlyPredictedValues / this.matches.length) * 100;
         },
       },
     },
