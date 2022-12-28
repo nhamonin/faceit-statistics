@@ -38,6 +38,7 @@ export function webhookListener() {
             const matchData = await matches.getMatchDetails(match_id);
             const winner = matchData.results.winner;
             const pickedMap = matchData.voting.map.pick;
+            console.log(predictions.get(match_id));
             const predictedData = predictions
               .get(match_id)
               [winner === 'faction1' ? 0 : 1].filter(
