@@ -1,14 +1,17 @@
-export function prettifyMapPickerData(neededVariables, basedOn) {
+export function prettifyMapPickerData(neededVariables) {
+  const playersString = neededVariables[0]
+    .map(({ nickname }) => nickname)
+    .join(', ');
+
   return [
-    `Best maps based on ${basedOn} for: ` +
-      neededVariables[0].map(({ nickname }) => nickname).join(', ') +
-      ':',
+    `Best maps for: ${playersString}:`,
     '',
     ...neededVariables[1].map(
-      ({ mapName, totalWinrate, totalMatches, totalPoints }) =>
-        totalWinrate && totalMatches
-          ? `${mapName} | ${totalWinrate}% | ${totalMatches}`
-          : `${mapName} | ${totalPoints}`
+      ({ mapName, totalWinrate, totalPoints }) =>
+        `${mapName} | ${totalWinrate}%* (${totalPoints})**`
     ),
+    '',
+    '* - difference between winrates',
+    '** - difference between impacts',
   ].join('\n');
 }

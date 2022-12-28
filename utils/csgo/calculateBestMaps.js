@@ -6,6 +6,7 @@ import {
   regulateAvg,
   prettifyMapPickerData,
   calculateAverage,
+  calculateDifference,
   getTelegramBot,
 } from '#utils';
 import {
@@ -17,7 +18,7 @@ import {
 const tBot = getTelegramBot();
 const cache = new Set();
 
-export async function calculateBestMapsAvg(matchData) {
+export async function calculateBestMaps(matchData) {
   if (cache.has(matchData.match_id)) return;
   cache.add(matchData.match_id);
   setTimeout(() => {
@@ -34,10 +35,16 @@ export async function calculateBestMapsAvg(matchData) {
     const team1Stats = {
       lifetime: {},
       avg: {},
+      totalMatches: {},
+      totalWinrate: {},
+      winrateMatches: {},
     };
     const team2Stats = {
       lifetime: {},
       avg: {},
+      totalMatches: {},
+      totalWinrate: {},
+      winrateMatches: {},
     };
     const team1Result = [];
     const team2Result = [];
@@ -47,12 +54,17 @@ export async function calculateBestMapsAvg(matchData) {
       1: [team2playersIDs, dbPlayersTeam2, team2Stats],
     };
 
-    [team1Stats, team2Stats].map(({ lifetime, avg }) => {
-      currentMapPool.map((map_id) => {
-        lifetime[map_id] = [];
-        avg[map_id] = [];
-      });
-    });
+    [team1Stats, team2Stats].map(
+      ({ lifetime, avg, totalMatches, totalWinrate, winrateMatches }) => {
+        currentMapPool.map((map_id) => {
+          lifetime[map_id] = [];
+          avg[map_id] = [];
+          totalMatches[map_id] = [];
+          totalWinrate[map_id] = [];
+          winrateMatches[map_id] = [];
+        });
+      }
+    );
 
     for await (const teamObjKey of Object.keys(teamsObj)) {
       const variablesArr = teamsObj[teamObjKey];
@@ -77,7 +89,8 @@ export async function calculateBestMapsAvg(matchData) {
                     .map(({ stats }) => ({
                       winrate: regulateWinrate(+stats['Win Rate %']),
                       avg: regulateAvg(+stats['Average Kills']),
-                    }))[0] || { winrate: 50, avg: 20 }
+                      matches: +stats['Matches'],
+                    }))[0] || { winrate: 50, avg: 20, matches: 0 }
                 );
               });
             });
@@ -88,15 +101,31 @@ export async function calculateBestMapsAvg(matchData) {
     [team1Stats, team2Stats].map((teamStats) => {
       Object.keys(teamStats.lifetime).map((mapName) => {
         teamStats.avg[mapName] = calculateAverage(
-          teamStats.lifetime[mapName].map(({ avg }) => avg),
-          10
+          teamStats.lifetime[mapName].map(({ avg }) => avg)
         );
       });
     });
 
     [team1Stats, team2Stats].map((teamStats) => {
-      Object.keys(teamStats.lifetime).map((mapName) => {
-        teamStats.lifetime[mapName].map((soloStats) => {
+      const lifetime = teamStats.lifetime;
+
+      Object.keys(lifetime).map((mapName) => {
+        teamStats.winrateMatches[mapName] = lifetime[mapName].reduce(
+          (accumulator, currentValue) =>
+            accumulator + currentValue?.winrate * currentValue?.matches,
+          0
+        );
+        teamStats.totalMatches[mapName] =
+          lifetime[mapName].reduce(
+            (accumulator, currentValue) => accumulator + currentValue?.matches,
+            0
+          ) || 0;
+        teamStats.totalWinrate[mapName] =
+          +(
+            teamStats.winrateMatches[mapName] / teamStats.totalMatches[mapName]
+          ).toFixed(2) || 0;
+
+        lifetime[mapName].map((soloStats) => {
           const soloAvg = soloStats.avg;
           const teamAvg = teamStats.avg[mapName];
           soloStats.cf = (1 + (soloAvg - teamAvg) / teamAvg) * 0.2;
@@ -106,32 +135,58 @@ export async function calculateBestMapsAvg(matchData) {
         });
       });
 
-      Object.keys(teamStats.lifetime).map((mapName) => {
-        teamStats.lifetime[mapName] = +teamStats.lifetime[mapName]
-          .map(({ points }) => points)
-          .reduce((a, b) => a + b, 0)
-          .toFixed(2);
+      Object.keys(lifetime).map((mapName) => {
+        lifetime[mapName] = {
+          totalWinrate:
+            +(
+              teamStats.winrateMatches[mapName] /
+              teamStats.totalMatches[mapName]
+            ).toFixed(2) || 0,
+          totalMatches: teamStats.totalMatches[mapName],
+          totalPoints: +lifetime[mapName]
+            .map(({ points }) => points)
+            .reduce((a, b) => a + b, 0)
+            .toFixed(2),
+        };
       });
     });
 
     currentMapPool.map((mapName) => {
       team1Result.push({
         mapName,
-        totalPoints: +(
-          team1Stats.lifetime[mapName] - team2Stats.lifetime[mapName]
-        ).toFixed(2),
+        totalPoints: calculateDifference(
+          team1Stats.lifetime[mapName].totalPoints,
+          team2Stats.lifetime[mapName].totalPoints
+        ),
+        totalWinrate: calculateDifference(
+          team1Stats.lifetime[mapName].totalWinrate,
+          team2Stats.lifetime[mapName].totalWinrate
+        ),
+        totalMatches: calculateDifference(
+          team1Stats.lifetime[mapName].totalMatches,
+          team2Stats.lifetime[mapName].totalMatches
+        ),
       });
 
       team2Result.push({
         mapName,
-        totalPoints: +(
-          team2Stats.lifetime[mapName] - team1Stats.lifetime[mapName]
-        ).toFixed(2),
+        totalPoints: calculateDifference(
+          team2Stats.lifetime[mapName].totalPoints,
+          team1Stats.lifetime[mapName].totalPoints
+        ),
+        totalWinrate: calculateDifference(
+          team2Stats.lifetime[mapName].totalWinrate,
+          team1Stats.lifetime[mapName].totalWinrate
+        ),
+        totalMatches: calculateDifference(
+          team2Stats.lifetime[mapName].totalMatches,
+          team1Stats.lifetime[mapName].totalMatches
+        ),
       });
     });
 
-    team1Result.sort((a, b) => b?.totalPoints - a?.totalPoints);
-    team2Result.sort((a, b) => b?.totalPoints - a?.totalPoints);
+    team1Result.sort((a, b) => b?.totalWinrate - a?.totalWinrate);
+    team2Result.sort((a, b) => b?.totalWinrate - a?.totalWinrate);
 
     const neededVariables = dbPlayersTeam1.length
       ? [dbPlayersTeam1, team1Result]
@@ -153,10 +208,7 @@ export async function calculateBestMapsAvg(matchData) {
         allowedTeamsToGetMapPickerNotifications.includes(chat_id)
       )
       .map((chat_id) => {
-        tBot.sendMessage(
-          chat_id,
-          prettifyMapPickerData(neededVariables, 'avg/winrate')
-        );
+        tBot.sendMessage(chat_id, prettifyMapPickerData(neededVariables));
       });
   } catch (e) {
     console.log(e);

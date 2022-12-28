@@ -2,6 +2,7 @@
 import {
   adjustConsoleLog,
   calculateAverage,
+  calculateDifference,
   isPlayerTeamMember,
   sendPhoto,
   logEvent,
@@ -25,13 +26,13 @@ import { getPlayerInfo } from './csgo/getPlayerInfo.js';
 import { getTeamNicknames } from './csgo/getTeamNicknames.js';
 import { getTeamKDWrapper } from './csgo/getTeamKDWrapper.js';
 import { getPlayerLastMatchesWrapper } from './csgo/getPlayerLastMatchesWrapper.js';
-import { calculateBestMapsWinrate } from './csgo/calculateBestMapsWinrate.js';
-import { calculateBestMapsAvg } from './csgo/calculateBestMapsAvg.js';
+import { calculateBestMaps } from './csgo/calculateBestMaps.js';
 import { prettifyMapPickerData } from './csgo/prettifyMapPickerData.js';
 
 export {
   adjustConsoleLog,
   calculateAverage,
+  calculateDifference,
   isPlayerTeamMember,
   sendPhoto,
   logEvent,
@@ -44,8 +45,7 @@ export {
   getTeamNicknames,
   getTeamKDWrapper,
   getPlayerLastMatchesWrapper,
-  calculateBestMapsWinrate,
-  calculateBestMapsAvg,
+  calculateBestMaps,
   prettifyMapPickerData,
   getTelegramBot,
   getBasicTelegramOptions,

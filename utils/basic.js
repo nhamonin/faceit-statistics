@@ -60,6 +60,10 @@ function calculateAverage(arr, digits = 2) {
   return +(arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(digits);
 }
 
+function calculateDifference(a, b, digits = 2) {
+  return +(a - b).toFixed(digits);
+}
+
 function isPlayerTeamMember(players, name) {
   return players?.some(({ nickname }) => nickname === name);
 }
@@ -101,6 +105,7 @@ export {
   logEvent,
   sendPhoto,
   calculateAverage,
+  calculateDifference,
   isPlayerTeamMember,
   chunk,
   regulateWinrate,

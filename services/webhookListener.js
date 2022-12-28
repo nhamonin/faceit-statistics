@@ -5,7 +5,7 @@ import { Matches } from 'faceit-node-api';
 
 import { Team } from '#models';
 import { updateTeamPlayers } from '#services';
-import { calculateBestMapsWinrate, calculateBestMapsAvg } from '#utils';
+import { calculateBestMaps } from '#utils';
 import { clearInterval } from 'timers';
 
 export function webhookListener() {
@@ -58,8 +58,7 @@ export function webhookListener() {
           if (matchData.teams.faction1 && matchData.teams.faction2) {
             clearInterval(interval);
 
-            calculateBestMapsWinrate(matchData);
-            calculateBestMapsAvg(matchData);
+            calculateBestMaps(matchData);
           }
         }, 1000);
         break;
