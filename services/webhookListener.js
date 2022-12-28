@@ -38,7 +38,6 @@ export function webhookListener() {
             const matchData = await matches.getMatchDetails(match_id);
             const winner = matchData.results.winner;
             const pickedMap = matchData.voting.map.pick;
-            console.log(predictions.get(match_id));
             const predictedData = predictions
               .get(match_id)
               [winner === 'faction1' ? 0 : 1].filter(
@@ -49,8 +48,10 @@ export function webhookListener() {
               winratePredictedValue: predictedData.totalWinrate > 0,
               avgPredictedValue: predictedData.totalPoints > 0,
             });
+            console.log(match);
             match.save().then(async () => {
               const matchPrediction = await MatchPrediction.findOneAndUpdate();
+              console.log(matchPrediction);
               matchPrediction?.matches?.push(match);
               predictions.delete(match_id);
             });
