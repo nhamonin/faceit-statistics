@@ -8,12 +8,14 @@ import {
   calculateAverage,
   calculateDifference,
   getTelegramBot,
+  sendPhoto,
 } from '#utils';
 import {
   game_id,
   currentMapPool,
   allowedTeamsToGetMapPickerNotifications,
 } from '#config';
+import { getBestMapsTemplate } from '#templates';
 
 const tBot = getTelegramBot();
 const cache = new Set();
@@ -263,7 +265,17 @@ async function sendMapPickerResult(
         allowedTeamsToGetMapPickerNotifications.includes(chat_id)
       )
       .map((chat_id) => {
-        tBot.sendMessage(chat_id, prettifyMapPickerData(neededVariables));
+        const htmlMessage = prettifyMapPickerData(neededVariables);
+        const teammateString = neededVariables[0]
+          .map(({ nickname }) => nickname)
+          .join(', ');
+        tBot.sendMessage(chat_id, `Best maps for: ${teammateString}`);
+        sendPhoto(
+          tBot,
+          chat_id,
+          null,
+          getBestMapsTemplate(htmlMessage, neededVariables[1][0].mapName)
+        );
       });
   } catch (e) {
     console.log(e);

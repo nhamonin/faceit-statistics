@@ -50,6 +50,7 @@ async function sendPhoto(tBot, chatId, message_id, html) {
 
 async function getBrowserPage() {
   const browser = await puppeteer.launch({
+    headless: true,
     args: puppeteerArgs,
   });
 
