@@ -17,6 +17,7 @@ import {
 
 const tBot = getTelegramBot();
 const cache = new Set();
+const players = new Players();
 
 export async function calculateBestMaps(matchData) {
   if (cache.has(matchData.match_id)) return;
@@ -32,40 +33,60 @@ export async function calculateBestMaps(matchData) {
     const team2playersIDs = team2.map(({ player_id }) => player_id);
     const dbPlayersTeam1 = [];
     const dbPlayersTeam2 = [];
-    const team1Stats = {
-      lifetime: {},
-      avg: {},
-      totalMatches: {},
-      totalWinrate: {},
-      winrateMatches: {},
-    };
-    const team2Stats = {
-      lifetime: {},
-      avg: {},
-      totalMatches: {},
-      totalWinrate: {},
-      winrateMatches: {},
-    };
+    const team1Stats = createStatsBoilerplate();
+    const team2Stats = createStatsBoilerplate();
     const team1Result = [];
     const team2Result = [];
-    const players = new Players();
     const teamsObj = {
       0: [team1playersIDs, dbPlayersTeam1, team1Stats],
       1: [team2playersIDs, dbPlayersTeam2, team2Stats],
     };
 
-    [team1Stats, team2Stats].map(
-      ({ lifetime, avg, totalMatches, totalWinrate, winrateMatches }) => {
-        currentMapPool.map((map_id) => {
-          lifetime[map_id] = [];
-          avg[map_id] = [];
-          totalMatches[map_id] = [];
-          totalWinrate[map_id] = [];
-          winrateMatches[map_id] = [];
-        });
-      }
+    fillInStatsBoilerplateWithMaps([team1Stats, team2Stats]);
+    await fillInTeamVariablesWithPlayersStats(teamsObj);
+    calculateAverageAvg([team1Stats, team2Stats]);
+    calculateAndFillAllData([team1Stats, team2Stats]);
+    calculateDifferencesAndSortResult(
+      team1Stats,
+      team2Stats,
+      team1Result,
+      team2Result
     );
+    await sendMapPickerResult(
+      dbPlayersTeam1,
+      dbPlayersTeam2,
+      team1Result,
+      team2Result
+    );
+  } catch (e) {
+    console.log(e);
+  }
+}
 
+function createStatsBoilerplate() {
+  return {
+    lifetime: {},
+    avg: {},
+    totalMatches: {},
+    totalWinrate: {},
+    winrateMatches: {},
+  };
+}
+
+function fillInStatsBoilerplateWithMaps(arr) {
+  arr.map(({ lifetime, avg, totalMatches, totalWinrate, winrateMatches }) => {
+    currentMapPool.map((map_id) => {
+      lifetime[map_id] = [];
+      avg[map_id] = [];
+      totalMatches[map_id] = [];
+      totalWinrate[map_id] = [];
+      winrateMatches[map_id] = [];
+    });
+  });
+}
+
+async function fillInTeamVariablesWithPlayersStats(teamsObj) {
+  try {
     for await (const teamObjKey of Object.keys(teamsObj)) {
       const variablesArr = teamsObj[teamObjKey];
 
@@ -97,16 +118,28 @@ export async function calculateBestMaps(matchData) {
         })
       );
     }
+  } catch (e) {
+    console.log(e);
+  }
+}
 
-    [team1Stats, team2Stats].map((teamStats) => {
+function calculateAverageAvg(arr) {
+  try {
+    arr.map((teamStats) => {
       Object.keys(teamStats.lifetime).map((mapName) => {
         teamStats.avg[mapName] = calculateAverage(
           teamStats.lifetime[mapName].map(({ avg }) => avg)
         );
       });
     });
+  } catch (e) {
+    console.log(e);
+  }
+}
 
-    [team1Stats, team2Stats].map((teamStats) => {
+function calculateAndFillAllData(arr) {
+  try {
+    arr.map((teamStats) => {
       const lifetime = teamStats.lifetime;
 
       Object.keys(lifetime).map((mapName) => {
@@ -150,7 +183,18 @@ export async function calculateBestMaps(matchData) {
         };
       });
     });
+  } catch (e) {
+    console.log(e);
+  }
+}
 
+function calculateDifferencesAndSortResult(
+  team1Stats,
+  team2Stats,
+  team1Result,
+  team2Result
+) {
+  try {
     currentMapPool.map((mapName) => {
       team1Result.push({
         mapName,
@@ -187,7 +231,18 @@ export async function calculateBestMaps(matchData) {
 
     team1Result.sort((a, b) => b?.totalWinrate - a?.totalWinrate);
     team2Result.sort((a, b) => b?.totalWinrate - a?.totalWinrate);
+  } catch (e) {
+    console.log(e);
+  }
+}
 
+async function sendMapPickerResult(
+  dbPlayersTeam1,
+  dbPlayersTeam2,
+  team1Result,
+  team2Result
+) {
+  try {
     const neededVariables = dbPlayersTeam1.length
       ? [dbPlayersTeam1, team1Result]
       : [dbPlayersTeam2, team2Result];
