@@ -86,7 +86,7 @@ export function webhookListener() {
             if (matchData.teams.faction1 && matchData.teams.faction2) {
               clearInterval(interval);
 
-              const prediction = calculateBestMaps(matchData);
+              const prediction = await calculateBestMaps(matchData);
               predictions.set(match_id, prediction);
             }
           }, 1000);
