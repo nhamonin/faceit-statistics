@@ -60,6 +60,8 @@ export async function calculateBestMaps(matchData) {
       team1Result,
       team2Result
     );
+
+    return [team1Result, team2Result];
   } catch (e) {
     console.log(e);
   }
