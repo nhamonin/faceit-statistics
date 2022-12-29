@@ -96,15 +96,18 @@ async function performMapPickerAnalytics(match_id) {
     const winner = matchData.results.winner;
     const pickedMap = matchData.voting.map.pick[0];
     if (!currentMapPool.includes(pickedMap)) return;
-    const predictedData = predictions
-      .get(match_id)
-      [winner === 'faction1' ? 0 : 1].filter(
-        (predictionObj) => predictionObj.mapName === pickedMap
-      )[0];
+    const predictedData = predictions.get(match_id);
+    if (!predictedData) return;
+    const predictedDataTeam = predictedData[winner === 'faction1' ? 0 : 1];
+    if (!predictedDataTeam) return;
+    const predictedDataMap = predictedDataTeam.filter(
+      (predictionObj) => predictionObj.mapName === pickedMap
+    )[0];
+    if (!predictedDataMap) return;
     const match = new Match({
       match_id,
-      winratePredictedValue: predictedData.totalWinrate > 0,
-      avgPredictedValue: predictedData.totalPoints > 0,
+      winratePredictedValue: predictedDataMap.totalWinrate > 0,
+      avgPredictedValue: predictedDataMap.totalPoints > 0,
     });
     match.save().then(async () => {
       let matchPrediction = await MatchPrediction.findOne();
