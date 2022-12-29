@@ -7,6 +7,7 @@ import { Team, Match, MatchPrediction } from '#models';
 import { updateTeamPlayers } from '#services';
 import { calculateBestMaps, getCurrentWinrate } from '#utils';
 import { clearInterval } from 'timers';
+import { allowedCompetitionNames, currentMapPool } from '#config';
 
 const matches = new Matches();
 const predictions = new Map();
@@ -61,8 +62,14 @@ export function webhookListener() {
           const match_id = data.payload.id;
           const interval = setInterval(async () => {
             const matchData = await matches.getMatchDetails(match_id);
-
-            if (matchData.teams.faction1 && matchData.teams.faction2) {
+            const allowedCompetitionName = allowedCompetitionNames.includes(
+              matchData.competition_name
+            );
+            if (
+              matchData?.teams?.faction1 &&
+              matchData?.teams?.faction2 &&
+              allowedCompetitionName
+            ) {
               clearInterval(interval);
 
               const prediction = await calculateBestMaps(matchData);
@@ -88,7 +95,7 @@ async function performMapPickerAnalytics(match_id) {
     const matchData = await matches.getMatchDetails(match_id);
     const winner = matchData.results.winner;
     const pickedMap = matchData.voting.map.pick[0];
-    if (pickedMap === 'de_anubis') return;
+    if (!currentMapPool.includes(pickedMap)) return;
     const predictedData = predictions
       .get(match_id)
       [winner === 'faction1' ? 0 : 1].filter(
