@@ -262,16 +262,12 @@ async function sendMapPickerResult(
       });
     }
 
-    [...new Set([...teamsToSendNotification, 146612362])]
+    [...new Set([...teamsToSendNotification])]
       .filter((chat_id) =>
         allowedTeamsToGetMapPickerNotifications.includes(chat_id)
       )
       .map((chat_id) => {
         const htmlMessage = prettifyMapPickerData(neededVariables);
-        const teammateString = neededVariables[0]
-          .map(({ nickname }) => nickname)
-          .join(', ');
-        tBot.sendMessage(chat_id, `Best maps for: ${teammateString}`);
         sendPhoto(
           tBot,
           chat_id,

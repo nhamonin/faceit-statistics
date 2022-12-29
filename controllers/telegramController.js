@@ -1,4 +1,4 @@
-import { Team } from '#models';
+import { Team, MatchPrediction } from '#models';
 import { getEloTemplate } from '#templates';
 import {
   initTeam,
@@ -45,6 +45,25 @@ function initTelegramBotListener() {
       });
     }
   );
+
+  tBot.onText(/\/get_analytics/, async ({ chat, message_id }) => {
+    const matchPrediction = await MatchPrediction.findOne();
+
+    const message = [
+      `winrate predictions: ${matchPrediction.winrateMatchesPrediction.currentWinrate.toFixed(
+        2
+      )} %`,
+      `avg predictions: ${matchPrediction.avgMatchesPrediction.currentWinrate.toFixed(
+        2
+      )} %`,
+      '',
+      `Total matches: ${matchPrediction.matches.length}`,
+    ].join('\n');
+
+    tBot.sendMessage(chat.id, message, {
+      ...getBasicTelegramOptions(message_id),
+    });
+  });
 
   tBot.on('polling_error', (err) => {
     console.log(err);
