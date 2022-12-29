@@ -2,38 +2,22 @@ import mongoose, { Schema } from 'mongoose';
 
 export const matchPredictionSchema = new Schema(
   {
-    avgMatchesPrediction: {
-      type: String,
+    matches: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Match' }],
       required: true,
-      matches: {
-        type: [{ type: String, ref: 'MatchSchema' }],
-        required: true,
-      },
+    },
+    avgMatchesPrediction: {
+      type: Object,
       currentWinrate: {
         type: Number,
-        default: function () {
-          const correctlyPredictedValues = this.matches.filter(
-            (match) => match.winratePredictedValue
-          ).length;
-          return (correctlyPredictedValues / this.matches.length) * 100;
-        },
+        default: 0,
       },
     },
     winrateMatchesPrediction: {
-      type: String,
-      required: true,
-      matches: {
-        type: [{ type: String, ref: 'MatchSchema' }],
-        required: true,
-      },
+      type: Object,
       currentWinrate: {
         type: Number,
-        default: function () {
-          const correctlyPredictedValues = this.matches.filter(
-            (match) => match.avgPredictedValue
-          ).length;
-          return (correctlyPredictedValues / this.matches.length) * 100;
-        },
+        default: 0,
       },
     },
   },

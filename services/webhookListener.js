@@ -5,7 +5,7 @@ import { Matches } from 'faceit-node-api';
 
 import { Team, Match, MatchPrediction } from '#models';
 import { updateTeamPlayers } from '#services';
-import { calculateBestMaps } from '#utils';
+import { calculateBestMaps, getCurrentWinrate } from '#utils';
 import { clearInterval } from 'timers';
 
 const matches = new Matches();
@@ -37,22 +37,40 @@ export function webhookListener() {
           if (predictions.has(match_id)) {
             const matchData = await matches.getMatchDetails(match_id);
             const winner = matchData.results.winner;
-            const pickedMap = matchData.voting.map.pick;
+            const pickedMap = matchData.voting.map.pick[0];
             const predictedData = predictions
               .get(match_id)
               [winner === 'faction1' ? 0 : 1].filter(
                 (predictionObj) => predictionObj.mapName === pickedMap
-              );
+              )[0];
             const match = new Match({
               match_id,
               winratePredictedValue: predictedData.totalWinrate > 0,
               avgPredictedValue: predictedData.totalPoints > 0,
             });
-            console.log(match);
             match.save().then(async () => {
-              const matchPrediction = await MatchPrediction.findOneAndUpdate();
-              console.log(matchPrediction);
-              matchPrediction?.matches?.push(match);
+              let matchPrediction = await MatchPrediction.findOne();
+              if (!matchPrediction) {
+                matchPrediction = new MatchPrediction({
+                  matches: [match],
+                });
+                matchPrediction.avgMatchesPrediction = {
+                  currentWinrate: getCurrentWinrate([match], 'avg'),
+                };
+                matchPrediction.winrateMatchesPrediction = {
+                  currentWinrate: getCurrentWinrate([match], 'winrate'),
+                };
+              } else {
+                matchPrediction.matches?.push(match);
+                const { matches } = await matchPrediction.populate('matches');
+                matchPrediction.avgMatchesPrediction = {
+                  currentWinrate: getCurrentWinrate(matches, 'avg'),
+                };
+                matchPrediction.winrateMatchesPrediction = {
+                  currentWinrate: getCurrentWinrate(matches, 'winrate'),
+                };
+              }
+              matchPrediction.save();
               predictions.delete(match_id);
             });
           }
@@ -89,6 +107,10 @@ export function webhookListener() {
 
               const prediction = await calculateBestMaps(matchData);
               predictions.set(match_id, prediction);
+
+              setTimeout(() => {
+                predictions.delete(match_id);
+              }, 1000 * 3600 * 24);
             }
           }, 1000);
         }
