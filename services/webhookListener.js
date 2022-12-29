@@ -34,47 +34,7 @@ export function webhookListener() {
       case 'match_status_finished':
         {
           const match_id = data.payload.id;
-          if (predictions.has(match_id)) {
-            const matchData = await matches.getMatchDetails(match_id);
-            const winner = matchData.results.winner;
-            const pickedMap = matchData.voting.map.pick[0];
-            const predictedData = predictions
-              .get(match_id)
-              [winner === 'faction1' ? 0 : 1].filter(
-                (predictionObj) => predictionObj.mapName === pickedMap
-              )[0];
-            const match = new Match({
-              match_id,
-              winratePredictedValue: predictedData.totalWinrate > 0,
-              avgPredictedValue: predictedData.totalPoints > 0,
-            });
-            match.save().then(async () => {
-              let matchPrediction = await MatchPrediction.findOne();
-              if (!matchPrediction) {
-                matchPrediction = new MatchPrediction({
-                  matches: [match],
-                });
-                matchPrediction.avgMatchesPrediction = {
-                  currentWinrate: getCurrentWinrate([match], 'avg'),
-                };
-                matchPrediction.winrateMatchesPrediction = {
-                  currentWinrate: getCurrentWinrate([match], 'winrate'),
-                };
-              } else {
-                matchPrediction.matches?.push(match);
-                const { matches } = await matchPrediction.populate('matches');
-                matchPrediction.avgMatchesPrediction = {
-                  currentWinrate: getCurrentWinrate(matches, 'avg'),
-                };
-                matchPrediction.winrateMatchesPrediction = {
-                  currentWinrate: getCurrentWinrate(matches, 'winrate'),
-                };
-              }
-              matchPrediction.save();
-              predictions.delete(match_id);
-            });
-          }
-
+          await performMapPickerAnalytics(match_id);
           const playersRoster = [
             ...data.payload.teams[0].roster,
             ...data.payload.teams[1].roster,
@@ -121,4 +81,48 @@ export function webhookListener() {
   });
 
   app.listen(80, () => {});
+}
+
+async function performMapPickerAnalytics(match_id) {
+  if (predictions.has(match_id)) {
+    const matchData = await matches.getMatchDetails(match_id);
+    const winner = matchData.results.winner;
+    const pickedMap = matchData.voting.map.pick[0];
+    if (pickedMap === 'de_anubis') return;
+    const predictedData = predictions
+      .get(match_id)
+      [winner === 'faction1' ? 0 : 1].filter(
+        (predictionObj) => predictionObj.mapName === pickedMap
+      )[0];
+    const match = new Match({
+      match_id,
+      winratePredictedValue: predictedData.totalWinrate > 0,
+      avgPredictedValue: predictedData.totalPoints > 0,
+    });
+    match.save().then(async () => {
+      let matchPrediction = await MatchPrediction.findOne();
+      if (!matchPrediction) {
+        matchPrediction = new MatchPrediction({
+          matches: [match],
+        });
+        matchPrediction.avgMatchesPrediction = {
+          currentWinrate: getCurrentWinrate([match], 'avg'),
+        };
+        matchPrediction.winrateMatchesPrediction = {
+          currentWinrate: getCurrentWinrate([match], 'winrate'),
+        };
+      } else {
+        matchPrediction.matches?.push(match);
+        const { matches } = await matchPrediction.populate('matches');
+        matchPrediction.avgMatchesPrediction = {
+          currentWinrate: getCurrentWinrate(matches, 'avg'),
+        };
+        matchPrediction.winrateMatchesPrediction = {
+          currentWinrate: getCurrentWinrate(matches, 'winrate'),
+        };
+      }
+      matchPrediction.save();
+      predictions.delete(match_id);
+    });
+  }
 }
