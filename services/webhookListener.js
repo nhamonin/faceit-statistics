@@ -93,7 +93,8 @@ export function webhookListener() {
 async function performMapPickerAnalytics(match_id) {
   if (predictions.has(match_id)) {
     const matchData = await matches.getMatchDetails(match_id);
-    const winner = matchData.results.winner;
+    const winner = matchData?.results?.winner;
+    if (!winner && !currentMapPool.includes(pickedMap)) return;
     const pickedMap = matchData.voting.map.pick[0];
     if (!currentMapPool.includes(pickedMap)) return;
     const predictedData = predictions.get(match_id);
