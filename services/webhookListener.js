@@ -36,8 +36,8 @@ export function webhookListener() {
           const match_id = data.payload.id;
           await performMapPickerAnalytics(match_id);
           const playersRoster = [
-            ...data.payload.teams[0].roster,
-            ...data.payload.teams[1].roster,
+            ...(data?.payload?.teams?.length ? data.payload.teams[0].roster : []),
+            ...(data?.payload?.teams?.length ? data.payload.teams[1].roster : []),
           ];
 
           playersIDs = playersRoster.map(({ id }) => id);
