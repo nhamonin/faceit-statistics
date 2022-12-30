@@ -1,4 +1,4 @@
-import { Team, MatchPrediction } from '#models';
+import { Team, MatchPrediction, TempPrediction } from '#models';
 import { getEloTemplate } from '#templates';
 import {
   initTeam,
@@ -48,6 +48,7 @@ function initTelegramBotListener() {
 
   tBot.onText(/\/get_analytics/, async ({ chat, message_id }) => {
     const matchPrediction = await MatchPrediction.findOne();
+    const tempMatchesCount = await TempPrediction.countDocuments();
 
     const message = [
       `winrate predictions: ${matchPrediction.winrateMatchesPrediction.currentWinrate.toFixed(
@@ -58,6 +59,7 @@ function initTelegramBotListener() {
       )} %`,
       '',
       `Total matches: ${matchPrediction.matches.length}`,
+      `Pending matches: ${tempMatchesCount}`,
     ].join('\n');
 
     tBot.sendMessage(chat.id, message, {
