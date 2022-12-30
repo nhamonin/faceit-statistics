@@ -10,6 +10,21 @@ import { clearInterval } from 'timers';
 import { allowedCompetitionNames, currentMapPool } from '#config';
 
 const matches = new Matches();
+const webhookLogs = {
+  match_status_finished: 0,
+  match_object_created: 0,
+  match_status_ready: 0
+};
+
+setInterval(() => {
+  console.log([
+    `match_status_finished: ${webhookLogs.match_status_finished}`,
+    `match_object_created: ${webhookLogs.match_status_finished}`,
+    `match_status_ready: ${webhookLogs.match_status_finished}`,
+    '',
+    new Date().toLocaleString()
+  ].join('\n'));
+}, 60000);
 
 export function webhookListener() {
   const app = express();
@@ -23,23 +38,7 @@ export function webhookListener() {
 
   app.post('/webhook', async (req, res) => {
     const data = req.body;
-    const webhookLogs = {
-      match_status_finished: 0,
-      match_object_created: 0,
-      match_status_ready: 0
-    };
-
     webhookLogs[data.event]++;
-
-    setInterval(() => {
-      console.log([
-        `match_status_finished: ${webhookLogs.match_status_finished}`,
-        `match_object_created: ${webhookLogs.match_status_finished}`,
-        `match_status_ready: ${webhookLogs.match_status_finished}`,
-        '',
-        new Date().toLocaleString()
-      ].join('\n'));
-    }, 60000);
 
     let playersIDs, playersNicknames;
 
