@@ -97,7 +97,8 @@ export function webhookListener() {
 
 async function performMapPickerAnalytics(match_id) {
   try {
-    const { predictions } = await TempPrediction.findOne({ match_id });
+    const tempPrediction = await TempPrediction.findOne({ match_id });
+    const { predictions } = tempPrediction;
     if (!predictions) return;
     const matchData = await matches.getMatchDetails(match_id);
     const winner = matchData?.results?.winner;
