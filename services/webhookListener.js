@@ -39,7 +39,7 @@ export function webhookListener() {
         '',
         new Date().toLocaleString()
       ].join('\n'));
-    }, 1000 * 60)
+    }, 60000);
 
     let playersIDs, playersNicknames;
 
