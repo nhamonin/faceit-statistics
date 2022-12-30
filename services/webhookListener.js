@@ -23,11 +23,24 @@ export function webhookListener() {
 
   app.post('/webhook', async (req, res) => {
     const data = req.body;
+    const webhookLogs = {
+      match_status_finished: 0,
+      match_object_created: 0,
+      match_status_ready: 0
+    };
 
-    console.log(
-      `Webhook of type ${data.event} was received successfully!`,
-      new Date().toLocaleString()
-    );
+    webhookLogs[data.event]++;
+
+    setInterval(() => {
+      console.log([
+        `match_status_finished: ${webhookLogs.match_status_finished}`,
+        `match_object_created: ${webhookLogs.match_status_finished}`,
+        `match_status_ready: ${webhookLogs.match_status_finished}`,
+        '',
+        new Date().toLocaleString()
+      ].join('\n'));
+    }, 1000 * 60)
+
     let playersIDs, playersNicknames;
 
     switch (data.event) {
