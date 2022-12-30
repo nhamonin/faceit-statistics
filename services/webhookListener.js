@@ -116,8 +116,8 @@ async function performMapPickerAnalytics(match_id) {
     if (!predictions) return;
     const matchData = await matches.getMatchDetails(match_id);
     const winner = matchData?.results?.winner;
-    const pickedMap = matchData.voting.map.pick[0];
-    if (!winner && !currentMapPool.includes(pickedMap)) return;
+    const pickedMap = matchData?.voting?.map?.pick[0];
+    if (!pickedMap && !winner && !currentMapPool.includes(pickedMap)) return;
     const predictedDataTeam = predictions[winner === 'faction1' ? 0 : 1];
     if (!predictedDataTeam) return;
     const predictedDataMap = predictedDataTeam.filter(
