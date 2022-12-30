@@ -73,7 +73,9 @@ export function webhookListener() {
               clearInterval(interval);
 
               const prediction = await calculateBestMaps(matchData);
-              predictions.set(match_id, prediction);
+              if (prediction.length) {
+                predictions.set(match_id, prediction);
+              }
 
               setTimeout(() => {
                 predictions.delete(match_id);
@@ -91,49 +93,53 @@ export function webhookListener() {
 }
 
 async function performMapPickerAnalytics(match_id) {
-  if (predictions.has(match_id)) {
-    const matchData = await matches.getMatchDetails(match_id);
-    const winner = matchData?.results?.winner;
-    if (!winner && !currentMapPool.includes(pickedMap)) return;
-    const pickedMap = matchData.voting.map.pick[0];
-    if (!currentMapPool.includes(pickedMap)) return;
-    const predictedData = predictions.get(match_id);
-    if (!predictedData) return;
-    const predictedDataTeam = predictedData[winner === 'faction1' ? 0 : 1];
-    if (!predictedDataTeam) return;
-    const predictedDataMap = predictedDataTeam.filter(
-      (predictionObj) => predictionObj.mapName === pickedMap
-    )[0];
-    if (!predictedDataMap) return;
-    const match = new Match({
-      match_id,
-      winratePredictedValue: predictedDataMap.totalWinrate > 0,
-      avgPredictedValue: predictedDataMap.totalPoints > 0,
-    });
-    match.save().then(async () => {
-      let matchPrediction = await MatchPrediction.findOne();
-      if (!matchPrediction) {
-        matchPrediction = new MatchPrediction({
-          matches: [match],
-        });
-        matchPrediction.avgMatchesPrediction = {
-          currentWinrate: getCurrentWinrate([match], 'avg'),
-        };
-        matchPrediction.winrateMatchesPrediction = {
-          currentWinrate: getCurrentWinrate([match], 'winrate'),
-        };
-      } else {
-        matchPrediction.matches?.push(match);
-        const { matches } = await matchPrediction.populate('matches');
-        matchPrediction.avgMatchesPrediction = {
-          currentWinrate: getCurrentWinrate(matches, 'avg'),
-        };
-        matchPrediction.winrateMatchesPrediction = {
-          currentWinrate: getCurrentWinrate(matches, 'winrate'),
-        };
-      }
-      matchPrediction.save();
-      predictions.delete(match_id);
-    });
+  try {
+    if (predictions.has(match_id)) {
+      const matchData = await matches.getMatchDetails(match_id);
+      const winner = matchData?.results?.winner;
+      if (!winner && !currentMapPool.includes(pickedMap)) return;
+      const pickedMap = matchData.voting.map.pick[0];
+      if (!currentMapPool.includes(pickedMap)) return;
+      const predictedData = predictions.get(match_id);
+      if (!predictedData) return;
+      const predictedDataTeam = predictedData[winner === 'faction1' ? 0 : 1];
+      if (!predictedDataTeam) return;
+      const predictedDataMap = predictedDataTeam.filter(
+        (predictionObj) => predictionObj.mapName === pickedMap
+      )[0];
+      if (!predictedDataMap) return;
+      const match = new Match({
+        match_id,
+        winratePredictedValue: predictedDataMap.totalWinrate > 0,
+        avgPredictedValue: predictedDataMap.totalPoints > 0,
+      });
+      match.save().then(async () => {
+        let matchPrediction = await MatchPrediction.findOne();
+        if (!matchPrediction) {
+          matchPrediction = new MatchPrediction({
+            matches: [match],
+          });
+          matchPrediction.avgMatchesPrediction = {
+            currentWinrate: getCurrentWinrate([match], 'avg'),
+          };
+          matchPrediction.winrateMatchesPrediction = {
+            currentWinrate: getCurrentWinrate([match], 'winrate'),
+          };
+        } else {
+          matchPrediction.matches?.push(match);
+          const { matches } = await matchPrediction.populate('matches');
+          matchPrediction.avgMatchesPrediction = {
+            currentWinrate: getCurrentWinrate(matches, 'avg'),
+          };
+          matchPrediction.winrateMatchesPrediction = {
+            currentWinrate: getCurrentWinrate(matches, 'winrate'),
+          };
+        }
+        matchPrediction.save();
+        predictions.delete(match_id);
+      });
+    }
+  } catch (e) {
+    console.log(e);
   }
 }
