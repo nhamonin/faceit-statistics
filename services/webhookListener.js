@@ -78,7 +78,7 @@ export function webhookListener() {
                 if (!prediction) {
                   const newPrediction = new TempPrediction({
                     match_id,
-                    predictions: prediction,
+                    predictions,
                   });
                   await newPrediction.save();
                 }
