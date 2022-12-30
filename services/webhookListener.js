@@ -19,8 +19,8 @@ const webhookLogs = {
 setInterval(() => {
   console.log([
     `match_status_finished: ${webhookLogs.match_status_finished}`,
-    `match_object_created: ${webhookLogs.match_status_finished}`,
-    `match_status_ready: ${webhookLogs.match_status_finished}`,
+    `match_object_created: ${webhookLogs.match_object_created}`,
+    `match_status_ready: ${webhookLogs.match_status_ready}`,
     '',
     new Date().toLocaleString()
   ].join('\n'));
