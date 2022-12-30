@@ -10,20 +10,27 @@ import { clearInterval } from 'timers';
 import { allowedCompetitionNames, currentMapPool } from '#config';
 
 const matches = new Matches();
-const webhookLogs = {
+let webhookLogs = {
   match_status_finished: 0,
   match_object_created: 0,
-  match_status_ready: 0
+  match_status_ready: 0,
 };
 
 setInterval(() => {
-  console.log([
-    `match_status_finished: ${webhookLogs.match_status_finished}`,
-    `match_object_created: ${webhookLogs.match_object_created}`,
-    `match_status_ready: ${webhookLogs.match_status_ready}`,
-    '',
-    new Date().toLocaleString()
-  ].join('\n'));
+  console.log(
+    [
+      `match_status_finished: ${webhookLogs.match_status_finished}`,
+      `match_object_created: ${webhookLogs.match_object_created}`,
+      `match_status_ready: ${webhookLogs.match_status_ready}`,
+      '',
+      new Date().toLocaleString(),
+    ].join('\n')
+  );
+  webhookLogs = {
+    match_status_finished: 0,
+    match_object_created: 0,
+    match_status_ready: 0,
+  };
 }, 60000);
 
 export function webhookListener() {
@@ -47,7 +54,12 @@ export function webhookListener() {
         {
           const match_id = data.payload.id;
           await performMapPickerAnalytics(match_id);
-          if (!data.payload.teams.length || !data.payload.teams[0]?.roster?.length || !data.payload.teams[1]?.roster?.length) return;
+          if (
+            !data.payload.teams.length ||
+            !data.payload.teams[0]?.roster?.length ||
+            !data.payload.teams[1]?.roster?.length
+          )
+            return;
           const playersRoster = [
             ...data.payload.teams[0].roster,
             ...data.payload.teams[1].roster,
