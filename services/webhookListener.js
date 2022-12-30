@@ -55,7 +55,7 @@ export function webhookListener() {
           const match_id = data.payload.id;
           await performMapPickerAnalytics(match_id);
           if (
-            !data.payload.teams.length ||
+            !data?.payload?.teams?.length ||
             !data.payload.teams[0]?.roster?.length ||
             !data.payload.teams[1]?.roster?.length
           )

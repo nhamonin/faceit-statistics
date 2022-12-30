@@ -105,7 +105,7 @@ async function fillInTeamVariablesWithPlayersStats(teamsObj) {
           await players
             .getStatisticsOfAPlayer(player_id, game_id)
             .then((stats) => {
-              if (!stats.segments) return;
+              if (!stats?.segments?.length) return;
               currentMapPool.map((map_id) => {
                 variablesArr[2].lifetime[map_id].push(
                   stats.segments
@@ -263,7 +263,7 @@ async function sendMapPickerResult(
       });
     }
 
-    [...new Set([...teamsToSendNotification, 146612362])]
+    [...new Set([...teamsToSendNotification])]
       .filter((chat_id) =>
         allowedTeamsToGetMapPickerNotifications.includes(chat_id)
       )
