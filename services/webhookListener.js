@@ -3,14 +3,13 @@ import path from 'path';
 import express from 'express';
 import { Matches } from 'faceit-node-api';
 
-import { Team, Match, MatchPrediction } from '#models';
+import { Team, Match, MatchPrediction, TempPrediction } from '#models';
 import { updateTeamPlayers } from '#services';
 import { calculateBestMaps, getCurrentWinrate } from '#utils';
 import { clearInterval } from 'timers';
 import { allowedCompetitionNames, currentMapPool } from '#config';
 
 const matches = new Matches();
-const predictions = new Map();
 
 export function webhookListener() {
   const app = express();
@@ -72,14 +71,18 @@ export function webhookListener() {
             ) {
               clearInterval(interval);
 
-              const prediction = await calculateBestMaps(matchData);
-              if (prediction?.length) {
-                predictions.set(match_id, prediction);
-              }
+              const predictions = await calculateBestMaps(matchData);
+              if (predictions?.length) {
+                const prediction = await TempPrediction.findOne({ match_id });
 
-              setTimeout(() => {
-                predictions.delete(match_id);
-              }, 1000 * 3600 * 24);
+                if (!prediction) {
+                  const newPrediction = new TempPrediction({
+                    match_id,
+                    predictions: prediction,
+                  });
+                  await newPrediction.save();
+                }
+              }
             }
           }, 1000);
         }
@@ -94,50 +97,48 @@ export function webhookListener() {
 
 async function performMapPickerAnalytics(match_id) {
   try {
-    if (predictions.has(match_id)) {
-      const matchData = await matches.getMatchDetails(match_id);
-      const winner = matchData?.results?.winner;
-      const pickedMap = matchData.voting.map.pick[0];
-      if (!winner && !currentMapPool.includes(pickedMap)) return;
-      const predictedData = predictions.get(match_id);
-      if (!predictedData) return;
-      const predictedDataTeam = predictedData[winner === 'faction1' ? 0 : 1];
-      if (!predictedDataTeam) return;
-      const predictedDataMap = predictedDataTeam.filter(
-        (predictionObj) => predictionObj.mapName === pickedMap
-      )[0];
-      if (!predictedDataMap) return;
-      const match = new Match({
-        match_id,
-        winratePredictedValue: predictedDataMap.totalWinrate > 0,
-        avgPredictedValue: predictedDataMap.totalPoints > 0,
-      });
-      match.save().then(async () => {
-        let matchPrediction = await MatchPrediction.findOne();
-        if (!matchPrediction) {
-          matchPrediction = new MatchPrediction({
-            matches: [match],
-          });
-          matchPrediction.avgMatchesPrediction = {
-            currentWinrate: getCurrentWinrate([match], 'avg'),
-          };
-          matchPrediction.winrateMatchesPrediction = {
-            currentWinrate: getCurrentWinrate([match], 'winrate'),
-          };
-        } else {
-          matchPrediction.matches?.push(match);
-          const { matches } = await matchPrediction.populate('matches');
-          matchPrediction.avgMatchesPrediction = {
-            currentWinrate: getCurrentWinrate(matches, 'avg'),
-          };
-          matchPrediction.winrateMatchesPrediction = {
-            currentWinrate: getCurrentWinrate(matches, 'winrate'),
-          };
-        }
-        matchPrediction.save();
-        predictions.delete(match_id);
-      });
-    }
+    const { predictions } = await TempPrediction.findOne({ match_id });
+    if (!predictions) return;
+    const matchData = await matches.getMatchDetails(match_id);
+    const winner = matchData?.results?.winner;
+    const pickedMap = matchData.voting.map.pick[0];
+    if (!winner && !currentMapPool.includes(pickedMap)) return;
+    const predictedDataTeam = predictions[winner === 'faction1' ? 0 : 1];
+    if (!predictedDataTeam) return;
+    const predictedDataMap = predictedDataTeam.filter(
+      (predictionObj) => predictionObj.mapName === pickedMap
+    )[0];
+    if (!predictedDataMap) return;
+    const match = new Match({
+      match_id,
+      winratePredictedValue: predictedDataMap.totalWinrate > 0,
+      avgPredictedValue: predictedDataMap.totalPoints > 0,
+    });
+    match.save().then(async () => {
+      let matchPrediction = await MatchPrediction.findOne();
+      if (!matchPrediction) {
+        matchPrediction = new MatchPrediction({
+          matches: [match],
+        });
+        matchPrediction.avgMatchesPrediction = {
+          currentWinrate: getCurrentWinrate([match], 'avg'),
+        };
+        matchPrediction.winrateMatchesPrediction = {
+          currentWinrate: getCurrentWinrate([match], 'winrate'),
+        };
+      } else {
+        matchPrediction.matches?.push(match);
+        const { matches } = await matchPrediction.populate('matches');
+        matchPrediction.avgMatchesPrediction = {
+          currentWinrate: getCurrentWinrate(matches, 'avg'),
+        };
+        matchPrediction.winrateMatchesPrediction = {
+          currentWinrate: getCurrentWinrate(matches, 'winrate'),
+        };
+      }
+      matchPrediction.save();
+      await TempPrediction.findOneAndDelete({ match_id });
+    });
   } catch (e) {
     console.log(e);
   }
