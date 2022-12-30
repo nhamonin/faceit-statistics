@@ -73,7 +73,7 @@ export function webhookListener() {
               clearInterval(interval);
 
               const prediction = await calculateBestMaps(matchData);
-              if (prediction.length) {
+              if (prediction?.length) {
                 predictions.set(match_id, prediction);
               }
 
