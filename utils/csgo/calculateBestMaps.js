@@ -26,7 +26,7 @@ export async function calculateBestMaps(matchData) {
   cache.add(matchData.match_id);
   setTimeout(() => {
     cache.delete(matchData.match_id);
-  }, 1000 * 60 * 5);
+  }, 1000 * 10);
 
   try {
     const team1 = matchData.teams.faction1.roster;
@@ -251,7 +251,7 @@ async function sendMapPickerResult(
     const neededVariables = dbPlayersTeam1.length
       ? [dbPlayersTeam1, team1Result]
       : [dbPlayersTeam2, team2Result];
-    const teamsToSendNotification = new Set();
+    let teamsToSendNotification = new Set();
 
     for await (const player of neededVariables[0]) {
       const teams = await Team.find({
@@ -276,6 +276,8 @@ async function sendMapPickerResult(
           getBestMapsTemplate(htmlMessage, neededVariables[1][0].mapName)
         );
       });
+
+    teamsToSendNotification = new Set();
   } catch (e) {
     console.log(e);
   }
