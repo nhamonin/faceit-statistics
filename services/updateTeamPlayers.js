@@ -30,10 +30,6 @@ export const updateTeamPlayers = async (chat_id) => {
       ).then(() => {});
     }
 
-    console.log(
-      `Players of the team ${team.username || team.title} were updated.`,
-      new Date().toLocaleString()
-    );
     setTimeout(() => {
       cache.delete(chat_id);
     }, 1000 * 60 * 5);
