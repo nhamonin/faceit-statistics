@@ -77,7 +77,9 @@ export function webhookListener() {
               for await (const team of teams) {
                 updateTeamPlayers(team.chat_id);
                 console.log(
-                  `Players of the teams: ${teams.map(({ username, title }) => username || title).join(',')} were updated.`,
+                  `Players of the teams: ${teams
+                    .map(({ username, title }) => username || title)
+                    .join(',')} were updated.`,
                   new Date().toLocaleString()
                 );
               }
@@ -114,6 +116,10 @@ export function webhookListener() {
               }
             }
           }, 1000);
+
+          setTimeout(() => {
+            clearInterval(interval);
+          }, 1000 * 60);
         }
         break;
     }
