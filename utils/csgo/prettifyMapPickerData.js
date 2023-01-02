@@ -1,5 +1,5 @@
 export function prettifyMapPickerData(neededVariables) {
-  const table = `<table>
+  const table = `<table cellspacing="0">
     <tr>
       <th>Map</th>
       <th>Win Rate Difference, %</th>

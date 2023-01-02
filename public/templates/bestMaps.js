@@ -4,10 +4,15 @@ export const getBestMapsTemplate = (msg, bestMap) =>
   `<html lang="en">
   <head>
   <style>
+    @font-face {
+      font-family: 'MyFontRegular';
+      src: url("data:font/ttf;base64,${readFileSync(
+        'public/fonts/KharkivTone.ttf'
+      ).toString('base64')}");
+    }
     html {
       height: 1000px;
       width: 1700px;
-      font-weight: bold;
       color: white;
       background-image: url(data:image/jpg;base64,${readFileSync(
         `public/images/maps/${bestMap}.jpg`
@@ -15,8 +20,10 @@ export const getBestMapsTemplate = (msg, bestMap) =>
       background-position: center;
       background-size: 150% 150%;
       background-repeat: no-repeat;
-      font-size: 4.5rem;
-      font-family: Open Sans, sans-serif;
+      font-size: 2.8rem;
+      font-family: 'Kharkiv Tone', sans-serif;
+      font-style: normal;
+      font-weight: 400;
     }
     body {
       padding: 40px;
@@ -25,39 +32,47 @@ export const getBestMapsTemplate = (msg, bestMap) =>
       justify-content: center;
       align-items: center;
     }
-    h5.teammates {
-      text-align: left;
-      position: absolute;
-      top: 70px;
-      left: 115px;
-      background-color: rgba(0, 0, 0, .7);
-      transform-origin: 0 0;
-      transform: rotate(90deg);
-      font-size: .4rem;
-      opacity: 0.6;
-    }
     table {
-        margin-top: 70px;
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        width: 1500px;
+      margin-top: 50px;
+      border-collapse: collapse;
+      width: 1500px;
+      border: 4px solid #DACEA4;
+      backdrop-filter: blur(16.5px);
+      border-radius: 41px;
+      border-collapse: separate;
+    }
+    td {
+      border: 1px solid #DACEA4;
     }
     th {
-      background-color: rgba(0, 0, 0, .7);
+      background-color: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(16.5px);
+      border: 1px solid #DACEA4;
+      color: #000;
+    }
+    th:first-child {
+      border-top-left-radius: 35px;
+    }
+    th:last-child {
+      border-top-right-radius: 35px;
+    }
+    tr:last-child td:first-child {
+      border-bottom-left-radius: 35px;
+    }
+    tr:last-child td:last-child {
+      border-bottom-right-radius: 35px;
     }
     td, th {
-        border: 1px solid white;
-        text-align: center;
-        font-size: .75rem;
-        line-height: 1.5;
-        padding: 8px;
-        text-shadow: 4px 4px 4px #000;
+      text-align: center;
+      font-size: .75rem;
+      line-height: 2.4;
+      padding: 8px;
     }
     .green {
-      background-color: rgba(0, 255, 0, .3);
+      background-color: rgba(9, 83, 16, 0.6);
     }
     .red {
-      background-color: rgba(255, 0, 0, .3);
+      background-color: rgba(121, 0, 0, 0.4);
     }
   </style>
 </head>
