@@ -76,13 +76,14 @@ export function webhookListener() {
             if (teams.length) {
               for await (const team of teams) {
                 updateTeamPlayers(team.chat_id);
-                console.log(
-                  `Players of the teams: ${teams
-                    .map(({ username, title }) => username || title)
-                    .join(',')} were updated.`,
-                  new Date().toLocaleString()
-                );
               }
+
+              console.log(
+                `Players of the teams: ${teams
+                  .map(({ username, title }) => username || title)
+                  .join(',')} were updated.`,
+                new Date().toLocaleString()
+              );
             }
           }
         }
