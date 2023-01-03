@@ -31,7 +31,7 @@ setInterval(() => {
     match_object_created: 0,
     match_status_ready: 0,
   };
-}, 60000);
+}, 1000 * 60 * 60);
 
 export function webhookListener() {
   const app = express();
