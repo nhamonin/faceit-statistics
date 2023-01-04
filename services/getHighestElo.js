@@ -30,13 +30,17 @@ export const getHighestElo = async (playerNickname) => {
     );
 
     const date = new Date(highestEloMatch.date).toLocaleDateString('en-us');
+    const message =
+      currentElo - highestEloMatch.elo < 0
+        ? `<b>${playerNickname}</b>'s highest elo was <b>${
+            highestEloMatch.elo
+          }</b> (${
+            currentElo - highestEloMatch.elo
+          } from now).\nDate when the highest elo was reached: ${date}.`
+        : `<b>${playerNickname}</b>'s highest elo: <b>${highestEloMatch.elo}</b>.\nDate when the highest elo was reached: ${date}.`;
 
     return {
-      message: `<b>${playerNickname}</b>'s highest elo was <b>${
-        highestEloMatch.elo
-      }</b> (${
-        currentElo - highestEloMatch.elo
-      } from now).\nDate when the highest elo was reached: ${date}.`,
+      message,
     };
   } catch (e) {
     console.log(e.message);
