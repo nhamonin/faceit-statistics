@@ -3,7 +3,7 @@ export const mainMenuMarkup = {
     inline_keyboard: [
       [
         {
-          text: 'Get stats',
+          text: 'Statistics',
           callback_data: 'getStats',
         },
         {

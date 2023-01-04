@@ -21,7 +21,7 @@ export const lastPlayerMatchesMarkup = (teamNicknames) => ({
               callback_data: 'getStats',
             },
             {
-              text: '« Back to Menu',
+              text: '« Menu',
               callback_data: 'mainMenu',
             },
           ],

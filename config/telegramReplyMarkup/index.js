@@ -6,6 +6,7 @@ import { modifyTeamMarkup } from './modifyTeamMarkup.js';
 import { getStatsMarkup } from './getStatsMarkup.js';
 import { getTeamKDMenu } from './getTeamKDMenu.js';
 import { lastPlayerMatchesMarkup } from './lastPlayerMatchesMarkup.js';
+import { getHighestEloMenu } from './getHighestEloMenu.js';
 
 export {
   startActionMarkup,
@@ -16,4 +17,5 @@ export {
   getStatsMarkup,
   getTeamKDMenu,
   lastPlayerMatchesMarkup,
+  getHighestEloMenu,
 };

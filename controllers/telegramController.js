@@ -6,6 +6,7 @@ import {
   getTeamEloMessage,
   addPlayer,
   deletePlayer,
+  getHighestElo,
 } from '#services';
 import { messages } from '#config';
 import {
@@ -17,6 +18,7 @@ import {
   getStatsMarkup,
   getTeamKDMenu,
   lastPlayerMatchesMarkup,
+  getHighestEloMenu,
 } from '#telegramReplyMarkup';
 import {
   sendPhoto,
@@ -287,6 +289,47 @@ tBot.on('callback_query', async (callbackQuery) => {
                   );
                   tBot.deleteMessage(opts.chat_id, message_id);
                   tBot.deleteMessage(opts.chat_id, bot_message_id);
+                }
+              );
+            });
+        }
+      }
+      break;
+    case 'getHighestEloMenu':
+      try {
+        tBot.editMessageText('Select one of the options below:', {
+          ...opts,
+          ...getHighestEloMenu(teamNicknames),
+        });
+      } catch (e) {}
+      break;
+    case 'getHighestElo':
+      {
+        const nickname = callbackQuery.data.split('?')[1];
+
+        if (nickname !== 'custom') {
+          const { message, error } = await getHighestElo(nickname);
+          tBot.editMessageText(message || error, {
+            ...opts,
+            ...getHighestEloMenu(teamNicknames),
+          });
+        } else {
+          tBot
+            .sendMessage(opts.chat_id, 'Send player nickname:', {
+              reply_markup: { force_reply: true },
+            })
+            .then(async ({ message_id: bot_message_id }) => {
+              await tBot.onReplyToMessage(
+                opts.chat_id,
+                bot_message_id,
+                async ({ text: nickname, message_id }) => {
+                  const { message, error } = await getHighestElo(nickname);
+                  tBot.deleteMessage(opts.chat_id, message_id);
+                  tBot.deleteMessage(opts.chat_id, bot_message_id);
+                  tBot.editMessageText(message || error, {
+                    ...opts,
+                    ...getHighestEloMenu(teamNicknames),
+                  });
                 }
               );
             });

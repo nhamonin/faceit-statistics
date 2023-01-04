@@ -21,7 +21,7 @@ export const getTeamKDMenu = {
           callback_data: 'getStats',
         },
         {
-          text: '« Back to Menu',
+          text: '« Menu',
           callback_data: 'mainMenu',
         },
       ],
