@@ -16,7 +16,11 @@ export const getKDTemplate = (limit, msg) =>
             }
             span {
               float: right;
-              margin-right: 100px;
+            }
+            .player-kd-block {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
             }
             .red {
               color: #F81E00;

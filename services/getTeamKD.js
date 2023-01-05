@@ -28,7 +28,7 @@ function prepareEmptyTeamResult(statAttribute) {
   };
 }
 
-async function prepareProperResult(players, limit) {
+async function prepareProperResult(players, limit, statAttribute) {
   const avgPlayersKD = await getAvgPlayersKD(players, limit);
   const playersKDMessage = formatMessage(avgPlayersKD);
   const avgTeamKD =
@@ -40,7 +40,7 @@ async function prepareProperResult(players, limit) {
 
   return {
     error: false,
-    message: messages.getTeamStats(playersKDMessage, 'K/D', avgTeamKD),
+    message: messages.getTeamStats(playersKDMessage, statAttribute, avgTeamKD),
   };
 }
 
@@ -71,11 +71,16 @@ function formatMessage(avgPlayersKD) {
       const playerNickname = Object.keys(avgPlayerKD)[0];
       const playerKD = Object.values(avgPlayerKD)[0].toFixed(2);
 
-      return `${playerNickname}: <span class='${getKDColorClass(
-        +playerKD
-      )}'>${playerKD} <span class='white'>&nbsp;K/D</span></span>`;
+      return `
+      <div class="player-kd-block">
+        <span>${playerNickname}</span>
+        <span class="${getKDColorClass(+playerKD)}">
+          ${playerKD}
+          <span class='white'>&nbsp;K/D</span>
+        </span>
+      </div>`;
     })
-    .join('<br>');
+    .join('');
 }
 
 function getKDColorClass(kdValue) {
