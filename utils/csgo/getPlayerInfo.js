@@ -13,6 +13,7 @@ export async function getPlayerInfo({
     const playerDetails = playerID
       ? await players.getPlayerDetailsByPlayerID(playerID)
       : await players.getPlayerDetailsByNickname(playerNickname);
+    console.log(playerDetails);
     const { nickname, player_id, games } = playerDetails;
     const { last20KD, last50KD } = await getPlayerAvgKD(player_id, [20, 50]);
 
