@@ -38,6 +38,8 @@ async function sendPhoto(tBot, chatId, message_id, html) {
     image = await page.screenshot({
       fullPage: true,
     });
+
+    page.close();
   } catch (e) {
     console.log(e.message);
   }
