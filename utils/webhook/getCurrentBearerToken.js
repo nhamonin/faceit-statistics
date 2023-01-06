@@ -55,14 +55,16 @@ export async function getCurrentBearerToken() {
     await page.click('button[type="submit"]');
   } catch (e) {
     console.log('Error while getting webhook token via puppeteer: ', e.message);
+  } finally {
+    await browser.close();
   }
-  await browser.close();
 
   if (bearerToken)
     console.log(
       'Success on getting webhook token via puppeteer. Date: ',
       new Date().toLocaleString()
     );
+
   return bearerToken;
 }
 

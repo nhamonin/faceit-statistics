@@ -38,11 +38,11 @@ function initTelegramBotListener() {
 
   tBot.onText(
     /\/(start|reset\_team|add\_player.*|delete\_player.*|update\_team\_players|get\_team\_kd.*|get\_team\_elo|get\_player\_last\_matches.*)/,
-    async ({ chat, message_id }) => {
+    async ({ chat }) => {
       const players = await initTeam(chat);
       logEvent(chat, 'Init team');
       tBot.sendMessage(chat.id, messages.start(players), {
-        ...getBasicTelegramOptions(message_id),
+        ...getBasicTelegramOptions(),
         ...startActionMarkup(players),
       });
     }
@@ -120,10 +120,10 @@ tBot.on('callback_query', async (callbackQuery) => {
         .sendMessage(opts.chat_id, 'Send a nickname of the player', {
           reply_markup: { force_reply: true },
         })
-        .then(({ message_id, chat }) => {
+        .then(({ message_id: bot_message_id, chat }) => {
           tBot.onReplyToMessage(
             opts.chat_id,
-            message_id,
+            bot_message_id,
             async ({ text: nickname, message_id }) => {
               const message = await addPlayer(
                 nickname,
@@ -131,10 +131,14 @@ tBot.on('callback_query', async (callbackQuery) => {
                 message_id
               );
               logEvent(chat, `Add player: ${nickname}`);
-              tBot.sendMessage(opts.chat_id, message, {
-                ...getBasicTelegramOptions(message_id),
-                ...modifyTeamMarkup,
-              });
+              try {
+                tBot.editMessageText(message, {
+                  ...opts,
+                  ...modifyTeamMarkup,
+                });
+              } catch (e) {}
+              tBot.deleteMessage(opts.chat_id, message_id);
+              tBot.deleteMessage(opts.chat_id, bot_message_id);
             }
           );
         });
