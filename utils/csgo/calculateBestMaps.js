@@ -14,22 +14,15 @@ import {
   game_id,
   currentMapPool,
   allowedTeamsToGetMapPickerNotifications,
+  caches,
 } from '#config';
 import { getBestMapsTemplate } from '#templates';
 
-const tBot = getTelegramBot();
-const cache = new Set();
-const players = new Players();
-
-setInterval(() => {
-  console.log('calculate best maps cache size: ', cache.size);
-}, 60000);
-
 export async function calculateBestMaps(matchData) {
-  if (cache.has(matchData.match_id)) return;
-  cache.add(matchData.match_id);
+  if (caches.bestMapsMatchIDs.has(matchData.match_id)) return;
+  caches.bestMapsMatchIDs.add(matchData.match_id);
   setTimeout(() => {
-    cache.delete(matchData.match_id);
+    caches.bestMapsMatchIDs.delete(matchData.match_id);
   }, 1000 * 10);
 
   try {
@@ -94,6 +87,7 @@ function fillInStatsBoilerplateWithMaps(arr) {
 }
 
 async function fillInTeamVariablesWithPlayersStats(teamsObj) {
+  const players = new Players();
   try {
     for await (const teamObjKey of Object.keys(teamsObj)) {
       const variablesArr = teamsObj[teamObjKey];
@@ -266,6 +260,7 @@ async function sendMapPickerResult(
         teamsToSendNotification.add(chat_id);
       });
     }
+    const tBot = getTelegramBot();
 
     [...new Set([...teamsToSendNotification])]
       .filter((chat_id) =>

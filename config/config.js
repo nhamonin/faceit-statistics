@@ -131,6 +131,10 @@ const FACEIT_API_KEYS = [
   FACEIT_API_KEY_4,
   FACEIT_API_KEY_5,
 ];
+const caches = {
+  updateTeamPlayers: new Set(),
+  bestMapsMatchIDs: new Set(),
+};
 
 export {
   ENVIRONMENT,
@@ -159,4 +163,5 @@ export {
   bots,
   allowedTeamsToGetMapPickerNotifications,
   puppeteerArgs,
+  caches,
 };

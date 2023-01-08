@@ -1,18 +1,12 @@
 import { Player, Team } from '#models';
 import { getPlayerInfo } from '#utils';
-import { messages } from '#config';
-
-const cache = new Set();
-
-setInterval(() => {
-  console.log('update team players cache size: ', cache.size);
-}, 60000);
+import { messages, caches } from '#config';
 
 export const updateTeamPlayers = async (chat_id) => {
-  if (cache.has(chat_id)) return;
-  cache.add(chat_id);
+  if (caches.updateTeamPlayers.has(chat_id)) return;
+  caches.updateTeamPlayers.add(chat_id);
   setTimeout(() => {
-    cache.delete(chat_id);
+    caches.updateTeamPlayers.delete(chat_id);
   }, 1000 * 60 * 5);
   try {
     const team = await Team.findOne({ chat_id });
