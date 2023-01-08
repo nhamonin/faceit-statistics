@@ -6,7 +6,7 @@ const cache = new Set();
 
 setInterval(() => {
   console.log('update team players cache size: ', cache.size);
-}, 5000);
+}, 60000);
 
 export const updateTeamPlayers = async (chat_id) => {
   if (cache.has(chat_id)) return;

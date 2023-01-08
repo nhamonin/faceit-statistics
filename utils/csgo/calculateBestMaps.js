@@ -23,7 +23,7 @@ const players = new Players();
 
 setInterval(() => {
   console.log('calculate best maps cache size: ', cache.size);
-}, 5000);
+}, 60000);
 
 export async function calculateBestMaps(matchData) {
   if (cache.has(matchData.match_id)) return;
