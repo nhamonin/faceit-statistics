@@ -21,6 +21,10 @@ const tBot = getTelegramBot();
 const cache = new Set();
 const players = new Players();
 
+setInterval(() => {
+  console.log('calculate best maps cache size: ', cache.size);
+}, 5000);
+
 export async function calculateBestMaps(matchData) {
   if (cache.has(matchData.match_id)) return;
   cache.add(matchData.match_id);
