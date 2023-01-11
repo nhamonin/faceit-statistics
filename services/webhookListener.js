@@ -9,30 +9,6 @@ import { calculateBestMaps, getCurrentWinrate } from '#utils';
 import { clearInterval } from 'timers';
 import { allowedCompetitionNames, currentMapPool } from '#config';
 
-const matches = new Matches();
-let webhookLogs = {
-  match_status_finished: 0,
-  match_object_created: 0,
-  match_status_ready: 0,
-};
-
-setInterval(() => {
-  console.log(
-    [
-      `match_status_finished: ${webhookLogs.match_status_finished}`,
-      `match_object_created: ${webhookLogs.match_object_created}`,
-      `match_status_ready: ${webhookLogs.match_status_ready}`,
-      '',
-      new Date().toLocaleString(),
-    ].join('\n')
-  );
-  webhookLogs = {
-    match_status_finished: 0,
-    match_object_created: 0,
-    match_status_ready: 0,
-  };
-}, 1000 * 60 * 60);
-
 export function webhookListener() {
   const app = express();
   app.use(express.json());
@@ -45,15 +21,15 @@ export function webhookListener() {
 
   app.post('/webhook', async (req, res) => {
     const data = req.body;
-    webhookLogs[data.event]++;
 
     let playersIDs, playersNicknames;
+    const matches = new Matches();
 
     switch (data.event) {
       case 'match_status_finished':
         {
           const match_id = data.payload.id;
-          await performMapPickerAnalytics(match_id);
+          await performMapPickerAnalytics(match_id, matches);
           if (
             !data?.payload?.teams?.length ||
             !data.payload.teams[0]?.roster?.length ||
@@ -131,7 +107,7 @@ export function webhookListener() {
   app.listen(80, () => {});
 }
 
-async function performMapPickerAnalytics(match_id) {
+async function performMapPickerAnalytics(match_id, matches) {
   try {
     const tempPrediction = await TempPrediction.findOne({ match_id });
     if (!tempPrediction) return;
