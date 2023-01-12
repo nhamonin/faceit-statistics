@@ -8,7 +8,7 @@ export function prettifyMapPickerData(neededVariables) {
     ${neededVariables[1]
       .map(
         ({ mapName, totalWinrate, totalPoints }) =>
-          `<tr class="${totalWinrate > 0 ? 'green' : 'red'}">
+          `<tr class="${totalPoints > 0 ? 'green' : 'red'}">
           <td>${mapName}</td>
           <td>${totalPoints}</td>
           <td>${totalWinrate}</td>
