@@ -232,8 +232,8 @@ function calculateDifferencesAndSortResult(
       });
     });
 
-    team1Result.sort((a, b) => b?.totalWinrate - a?.totalWinrate);
-    team2Result.sort((a, b) => b?.totalWinrate - a?.totalWinrate);
+    team1Result.sort((a, b) => b?.totalPoints - a?.totalPoints);
+    team2Result.sort((a, b) => b?.totalPoints - a?.totalPoints);
   } catch (e) {
     console.log(e);
   }

@@ -7,7 +7,7 @@ export const updateTeamPlayers = async (chat_id) => {
   caches.updateTeamPlayers.add(chat_id);
   setTimeout(() => {
     caches.updateTeamPlayers.delete(chat_id);
-  }, 1000 * 60 * 5);
+  }, 1000 * 5);
   try {
     const team = await Team.findOne({ chat_id });
     if (!team) return messages.teamNotExistError;

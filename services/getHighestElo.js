@@ -2,10 +2,10 @@ import { Players } from 'faceit-node-api';
 import { messages, game_id } from '#config';
 import { getPlayerInfo, getPlayerMatches } from '#utils';
 
-const players = new Players();
 const MAX_MATCHES_PER_REQUEST = 2000;
 
 export const getHighestElo = async (playerNickname) => {
+  const players = new Players();
   try {
     const { player_id, elo: currentElo } = await getPlayerInfo({
       playerNickname,
