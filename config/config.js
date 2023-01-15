@@ -21,6 +21,8 @@ const {
   MONGO_DB_PASSWORD,
   MONGO_DB_CLUSTER_NAME,
   MONGO_DB_CLUSTER_NAME_TEST,
+  COOKIES_LOGGED_IN_NAME,
+  COOKIES_LOGGED_IN_VALUE,
 } = process.env;
 
 const game_id = 'csgo';
@@ -135,6 +137,10 @@ const caches = {
   updateTeamPlayers: new Set(),
   bestMapsMatchIDs: new Set(),
 };
+const loggedInCookie = {
+  name: COOKIES_LOGGED_IN_NAME,
+  value: COOKIES_LOGGED_IN_VALUE,
+};
 
 export {
   ENVIRONMENT,
@@ -152,6 +158,7 @@ export {
   MONGO_DB_PASSWORD,
   MONGO_DB_CLUSTER_NAME,
   MONGO_DB_CLUSTER_NAME_TEST,
+  loggedInCookie,
   game_id,
   currentMapPool,
   allowedCompetitionNames,

@@ -4,13 +4,12 @@ import stealthPlugin from 'puppeteer-extra-plugin-stealth';
 
 import {
   ENVIRONMENT,
-  FACEIT_EMAIL,
-  FACEIT_PASSWORD,
   FACEIT_APP_ID,
   FACEIT_WEBHOOK_ID,
   FACEIT_WEBHOOK_ID_TEST,
   HCAPTCHA_API_KEY,
   puppeteerArgs,
+  loggedInCookie,
 } from '#config';
 
 puppeteer.use(stealthPlugin());
@@ -38,8 +37,7 @@ export async function getCurrentBearerToken() {
   const page = await browser.newPage();
   await page.setCookie({
     url: 'https://accounts.faceit.com',
-    value: 'a1d1816e-ad92-450a-bd31-21a5b125cbb3',
-    name: 't',
+    ...loggedInCookie,
   });
   try {
     await page.goto(webhookEditURL, { waitUntil });

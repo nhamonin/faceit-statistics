@@ -94,7 +94,7 @@ tBot.on('callback_query', async (callbackQuery) => {
         tBot.editMessageText(
           `Your team: <b>${teamNicknames.join(
             ', '
-          )}</b>.\nChose a player you want to delete:`,
+          )}</b>.\nChoose one of the options below:`,
           {
             ...opts,
             ...mainMenuMarkup,
