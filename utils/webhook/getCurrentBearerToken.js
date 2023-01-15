@@ -34,6 +34,7 @@ export async function getCurrentBearerToken() {
     args: puppeteerArgs,
     slowMo: 250,
   });
+  let bearerToken;
   const page = await browser.newPage();
   await page.setCookie({
     url: 'https://accounts.faceit.com',
@@ -44,9 +45,7 @@ export async function getCurrentBearerToken() {
     await page.goto(webhookEditURL, { waitUntil });
     await page.click('button');
     await new Promise((r) => setTimeout(r, 8000));
-    const bearerToken = await page.evaluate(() =>
-      localStorage.getItem('auth_token')
-    );
+    bearerToken = await page.evaluate(() => localStorage.getItem('auth_token'));
   } catch (e) {
     console.log('Error while getting webhook token via puppeteer: ', e.message);
   } finally {
