@@ -66,11 +66,12 @@ export function webhookListener() {
         break;
       case 'match_object_created':
         {
+          let timeout;
           const match_id = data.payload.id;
           const interval = setInterval(async () => {
             const matchData = await matches.getMatchDetails(match_id);
             const allowedCompetitionName = allowedCompetitionNames.includes(
-              matchData.competition_name
+              matchData?.competition_name
             );
             if (
               matchData?.teams?.faction1 &&
@@ -78,6 +79,7 @@ export function webhookListener() {
               allowedCompetitionName
             ) {
               clearInterval(interval);
+              if (timeout) clearTimeout(timeout);
 
               const predictions = await calculateBestMaps(matchData);
               if (predictions?.length) {
@@ -94,7 +96,7 @@ export function webhookListener() {
             }
           }, 1000);
 
-          setTimeout(() => {
+          timeout = setTimeout(() => {
             clearInterval(interval);
           }, 1000 * 60);
         }
