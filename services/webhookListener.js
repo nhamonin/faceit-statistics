@@ -67,7 +67,7 @@ export function webhookListener() {
       case 'match_object_created':
         {
           const match_id = data.payload.id;
-          const maxIntervalCount = 3;
+          let maxIntervalCount = 3;
           const interval = setInterval(async () => {
             maxIntervalCount--;
             if (!maxIntervalCount) clearInterval(interval);
