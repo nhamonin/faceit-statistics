@@ -61,7 +61,7 @@ function initTelegramBotListener() {
         matchPrediction?.avgMatchesPrediction?.currentWinrate?.toFixed(2) || '-'
       } %`,
       '',
-      `Total matches: ${matchPrediction.matches.length}`,
+      `Total matches: ${matchPrediction?.matches?.length || 0}`,
       `Pending matches: ${tempMatchesCount}`,
     ].join('\n');
 
