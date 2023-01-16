@@ -82,8 +82,6 @@ export function webhookListener() {
               allowedCompetitionName
             ) {
               clearInterval(interval);
-              if (timeout) clearTimeout(timeout);
-
               const predictions = await calculateBestMaps(matchData);
               if (predictions?.length) {
                 const prediction = await TempPrediction.findOne({ match_id });
