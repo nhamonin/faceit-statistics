@@ -34,7 +34,7 @@ const currentMapPool = [
   'de_nuke',
   'de_overpass',
   'de_vertigo',
-  // 'de_anubis',
+  'de_anubis',
 ];
 
 const allowedCompetitionNames = [
