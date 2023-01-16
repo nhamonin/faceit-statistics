@@ -66,13 +66,16 @@ export function webhookListener() {
         break;
       case 'match_object_created':
         {
-          let timeout;
           const match_id = data.payload.id;
+          const maxIntervalCount = 3;
           const interval = setInterval(async () => {
+            maxIntervalCount--;
+            if (!maxIntervalCount) clearInterval(interval);
             const matchData = await matches.getMatchDetails(match_id);
             const allowedCompetitionName = allowedCompetitionNames.includes(
               matchData?.competition_name
             );
+            if (!allowedCompetitionName) clearInterval(interval);
             if (
               matchData?.teams?.faction1 &&
               matchData?.teams?.faction2 &&
@@ -94,11 +97,7 @@ export function webhookListener() {
                 }
               }
             }
-          }, 1000);
-
-          timeout = setTimeout(() => {
-            clearInterval(interval);
-          }, 1000 * 60);
+          }, 4000);
         }
         break;
     }
