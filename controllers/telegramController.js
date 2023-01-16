@@ -53,12 +53,13 @@ function initTelegramBotListener() {
     const tempMatchesCount = await TempPrediction.countDocuments();
 
     const message = [
-      `winrate predictions: ${matchPrediction.winrateMatchesPrediction.currentWinrate.toFixed(
-        2
-      )} %`,
-      `avg predictions: ${matchPrediction.avgMatchesPrediction.currentWinrate.toFixed(
-        2
-      )} %`,
+      `winrate predictions: ${
+        matchPrediction?.winrateMatchesPrediction?.currentWinrate?.toFixed(2) ||
+        '-'
+      } %`,
+      `avg predictions: ${
+        matchPrediction?.avgMatchesPrediction?.currentWinrate?.toFixed(2) || '-'
+      } %`,
       '',
       `Total matches: ${matchPrediction.matches.length}`,
       `Pending matches: ${tempMatchesCount}`,
