@@ -22,7 +22,6 @@ export default async function connectDB() {
       maxIdleTimeMS: 30000,
       maxConnecting: 10,
       retryWrites: true,
-      user: MONGO_DB_NAME,
       pass: MONGO_DB_PASSWORD,
       dbName: MONGO_DB_NAME,
     })
