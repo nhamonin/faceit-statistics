@@ -13,7 +13,11 @@ export default async function connectDB() {
     ENVIRONMENT === 'PRODUCTION'
       ? MONGO_DB_CLUSTER_NAME
       : MONGO_DB_CLUSTER_NAME_TEST;
-  const uri = `mongodb+srv://${MONGO_DB_NAME}:${MONGO_DB_PASSWORD}@cluster0.cqna7jk.mongodb.net/${mongoCluster}?retryWrites=false&w=majority`;
+  const uri = `mongodb+srv://${MONGO_DB_NAME}:${MONGO_DB_PASSWORD}@cluster0.cqna7jk.mongodb.net/${mongoCluster}?
+  retryWrites=false&
+  w=majority&
+  maxConnecting=10&
+  maxIdleTimeMS=1000`;
 
   mongoose
     .connect(uri)
