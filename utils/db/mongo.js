@@ -22,7 +22,6 @@ export default async function connectDB() {
       maxIdleTimeMS: 30000,
       maxConnecting: 10,
       retryWrites: true,
-      dbName: MONGO_DB_NAME,
     })
     .then(() => console.log('Connected to DB', new Date().toLocaleString()))
     .catch((e) => console.log(e.message));
