@@ -24,7 +24,6 @@ export default async function connectDB() {
       retryWrites: true,
       socketTimeoutMS: 45000,
       keepAlive: true,
-      reconnectTries: 10,
     })
     .then(() => console.log('Connected to DB', new Date().toLocaleString()))
     .catch((e) => console.log(e.message));
