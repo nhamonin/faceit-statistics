@@ -33,7 +33,7 @@ export const getBestMapsTemplate = (msg, bestMap) =>
       align-items: center;
     }
     table {
-      margin-top: 50px;
+      margin-top: 20px;
       border-collapse: collapse;
       width: 1500px;
       border: 4px solid #DACEA4;
