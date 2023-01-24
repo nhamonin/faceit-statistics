@@ -12,9 +12,19 @@ export async function getPlayerLastMatchesWrapper(
   const { message, error } = await getPlayerLastMatchesStats(nickname);
   logEvent(chat, 'Get player last matches stats');
   try {
-    await tBot.editMessageText(message || error, {
-      ...opts,
-      ...lastPlayerMatchesMarkup(teamNicknames),
+    await tBot.deleteMessage(opts.chat_id, opts.message_id);
+    await tBot.sendMessage(opts.chat_id, message || error, {
+      parse_mode: 'html',
     });
-  } catch (e) {}
+    await tBot.sendMessage(
+      opts.chat_id,
+      'Done! Select one of the options below:',
+      {
+        ...opts,
+        ...lastPlayerMatchesMarkup(teamNicknames),
+      }
+    );
+  } catch (e) {
+    console.log(e);
+  }
 }

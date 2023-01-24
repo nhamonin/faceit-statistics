@@ -257,11 +257,10 @@ tBot.on('callback_query', async (callbackQuery) => {
       }
       break;
     case 'getPlayerLastMatchesMenu':
-      tBot.sendMessage(
-        opts.chat_id,
-        'Select option below:',
-        lastPlayerMatchesMarkup(teamNicknames)
-      );
+      tBot.editMessageText('Select option below:', {
+        ...opts,
+        ...lastPlayerMatchesMarkup(teamNicknames),
+      });
       break;
     case 'getPlayerLastMatches':
       {
