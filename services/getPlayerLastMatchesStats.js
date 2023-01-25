@@ -19,7 +19,7 @@ export const getPlayerLastMatchesStats = async (playerNickname) => {
 function formatMessage(playerMatches, playerNickname) {
   return [
     `The last 20 matches played by <b>${playerNickname}</b>:\n`,
-    '<code>Result Score PlayerK/D  Map',
+    '<code>Result Score PlayerK/D   Map',
     ...playerMatches.map((match) => {
       const result = match.i10 === '1' ? ' W 🟢' : ' L 🔴';
       const score = match.i18

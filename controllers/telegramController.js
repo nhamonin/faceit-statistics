@@ -25,6 +25,7 @@ import {
   getBasicTelegramOptions,
   getTeamKDWrapper,
   getPlayerLastMatchesWrapper,
+  getHighestEloWrapper,
   getTeamNicknames,
   getTelegramBot,
   logEvent,
@@ -312,12 +313,13 @@ tBot.on('callback_query', async (callbackQuery) => {
         const nickname = callbackQuery.data.split('?')[1];
 
         if (nickname !== 'custom') {
-          const { message, error } = await getHighestElo(nickname);
-          logEvent(msg.chat, `Get Highest Elo: ${nickname}`);
-          tBot.editMessageText(message || error, {
-            ...opts,
-            ...getHighestEloMenu(teamNicknames),
-          });
+          await getHighestEloWrapper(
+            tBot,
+            nickname,
+            teamNicknames,
+            opts,
+            msg.chat
+          );
         } else {
           tBot
             .sendMessage(opts.chat_id, 'Send player nickname:', {
@@ -332,10 +334,10 @@ tBot.on('callback_query', async (callbackQuery) => {
                   logEvent(msg.chat, `Get Highest Elo: ${nickname}`);
                   tBot.deleteMessage(opts.chat_id, message_id);
                   tBot.deleteMessage(opts.chat_id, bot_message_id);
-                  tBot.editMessageText(message || error, {
-                    ...opts,
-                    ...getHighestEloMenu(teamNicknames),
-                  });
+                  await getHighestEloWrapper(
+                    opts,
+                    getHighestEloMenu(teamNicknames)
+                  );
                 }
               );
             });
