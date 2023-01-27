@@ -27,17 +27,20 @@ export default async function connectDB() {
   await mongooseConnectWrapper();
 
   async function mongooseConnect() {
+    mongoose.set('strictQuery', false);
     await mongoose
       .connect(uri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        maxIdleTimeMS: 30000,
-        maxConnecting: 10,
-        retryWrites: true,
-        socketTimeoutMS: 45000,
         keepAlive: true,
+        useNewUrlParser: true,
+        autoIndex: true,
+        connectTimeoutMS: 10000,
+        socketTimeoutMS: 45000,
       })
       .then(() => console.log('Connected to DB', new Date().toLocaleString()))
       .catch((e) => console.log(e.message));
   }
+
+  mongoose.connection.on('error', (e) => {
+    console.log(e);
+  });
 }
