@@ -21,6 +21,7 @@ import { getCurrentBearerToken } from './webhook/getCurrentBearerToken.js';
 import connectDB from './db/mongo.js';
 // csgo
 import { getPlayerMatches } from './csgo/getPlayerMatches.js';
+import { getPlayerLifeTimeStats } from './csgo/getPlayerLifeTimeStats.js';
 import { getPlayerAvgKD } from './csgo/getPlayerAvgKD.js';
 import { getPlayerInfo } from './csgo/getPlayerInfo.js';
 import { getTeamNicknames } from './csgo/getTeamNicknames.js';
@@ -44,6 +45,7 @@ export {
   regulateAvg,
   getPlayerInfo,
   getPlayerMatches,
+  getPlayerLifeTimeStats,
   getPlayerAvgKD,
   getTeamNicknames,
   getTeamKDWrapper,

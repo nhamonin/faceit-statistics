@@ -1,5 +1,3 @@
-import { Players } from 'faceit-node-api';
-
 import { Team, Player } from '#models';
 import {
   regulateWinrate,
@@ -9,6 +7,7 @@ import {
   calculateDifference,
   getTelegramBot,
   sendPhoto,
+  getPlayerLifeTimeStats,
 } from '#utils';
 import {
   game_id,
@@ -87,7 +86,6 @@ function fillInStatsBoilerplateWithMaps(arr) {
 }
 
 async function fillInTeamVariablesWithPlayersStats(teamsObj) {
-  const players = new Players();
   try {
     for await (const teamObjKey of Object.keys(teamsObj)) {
       const variablesArr = teamsObj[teamObjKey];
@@ -100,24 +98,21 @@ async function fillInTeamVariablesWithPlayersStats(teamsObj) {
               nickname: player.nickname,
               _id: player._id,
             });
-          await players
-            .getStatisticsOfAPlayer(player_id, game_id)
-            .then((stats) => {
-              if (!stats?.segments?.length) return;
-              currentMapPool.map((map_id) => {
-                variablesArr[2].lifetime[map_id].push(
-                  stats.segments
-                    .filter(
-                      ({ mode, label }) => mode === '5v5' && label === map_id
-                    )
-                    .map(({ stats }) => ({
-                      winrate: regulateWinrate(+stats['Win Rate %']),
-                      avg: regulateAvg(+stats['Average Kills']),
-                      matches: +stats['Matches'],
-                    }))[0] || { winrate: 50, avg: 20, matches: 0 }
-                );
-              });
+          await getPlayerLifeTimeStats(player_id).then((stats) => {
+            const segments = stats?.segments[0]?.segments;
+            if (!Object.keys(segments).length) return;
+            currentMapPool.map((map_id) => {
+              variablesArr[2].lifetime[map_id].push(
+                segments[map_id]
+                  ? {
+                      winrate: regulateWinrate(+segments[map_id].k6),
+                      avg: regulateAvg(+segments[map_id].k1),
+                      matches: +segments[map_id].m1,
+                    }
+                  : { winrate: 50, avg: 20, matches: 0 }
+              );
             });
+          });
         })
       );
     }
