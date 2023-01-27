@@ -12,7 +12,7 @@ const router = express.Router();
 router.post('/webhook', async (req, res) => {
   const data = req.body;
 
-  let playersIDs, playersNicknames;
+  let playersIDs;
   const matches = new Matches();
 
   switch (data.event) {
@@ -32,7 +32,6 @@ router.post('/webhook', async (req, res) => {
         ];
 
         playersIDs = playersRoster.map(({ id }) => id);
-        playersNicknames = playersRoster.map(({ nickname }) => nickname);
 
         for await (const player_id of playersIDs) {
           const teams = await Team.find({

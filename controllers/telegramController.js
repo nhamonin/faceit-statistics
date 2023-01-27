@@ -1,3 +1,5 @@
+import { Faceit } from 'faceit-node-api';
+
 import { Team, MatchPrediction, TempPrediction } from '#models';
 import { getEloTemplate } from '#templates';
 import {
@@ -50,7 +52,6 @@ function initTelegramBotListener() {
   );
 
   tBot.onText(/\/get_analytics/, async ({ chat, message_id }) => {
-    console.log('get_analytics');
     const matchPrediction = await MatchPrediction.findOne();
     const tempMatchesCount = await TempPrediction.countDocuments();
 
@@ -65,6 +66,8 @@ function initTelegramBotListener() {
       '',
       `Total matches: ${matchPrediction?.matches?.length || 0}`,
       `Pending matches: ${tempMatchesCount}`,
+      '',
+      `Current hour Faceit API load: ${Faceit.prototype._counter / 2}`,
     ].join('\n');
 
     tBot.sendMessage(chat.id, message, {
