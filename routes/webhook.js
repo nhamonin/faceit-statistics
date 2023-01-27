@@ -19,7 +19,7 @@ router.post('/webhook', async (req, res) => {
     case 'match_status_finished':
       {
         const match_id = data.payload.id;
-        await performMapPickerAnalytics(match_id, matches);
+        // await performMapPickerAnalytics(match_id, matches);
         if (
           !data?.payload?.teams?.length ||
           !data.payload.teams[0]?.roster?.length ||
