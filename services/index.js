@@ -7,7 +7,6 @@ import { getTeamEloMessage } from './getTeamElo.js';
 import { getTeamKDMessage } from './getTeamKD.js';
 import { getPlayerLastMatchesStats } from './getPlayerLastMatchesStats.js';
 import { getHighestElo } from './getHighestElo.js';
-import { webhookListener } from './webhookListener.js';
 
 export {
   initTeam,
@@ -19,5 +18,4 @@ export {
   getTeamKDMessage,
   getPlayerLastMatchesStats,
   getHighestElo,
-  webhookListener,
 };
