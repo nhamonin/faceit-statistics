@@ -1,7 +1,7 @@
 import express from 'express';
 import { Matches } from 'faceit-node-api';
 
-import { TempPrediction } from '#models';
+import { TempPrediction, Team } from '#models';
 import { updateTeamPlayers } from '#services';
 import { calculateBestMaps, performMapPickerAnalytics } from '#utils';
 import { clearInterval } from 'timers';
