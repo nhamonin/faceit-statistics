@@ -1,8 +1,12 @@
+import { Matches } from 'faceit-node-api';
+
 import { Match, MatchPrediction, TempPrediction } from '#models';
 import { getCurrentWinrate } from '#utils';
 import { currentMapPool } from '#config';
 
-export async function performMapPickerAnalytics(match_id, matches) {
+const matches = new Matches();
+
+export async function performMapPickerAnalytics(match_id) {
   try {
     const tempPrediction = await TempPrediction.findOne({ match_id });
     if (!tempPrediction) return;
