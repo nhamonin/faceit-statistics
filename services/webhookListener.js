@@ -149,7 +149,7 @@ async function performMapPickerAnalytics(match_id, matches) {
           currentWinrate: getCurrentWinrate(matches, 'winrate'),
         };
       }
-      matchPrediction.save();
+      await matchPrediction.save();
       await TempPrediction.findOneAndDelete({ match_id });
     });
   } catch (e) {

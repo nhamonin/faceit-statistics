@@ -16,7 +16,7 @@ export const deletePlayer = async (playerNickname, chat_id) => {
 
     const playerInDB = await Player.findOne({ nickname: playerNickname });
 
-    return Team.findOneAndUpdate(
+    return await Team.findOneAndUpdate(
       { chat_id },
       {
         $pullAll: {
