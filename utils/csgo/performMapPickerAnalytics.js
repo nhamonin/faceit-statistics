@@ -10,8 +10,9 @@ export async function performMapPickerAnalytics(match_id) {
     if (!tempPrediction) return;
     const { predictions } = tempPrediction;
     if (!predictions) return;
-    const matches = new Matches();
+    let matches = new Matches();
     const matchData = await matches.getMatchDetails(match_id);
+    matches = null;
     const winner = matchData?.results?.winner;
     const pickedMap = matchData?.voting?.map?.pick[0];
     if (!pickedMap && !winner && !currentMapPool.includes(pickedMap)) return;
@@ -26,8 +27,8 @@ export async function performMapPickerAnalytics(match_id) {
       winratePredictedValue: predictedDataMap.totalWinrate > 0,
       avgPredictedValue: predictedDataMap.totalPoints > 0,
     });
+    let matchPrediction = await MatchPrediction.findOne();
     match.save().then(async () => {
-      let matchPrediction = await MatchPrediction.findOne();
       if (!matchPrediction) {
         matchPrediction = new MatchPrediction({
           matches: [match],
