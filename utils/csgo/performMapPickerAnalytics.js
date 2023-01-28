@@ -4,14 +4,13 @@ import { Match, MatchPrediction, TempPrediction } from '#models';
 import { getCurrentWinrate } from '#utils';
 import { currentMapPool } from '#config';
 
-const matches = new Matches();
-
 export async function performMapPickerAnalytics(match_id) {
   try {
     const tempPrediction = await TempPrediction.findOne({ match_id });
     if (!tempPrediction) return;
     const { predictions } = tempPrediction;
     if (!predictions) return;
+    const matches = new Matches();
     const matchData = await matches.getMatchDetails(match_id);
     const winner = matchData?.results?.winner;
     const pickedMap = matchData?.voting?.map?.pick[0];
