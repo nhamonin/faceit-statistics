@@ -16,7 +16,7 @@ router.post('/webhook', async (req, res) => {
 
   switch (data.event) {
     case 'match_status_finished':
-      await performMapPickerAnalytics(match_id);
+      // await performMapPickerAnalytics(match_id);
       if (
         !data?.payload?.teams?.length ||
         !data.payload.teams[0]?.roster?.length ||
