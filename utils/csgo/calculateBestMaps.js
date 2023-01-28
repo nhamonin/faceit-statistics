@@ -100,7 +100,7 @@ async function fillInTeamVariablesWithPlayersStats(teamsObj) {
             });
           await getPlayerLifeTimeStats(player_id).then((stats) => {
             const segments = stats?.segments && stats.segments[0]?.segments;
-            if (!Object.keys(segments).length) return;
+            if (!segments || !Object.keys(segments).length) return;
             currentMapPool.map((map_id) => {
               variablesArr[2].lifetime[map_id].push(
                 segments[map_id]
