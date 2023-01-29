@@ -36,8 +36,8 @@ export async function performMapPickerAnalytics(match_id) {
       } else {
         matchPrediction.totalMatches++;
         if (match.winratePredictedValue)
-          MatchPrediction.winratePredictions += 1;
-        if (match.avgPredictedValue) MatchPrediction.winratePredictions += 1;
+          matchPrediction.winratePredictions += 1;
+        if (match.avgPredictedValue) matchPrediction.winratePredictions += 1;
         await matchPrediction.save();
       }
       await matchPrediction.save();
