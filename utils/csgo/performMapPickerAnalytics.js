@@ -38,6 +38,7 @@ export async function performMapPickerAnalytics(match_id) {
         if (match.winratePredictedValue)
           MatchPrediction.winratePredictions += 1;
         if (match.avgPredictedValue) MatchPrediction.winratePredictions += 1;
+        await matchPrediction.save();
       }
       await matchPrediction.save();
       await TempPrediction.findOneAndDelete({ match_id });
