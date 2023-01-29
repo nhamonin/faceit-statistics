@@ -34,12 +34,12 @@ export async function performMapPickerAnalytics(match_id) {
       } else {
         let matchesAmount = matchPrediction.matches.length;
         let avgPredictWinrateMatchesAmount =
-          (matchesAmount /
-            matchPrediction.avgMatchesPrediction.currentWinrate) *
+          (matchesAmount *
+            matchPrediction.avgMatchesPrediction.currentWinrate) /
           100;
         let winPredictWinrateMatchesAmount =
-          (matchesAmount /
-            matchPrediction.winrateMatchesPrediction.currentWinrate) *
+          (matchesAmount *
+            matchPrediction.winrateMatchesPrediction.currentWinrate) /
           100;
 
         matchPrediction.matches?.push(match);
