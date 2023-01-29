@@ -2,23 +2,17 @@ import mongoose, { Schema } from 'mongoose';
 
 export const matchPredictionSchema = new Schema(
   {
-    matches: {
-      type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Match' }],
-      required: true,
+    totalMatches: {
+      type: Number,
+      default: 0,
     },
-    avgMatchesPrediction: {
-      type: Object,
-      currentWinrate: {
-        type: Number,
-        default: 0,
-      },
+    avgPredictions: {
+      type: Number,
+      default: 0,
     },
-    winrateMatchesPrediction: {
-      type: Object,
-      currentWinrate: {
-        type: Number,
-        default: 0,
-      },
+    winratePredictions: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamp: true }

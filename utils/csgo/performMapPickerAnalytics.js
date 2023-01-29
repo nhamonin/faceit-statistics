@@ -29,31 +29,14 @@ export async function performMapPickerAnalytics(match_id) {
     match.save().then(async () => {
       if (!matchPrediction) {
         matchPrediction = new MatchPrediction({
-          matches: [match],
+          totalMatches: 1,
+          winratePredictions: match.winratePredictedValue ? 1 : 0,
+          avgPredictions: match.avgPredictedValue ? 1 : 0,
         });
       } else {
-        let matchesAmount = matchPrediction.matches.length;
-        let avgPredictWinrateMatchesAmount =
-          (matchesAmount *
-            matchPrediction?.avgMatchesPrediction?.currentWinrate || 0) / 100;
-        let winPredictWinrateMatchesAmount =
-          (matchesAmount *
-            matchPrediction?.winrateMatchesPrediction?.currentWinrate || 0) /
-          100;
-
-        matchPrediction.matches?.push(match);
-        if (match.winratePredictedValue) winPredictWinrateMatchesAmount++;
-        if (match.avgMatchesPrediction) avgPredictWinrateMatchesAmount++;
-        matchesAmount++;
-        matchPrediction.avgMatchesPrediction = {
-          currentWinrate:
-            (avgPredictWinrateMatchesAmount / matchesAmount) * 100,
-        };
-        matchPrediction.winrateMatchesPrediction = {
-          currentWinrate:
-            (winPredictWinrateMatchesAmount / matchesAmount) * 100,
-        };
-        await matchPrediction.save();
+        matchPrediction.totalMatches++;
+        if (match.winratePredictedValue) MatchPrediction.winratePredictions++;
+        if (match.avgPredictedValue) MatchPrediction.winratePredictions++;
       }
       await matchPrediction.save();
       await TempPrediction.findOneAndDelete({ match_id });

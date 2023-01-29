@@ -54,16 +54,16 @@ function initTelegramBotListener() {
   tBot.onText(/\/get_analytics/, async ({ chat, message_id }) => {
     const matchPrediction = await MatchPrediction.findOne();
     const tempMatchesCount = await TempPrediction.countDocuments();
-
+    const totalMatches = matchPrediction.totalMatches || 0;
+    const avgPredictions = matchPrediction.avgPredictions || 0;
+    const winratePrediction = matchPrediction.winratePrediction || 0;
     const message = [
       `winrate predictions: ${
-        matchPrediction?.winrateMatchesPrediction?.currentWinrate || '-'
+        (winratePrediction / totalMatches) * 100 || '-'
       } %`,
-      `avg predictions: ${
-        matchPrediction?.avgMatchesPrediction?.currentWinrate || '-'
-      } %`,
+      `avg predictions: ${(avgPredictions / totalMatches) * 100 || '-'} %`,
       '',
-      `Total matches: ${matchPrediction?.matches?.length || 0}`,
+      `Total matches: ${totalMatches}`,
       `Pending matches: ${tempMatchesCount}`,
       '',
       `Current hour Faceit API load: ${Faceit.prototype._counter / 2}`,
