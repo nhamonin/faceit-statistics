@@ -30,6 +30,7 @@ import {
   getHighestEloWrapper,
   getTeamNicknames,
   getTelegramBot,
+  getCurrentWinrate,
   logEvent,
 } from '#utils';
 
@@ -54,6 +55,15 @@ function initTelegramBotListener() {
   tBot.onText(/\/get_analytics/, async ({ chat, message_id }) => {
     const matchPrediction = await MatchPrediction.findOne();
     const tempMatchesCount = await TempPrediction.countDocuments();
+    const { matches } = await matchPrediction.populate('matches');
+
+    matchPrediction.avgMatchesPrediction = {
+      currentWinrate: getCurrentWinrate(matches, 'avg'),
+    };
+    matchPrediction.winrateMatchesPrediction = {
+      currentWinrate: getCurrentWinrate(matches, 'winrate'),
+    };
+    await matchPrediction.save();
 
     const message = [
       `winrate predictions: ${

@@ -1,7 +1,6 @@
 import { Matches } from 'faceit-node-api';
 
 import { Match, MatchPrediction, TempPrediction } from '#models';
-import { getCurrentWinrate } from '#utils';
 import { currentMapPool } from '#config';
 
 export async function performMapPickerAnalytics(match_id) {
@@ -10,9 +9,8 @@ export async function performMapPickerAnalytics(match_id) {
     if (!tempPrediction) return;
     const { predictions } = tempPrediction;
     if (!predictions) return;
-    let matches = new Matches();
+    const matches = new Matches();
     const matchData = await matches.getMatchDetails(match_id);
-    matches = null;
     const winner = matchData?.results?.winner;
     const pickedMap = matchData?.voting?.map?.pick[0];
     if (!pickedMap && !winner && !currentMapPool.includes(pickedMap)) return;
@@ -33,21 +31,8 @@ export async function performMapPickerAnalytics(match_id) {
         matchPrediction = new MatchPrediction({
           matches: [match],
         });
-        matchPrediction.avgMatchesPrediction = {
-          currentWinrate: getCurrentWinrate([match], 'avg'),
-        };
-        matchPrediction.winrateMatchesPrediction = {
-          currentWinrate: getCurrentWinrate([match], 'winrate'),
-        };
       } else {
         matchPrediction.matches?.push(match);
-        const { matches } = await matchPrediction.populate('matches');
-        matchPrediction.avgMatchesPrediction = {
-          currentWinrate: getCurrentWinrate(matches, 'avg'),
-        };
-        matchPrediction.winrateMatchesPrediction = {
-          currentWinrate: getCurrentWinrate(matches, 'winrate'),
-        };
       }
       await matchPrediction.save();
       await TempPrediction.findOneAndDelete({ match_id });
