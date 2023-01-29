@@ -35,11 +35,10 @@ export async function performMapPickerAnalytics(match_id) {
         let matchesAmount = matchPrediction.matches.length;
         let avgPredictWinrateMatchesAmount =
           (matchesAmount *
-            matchPrediction.avgMatchesPrediction.currentWinrate) /
-          100;
+            matchPrediction?.avgMatchesPrediction?.currentWinrate || 0) / 100;
         let winPredictWinrateMatchesAmount =
           (matchesAmount *
-            matchPrediction.winrateMatchesPrediction.currentWinrate) /
+            matchPrediction?.winrateMatchesPrediction?.currentWinrate || 0) /
           100;
 
         matchPrediction.matches?.push(match);
