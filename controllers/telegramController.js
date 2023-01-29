@@ -56,12 +56,14 @@ function initTelegramBotListener() {
     const tempMatchesCount = await TempPrediction.countDocuments();
     const totalMatches = matchPrediction.totalMatches || 0;
     const avgPredictions = matchPrediction.avgPredictions || 0;
-    const winratePrediction = matchPrediction.winratePrediction || 0;
+    const winratePrediction = matchPrediction.winratePredictions || 0;
     const message = [
       `winrate predictions: ${
-        (winratePrediction / totalMatches) * 100 || '-'
+        ((winratePrediction / totalMatches) * 100).toFixed(2) || '-'
       } %`,
-      `avg predictions: ${(avgPredictions / totalMatches) * 100 || '-'} %`,
+      `avg predictions: ${
+        ((avgPredictions / totalMatches) * 100).toFixed(2) || '-'
+      } %`,
       '',
       `Total matches: ${totalMatches}`,
       `Pending matches: ${tempMatchesCount}`,
