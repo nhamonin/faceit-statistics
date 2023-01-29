@@ -32,7 +32,29 @@ export async function performMapPickerAnalytics(match_id) {
           matches: [match],
         });
       } else {
+        let matchesAmount = matchPrediction.matches.length;
+        let avgPredictWinrateMatchesAmount =
+          (matchesAmount /
+            matchPrediction.avgMatchesPrediction.currentWinrate) *
+          100;
+        let winPredictWinrateMatchesAmount =
+          (matchesAmount /
+            matchPrediction.winrateMatchesPrediction.currentWinrate) *
+          100;
+
         matchPrediction.matches?.push(match);
+        if (match.winratePredictedValue) winPredictWinrateMatchesAmount++;
+        if (match.avgMatchesPrediction) avgPredictWinrateMatchesAmount++;
+        matchesAmount++;
+        matchPrediction.avgMatchesPrediction = {
+          currentWinrate:
+            (avgPredictWinrateMatchesAmount / matchesAmount) * 100,
+        };
+        matchPrediction.winrateMatchesPrediction = {
+          currentWinrate:
+            (winPredictWinrateMatchesAmount / matchesAmount) * 100,
+        };
+        await matchPrediction.save();
       }
       await matchPrediction.save();
       await TempPrediction.findOneAndDelete({ match_id });
