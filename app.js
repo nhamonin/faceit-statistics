@@ -21,11 +21,6 @@ adjustConsoleLog();
 initTelegramBotListener();
 
 const playersNicknames = [
-  'necexary',
-  's1mple',
-  'XANTARES',
-  'ZywOo',
-  'brokyy',
   'rallen',
   'NEXA',
   'tabseN',
