@@ -46,6 +46,7 @@ for await (const playerNickname of playersNicknames) {
 
   for await (const matchID of matchIDs) {
     const details = await matches.getMatchDetails(matchID);
+    if (!details?.teams?.faction1?.roster?.length) continue;
     const playersIDs1 = details.teams.faction1.roster.map(
       ({ player_id }) => player_id
     );
