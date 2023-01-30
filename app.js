@@ -20,6 +20,14 @@ await connectDB();
 adjustConsoleLog();
 initTelegramBotListener();
 
+const app = express();
+app.use(express.json());
+
+app.use(main);
+app.use(webhook);
+
+app.listen(80, () => {});
+
 const playersNicknames = [
   'rallen',
   'NEXA',
@@ -55,11 +63,3 @@ for await (const playerNickname of playersNicknames) {
 
   console.log('done', playerNickname);
 }
-
-const app = express();
-app.use(express.json());
-
-app.use(main);
-app.use(webhook);
-
-app.listen(80, () => {});
