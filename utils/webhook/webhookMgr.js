@@ -90,8 +90,6 @@ function createBodyFromWebhookData(playersIDs, action, webhookData) {
 }
 
 function getAuthorizationHeader() {
-  console.log(process.env.DYNAMIC_WEBHOOK_API_KEY || FACEIT_WEBHOOK_API_KEY);
-
   return {
     Authorization: `Bearer ${
       process.env.DYNAMIC_WEBHOOK_API_KEY || FACEIT_WEBHOOK_API_KEY
