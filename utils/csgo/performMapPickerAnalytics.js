@@ -30,14 +30,13 @@ export async function performMapPickerAnalytics(match_id) {
       if (!matchPrediction) {
         matchPrediction = new MatchPrediction({
           totalMatches: 1,
-          winratePredictions: match.winratePredictedValue ? 1 : 0,
-          avgPredictions: match.avgPredictedValue ? 1 : 0,
+          winratePredictions: +match.winratePredictedValue,
+          avgPredictions: +match.avgPredictedValue,
         });
       } else {
         matchPrediction.totalMatches++;
         if (match.winratePredictedValue) matchPrediction.winratePredictions++;
         if (match.avgPredictedValue) matchPrediction.avgPredictions++;
-        await matchPrediction.save();
       }
       await matchPrediction.save();
       await TempPrediction.findOneAndDelete({ match_id });
