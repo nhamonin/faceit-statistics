@@ -31,6 +31,8 @@ import { calculateBestMaps } from './csgo/calculateBestMaps.js';
 import { prettifyMapPickerData } from './csgo/prettifyMapPickerData.js';
 import { getHighestEloWrapper } from './csgo/getHighestEloWrapper.js';
 import { performMapPickerAnalytics } from './csgo/performMapPickerAnalytics.js';
+// faceit
+import calculateFaceitDataAPILoad from './faceit/calculateFaceitDataAPILoad.js';
 
 export {
   adjustConsoleLog,
@@ -59,4 +61,5 @@ export {
   webhookMgr,
   getCurrentBearerToken,
   connectDB,
+  calculateFaceitDataAPILoad,
 };
