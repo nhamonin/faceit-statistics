@@ -35,9 +35,8 @@ export async function performMapPickerAnalytics(match_id) {
         });
       } else {
         matchPrediction.totalMatches++;
-        if (match.winratePredictedValue)
-          matchPrediction.winratePredictions += 1;
-        if (match.avgPredictedValue) matchPrediction.avgPredictedValue += 1;
+        if (match.winratePredictedValue) matchPrediction.winratePredictions++;
+        if (match.avgPredictedValue) matchPrediction.avgPredictions++;
         await matchPrediction.save();
       }
       await matchPrediction.save();
