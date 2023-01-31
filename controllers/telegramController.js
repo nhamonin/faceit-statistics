@@ -31,6 +31,7 @@ import {
   getTeamNicknames,
   getTelegramBot,
   logEvent,
+  addNewPlayersToWebhookList,
 } from '#utils';
 
 const tBot = getTelegramBot();
@@ -75,6 +76,16 @@ function initTelegramBotListener() {
       ...getBasicTelegramOptions(message_id),
     });
   });
+
+  tBot.onText(
+    /\/add_new_wh_players.* (\S*)/,
+    async ({ chat, message_id }, match) => {
+      const message = await addNewPlayersToWebhookList(match[1]);
+      tBot.sendMessage(chat.id, message, {
+        ...getBasicTelegramOptions(message_id),
+      });
+    }
+  );
 
   tBot.on('polling_error', (err) => {
     console.log(err);

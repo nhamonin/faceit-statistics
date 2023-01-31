@@ -33,6 +33,7 @@ import { getHighestEloWrapper } from './csgo/getHighestEloWrapper.js';
 import { performMapPickerAnalytics } from './csgo/performMapPickerAnalytics.js';
 // faceit
 import calculateFaceitDataAPILoad from './faceit/calculateFaceitDataAPILoad.js';
+import addNewPlayersToWebhookList from './faceit/addNewPlayersToWebhookList.js';
 
 export {
   adjustConsoleLog,
@@ -62,4 +63,5 @@ export {
   getCurrentBearerToken,
   connectDB,
   calculateFaceitDataAPILoad,
+  addNewPlayersToWebhookList,
 };
