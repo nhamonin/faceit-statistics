@@ -45,7 +45,7 @@ async function prepareProperResult(players, limit, statAttribute) {
 }
 
 async function getAvgPlayersKD(players, limit = 20) {
-  switch (limit) {
+  switch (+limit) {
     case 20:
       return players.map(({ nickname, last20KD }) => ({
         [nickname]: last20KD,
