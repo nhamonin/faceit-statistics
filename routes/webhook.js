@@ -69,11 +69,13 @@ router.post('/webhook', async (req, res) => {
             const prediction = await TempPrediction.findOne({ match_id });
 
             if (!prediction) {
-              const newPrediction = new TempPrediction({
-                match_id,
-                predictions,
-              });
-              await newPrediction.save();
+              try {
+                const newPrediction = new TempPrediction({
+                  match_id,
+                  predictions,
+                });
+                await newPrediction.save();
+              } catch (e) {}
             }
           }
         }

@@ -4,6 +4,7 @@ const tempPrediction = new Schema({
   match_id: {
     type: String,
     required: true,
+    unique: true,
   },
   predictions: {
     type: Array,

@@ -5,6 +5,7 @@ export const matchSchema = new Schema(
     match_id: {
       type: String,
       required: true,
+      unique: true,
     },
     winratePredictedValue: {
       type: Boolean,

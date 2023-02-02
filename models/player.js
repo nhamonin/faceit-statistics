@@ -9,6 +9,7 @@ export const playerSchema = new Schema(
     player_id: {
       type: String,
       required: true,
+      unique: true,
     },
     nickname: {
       type: String,
