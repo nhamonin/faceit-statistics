@@ -1,7 +1,7 @@
 import express from 'express';
 import { Faceit } from 'faceit-node-api';
 
-import { FACEIT_API_KEYS } from '#config';
+import { FACEIT_API_KEY } from '#config';
 import { initTelegramBotListener } from '#controllers';
 import {
   connectDB,
@@ -10,7 +10,7 @@ import {
 } from '#utils';
 import { main, webhook } from '#routes';
 
-Faceit.setApiKeys(FACEIT_API_KEYS);
+Faceit.setApiKeys([FACEIT_API_KEY]);
 
 calculateFaceitDataAPILoad(Faceit);
 await connectDB();

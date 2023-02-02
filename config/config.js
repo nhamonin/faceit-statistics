@@ -5,11 +5,7 @@ const {
   ENVIRONMENT,
   FACEIT_EMAIL,
   FACEIT_PASSWORD,
-  FACEIT_API_KEY_1,
-  FACEIT_API_KEY_2,
-  FACEIT_API_KEY_3,
-  FACEIT_API_KEY_4,
-  FACEIT_API_KEY_5,
+  FACEIT_API_KEY,
   FACEIT_APP_ID,
   FACEIT_WEBHOOK_ID,
   FACEIT_WEBHOOK_ID_TEST,
@@ -126,13 +122,6 @@ const puppeteerArgs = [
   '--no-first-run',
   '--no-zygote',
 ];
-const FACEIT_API_KEYS = [
-  FACEIT_API_KEY_1,
-  FACEIT_API_KEY_2,
-  FACEIT_API_KEY_3,
-  FACEIT_API_KEY_4,
-  FACEIT_API_KEY_5,
-];
 const caches = {
   updateTeamPlayers: new Set(),
   bestMapsMatchIDs: new Set(),
@@ -146,7 +135,7 @@ export {
   ENVIRONMENT,
   FACEIT_EMAIL,
   FACEIT_PASSWORD,
-  FACEIT_API_KEYS,
+  FACEIT_API_KEY,
   FACEIT_APP_ID,
   FACEIT_WEBHOOK_ID,
   FACEIT_WEBHOOK_ID_TEST,
