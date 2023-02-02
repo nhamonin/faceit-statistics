@@ -349,13 +349,15 @@ tBot.on('callback_query', async (callbackQuery) => {
                 opts.chat_id,
                 bot_message_id,
                 async ({ text: nickname, message_id }) => {
-                  const { message, error } = await getHighestElo(nickname);
                   logEvent(msg.chat, `Get Highest Elo: ${nickname}`);
                   tBot.deleteMessage(opts.chat_id, message_id);
                   tBot.deleteMessage(opts.chat_id, bot_message_id);
                   await getHighestEloWrapper(
+                    tBot,
+                    nickname,
+                    teamNicknames,
                     opts,
-                    getHighestEloMenu(teamNicknames)
+                    msg.chat
                   );
                 }
               );
