@@ -17,17 +17,17 @@ import {
 import { getBestMapsTemplate } from '#templates';
 
 export async function calculateBestMaps(matchData) {
-  if (caches.bestMapsMatchIDs.has(matchData.match_id)) return;
-  caches.bestMapsMatchIDs.add(matchData.match_id);
+  if (caches.bestMapsMatchIDs.has(matchData?.payload?.id)) return;
+  caches.bestMapsMatchIDs.add(matchData?.payload?.id);
   setTimeout(() => {
-    caches.bestMapsMatchIDs.delete(matchData.match_id);
+    caches.bestMapsMatchIDs.delete(matchData?.payload?.id);
   }, 1000 * 10);
 
   try {
-    const team1 = matchData.teams.faction1.roster;
-    const team2 = matchData.teams.faction2.roster;
-    const team1playersIDs = team1.map(({ player_id }) => player_id);
-    const team2playersIDs = team2.map(({ player_id }) => player_id);
+    const team1 = matchData?.payload?.teams?.faction1?.roster;
+    const team2 = matchData?.payload?.teams?.faction2?.roster;
+    const team1playersIDs = team1.map(({ id }) => id);
+    const team2playersIDs = team2.map(({ id }) => id);
     const dbPlayersTeam1 = [];
     const dbPlayersTeam2 = [];
     const team1Stats = createStatsBoilerplate();

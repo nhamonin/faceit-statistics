@@ -31,6 +31,7 @@ import { calculateBestMaps } from './csgo/calculateBestMaps.js';
 import { prettifyMapPickerData } from './csgo/prettifyMapPickerData.js';
 import { getHighestEloWrapper } from './csgo/getHighestEloWrapper.js';
 import { performMapPickerAnalytics } from './csgo/performMapPickerAnalytics.js';
+import { getMatchData } from './csgo/getMatchData.js';
 // faceit
 import calculateFaceitDataAPILoad from './faceit/calculateFaceitDataAPILoad.js';
 import addNewPlayersToWebhookList from './faceit/addNewPlayersToWebhookList.js';
@@ -62,6 +63,7 @@ export {
   webhookMgr,
   getCurrentBearerToken,
   connectDB,
+  getMatchData,
   calculateFaceitDataAPILoad,
   addNewPlayersToWebhookList,
 };

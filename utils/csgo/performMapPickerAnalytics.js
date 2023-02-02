@@ -1,7 +1,6 @@
-import { Matches } from 'faceit-node-api';
-
 import { Match, MatchPrediction, TempPrediction } from '#models';
 import { currentMapPool } from '#config';
+import { getMatchData } from '#utils';
 
 export async function performMapPickerAnalytics(match_id) {
   try {
@@ -9,10 +8,9 @@ export async function performMapPickerAnalytics(match_id) {
     if (!tempPrediction) return;
     const { predictions } = tempPrediction;
     if (!predictions) return;
-    const matches = new Matches();
-    const matchData = await matches.getMatchDetails(match_id);
-    const winner = matchData?.results?.winner;
-    const pickedMap = matchData?.voting?.map?.pick[0];
+    const matchData = await getMatchData(match_id);
+    const winner = matchData?.payload?.results?.winner;
+    const pickedMap = matchData?.payload?.voting?.map?.pick[0];
     if (!pickedMap && !winner && !currentMapPool.includes(pickedMap)) return;
     const predictedDataTeam = predictions[winner === 'faction1' ? 0 : 1];
     if (!predictedDataTeam) return;
