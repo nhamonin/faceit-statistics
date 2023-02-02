@@ -239,12 +239,15 @@ tBot.on('callback_query', async (callbackQuery) => {
                 reply_markup: { force_reply: true },
               }
             )
-            .then(({ message_id }) => {
+            .then(({ message_id: bot_message_id }) => {
               tBot.onReplyToMessage(
                 opts.chat_id,
-                message_id,
+                bot_message_id,
                 async ({ text: amount, message_id }) => {
-                  getTeamKDWrapper(tBot, amount, opts, message_id);
+                  await getTeamKDWrapper(tBot, amount, opts, message_id);
+
+                  await tBot.deleteMessage(opts.chat_id, message_id);
+                  await tBot.deleteMessage(opts.chat_id, bot_message_id);
                 }
               );
             });

@@ -10,7 +10,6 @@ import {
   getPlayerLifeTimeStats,
 } from '#utils';
 import {
-  game_id,
   currentMapPool,
   allowedTeamsToGetMapPickerNotifications,
   caches,
