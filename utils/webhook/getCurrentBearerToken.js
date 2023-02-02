@@ -1,5 +1,4 @@
 import puppeteer from 'puppeteer-extra';
-import recaptchaPlugin from 'puppeteer-extra-plugin-recaptcha';
 import stealthPlugin from 'puppeteer-extra-plugin-stealth';
 
 import {
@@ -7,20 +6,11 @@ import {
   FACEIT_APP_ID,
   FACEIT_WEBHOOK_ID,
   FACEIT_WEBHOOK_ID_TEST,
-  HCAPTCHA_API_KEY,
   puppeteerArgs,
   loggedInCookie,
 } from '#config';
 
 puppeteer.use(stealthPlugin());
-puppeteer.use(
-  recaptchaPlugin({
-    provider: {
-      id: '2captcha',
-      token: HCAPTCHA_API_KEY,
-    },
-  })
-);
 
 const webhookID =
   ENVIRONMENT === 'PRODUCTION' ? FACEIT_WEBHOOK_ID : FACEIT_WEBHOOK_ID_TEST;
