@@ -283,6 +283,8 @@ async function sendMapPickerResult(
         });
       }
     );
+
+    teamsToSendNotification = new Map();
   } catch (e) {
     console.log(e);
   }
