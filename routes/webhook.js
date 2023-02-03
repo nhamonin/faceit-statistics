@@ -51,7 +51,7 @@ router.post('/webhook', async (req, res) => {
       }
       break;
     case 'match_object_created':
-      let maxIntervalCount = 10;
+      let maxIntervalCount = 40;
       const interval = setInterval(async () => {
         maxIntervalCount--;
         if (!maxIntervalCount) clearInterval(interval);
@@ -81,7 +81,7 @@ router.post('/webhook', async (req, res) => {
             }
           }
         }
-      }, 3000);
+      }, 1000);
       break;
   }
 
