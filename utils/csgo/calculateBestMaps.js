@@ -50,14 +50,14 @@ export async function calculateBestMaps(matchData) {
       team1Result,
       team2Result
     );
-    // await sendMapPickerResult(
-    //   dbPlayersTeam1,
-    //   dbPlayersTeam2,
-    //   team1Result,
-    //   team2Result,
-    //   team1Name,
-    //   team2Name
-    // );
+    await sendMapPickerResult(
+      dbPlayersTeam1,
+      dbPlayersTeam2,
+      team1Result,
+      team2Result,
+      team1Name,
+      team2Name
+    );
 
     return [team1Result, team2Result];
   } catch (e) {
@@ -266,7 +266,7 @@ async function sendMapPickerResult(
     }
     const tBot = getTelegramBot();
 
-    [...new Set([...teamsToSendNotification])].map(
+    [...new Set([...teamsToSendNotification, -886965844])].map(
       async (chat_id) => {
         const htmlMessage = prettifyMapPickerData(neededVariables);
         await sendPhoto(
