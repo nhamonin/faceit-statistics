@@ -265,24 +265,26 @@ async function sendMapPickerResult(
     }
     const tBot = getTelegramBot();
 
-    [...new Set([...teamsToSendNotification])].map(async (chat_id) => {
-      const htmlMessage = prettifyMapPickerData(neededVariables);
-      await sendPhoto(
-        tBot,
-        chat_id,
-        null,
-        getBestMapsTemplate(htmlMessage, neededVariables[1][0].mapName)
-      );
+    [...new Set([...teamsToSendNotification, -886965844])].map(
+      async (chat_id) => {
+        const htmlMessage = prettifyMapPickerData(neededVariables);
+        await sendPhoto(
+          tBot,
+          chat_id,
+          null,
+          getBestMapsTemplate(htmlMessage, neededVariables[1][0].mapName)
+        );
 
-      const teammatesString = neededVariables[0]
-        .map(({ nickname }) => `<b>${nickname}</b>`)
-        .join(', ');
-      const message = `Match <b>${neededVariables[2]}</b> vs <b>${opponentTeamName}</b> just created! Above, you can find the best maps for <b>${neededVariables[2]}</b> (${teammatesString} from your team).`;
-      tBot.sendMessage(chat_id, message, {
-        parse_mode: 'html',
-        ...mainMenuMarkup,
-      });
-    });
+        const teammatesString = neededVariables[0]
+          .map(({ nickname }) => `<b>${nickname}</b>`)
+          .join(', ');
+        const message = `Match <b>${neededVariables[2]}</b> vs <b>${opponentTeamName}</b> just created! Above, you can find the best maps for <b>${neededVariables[2]}</b> (${teammatesString} from your team).`;
+        tBot.sendMessage(chat_id, message, {
+          parse_mode: 'html',
+          ...mainMenuMarkup,
+        });
+      }
+    );
   } catch (e) {
     console.log(e);
   }
