@@ -244,9 +244,7 @@ async function sendMapPickerResult(
   team1Name,
   team2Name
 ) {
-  console.log('before');
   if (!!dbPlayersTeam1.length && !!dbPlayersTeam2.length) return;
-  console.log('after');
   try {
     const neededVariables = dbPlayersTeam1.length
       ? [dbPlayersTeam1, team1Result, team1Name]
