@@ -50,14 +50,14 @@ export async function calculateBestMaps(matchData) {
       team1Result,
       team2Result
     );
-    await sendMapPickerResult(
-      dbPlayersTeam1,
-      dbPlayersTeam2,
-      team1Result,
-      team2Result,
-      team1Name,
-      team2Name
-    );
+    // await sendMapPickerResult(
+    //   dbPlayersTeam1,
+    //   dbPlayersTeam2,
+    //   team1Result,
+    //   team2Result,
+    //   team1Name,
+    //   team2Name
+    // );
 
     return [team1Result, team2Result];
   } catch (e) {
