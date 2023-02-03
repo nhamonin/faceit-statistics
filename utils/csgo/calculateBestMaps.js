@@ -9,12 +9,9 @@ import {
   sendPhoto,
   getPlayerLifeTimeStats,
 } from '#utils';
-import {
-  currentMapPool,
-  allowedTeamsToGetMapPickerNotifications,
-  caches,
-} from '#config';
+import { currentMapPool, caches } from '#config';
 import { getBestMapsTemplate } from '#templates';
+import { mainMenuMarkup } from '#telegramReplyMarkup';
 
 export async function calculateBestMaps(matchData) {
   if (caches.bestMapsMatchIDs.has(matchData?.payload?.id)) return;
@@ -24,8 +21,12 @@ export async function calculateBestMaps(matchData) {
   }, 1000 * 10);
 
   try {
-    const team1 = matchData?.payload?.teams?.faction1?.roster;
-    const team2 = matchData?.payload?.teams?.faction2?.roster;
+    const faction1 = matchData?.payload?.teams?.faction1;
+    const faction2 = matchData?.payload?.teams?.faction2;
+    const team1 = faction1?.roster;
+    const team2 = faction2?.roster;
+    const team1Name = faction1?.name;
+    const team2Name = faction2?.name;
     const team1playersIDs = team1.map(({ id }) => id);
     const team2playersIDs = team2.map(({ id }) => id);
     const dbPlayersTeam1 = [];
@@ -53,7 +54,9 @@ export async function calculateBestMaps(matchData) {
       dbPlayersTeam1,
       dbPlayersTeam2,
       team1Result,
-      team2Result
+      team2Result,
+      team1Name,
+      team2Name
     );
 
     return [team1Result, team2Result];
@@ -237,13 +240,19 @@ async function sendMapPickerResult(
   dbPlayersTeam1,
   dbPlayersTeam2,
   team1Result,
-  team2Result
+  team2Result,
+  team1Name,
+  team2Name
 ) {
   try {
+    if (!dbPlayersTeam1.length && !dbPlayersTeam2.length) return;
+
     const neededVariables = dbPlayersTeam1.length
-      ? [dbPlayersTeam1, team1Result]
-      : [dbPlayersTeam2, team2Result];
+      ? [dbPlayersTeam1, team1Result, team1Name]
+      : [dbPlayersTeam2, team2Result, team2Name];
     let teamsToSendNotification = new Set();
+    const opponentTeamName =
+      neededVariables[2] === team1Name ? team2Name : team1Name;
 
     for await (const player of neededVariables[0]) {
       const teams = await Team.find({
@@ -256,21 +265,24 @@ async function sendMapPickerResult(
     }
     const tBot = getTelegramBot();
 
-    [...new Set([...teamsToSendNotification])]
-      .filter((chat_id) =>
-        allowedTeamsToGetMapPickerNotifications.includes(chat_id)
-      )
-      .map((chat_id) => {
-        const htmlMessage = prettifyMapPickerData(neededVariables);
-        sendPhoto(
-          tBot,
-          chat_id,
-          null,
-          getBestMapsTemplate(htmlMessage, neededVariables[1][0].mapName)
-        );
-      });
+    [...new Set([...teamsToSendNotification])].map(async (chat_id) => {
+      const htmlMessage = prettifyMapPickerData(neededVariables);
+      await sendPhoto(
+        tBot,
+        chat_id,
+        null,
+        getBestMapsTemplate(htmlMessage, neededVariables[1][0].mapName)
+      );
 
-    teamsToSendNotification = new Set();
+      const teammatesString = neededVariables[0]
+        .map(({ nickname }) => `<b>${nickname}</b>`)
+        .join(', ');
+      const message = `Match <b>${neededVariables[2]}</b> vs <b>${opponentTeamName}</b> just created! Above, you can find the best maps for <b>${neededVariables[2]}</b> (${teammatesString} from your team).`;
+      tBot.sendMessage(chat_id, message, {
+        parse_mode: 'html',
+        ...mainMenuMarkup,
+      });
+    });
   } catch (e) {
     console.log(e);
   }

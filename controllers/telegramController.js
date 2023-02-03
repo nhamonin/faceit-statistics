@@ -8,7 +8,6 @@ import {
   getTeamEloMessage,
   addPlayer,
   deletePlayer,
-  getHighestElo,
 } from '#services';
 import { messages } from '#config';
 import {
