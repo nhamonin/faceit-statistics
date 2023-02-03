@@ -43,7 +43,7 @@ export const getHighestElo = async (playerNickname) => {
           }</b> (${
             currentElo - highestEloMatch.elo
           } from now).\nDate when the highest elo was reached: ${highestEloDateLocalized} (${diffDays} days ago).`
-        : `<b>${playerNickname}</b>'s highest elo: <b>${currentElo}</b>.\nDate when the highest elo was reached: ${date}.`;
+        : `<b>${playerNickname}</b>'s highest elo: <b>${currentElo}</b>.\nDate when the highest elo was reached: ${highestEloDateLocalized}.`;
 
     return {
       message,
