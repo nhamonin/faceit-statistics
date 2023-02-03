@@ -245,8 +245,6 @@ async function sendMapPickerResult(
   team2Name
 ) {
   try {
-    if (!!dbPlayersTeam1.length && !!dbPlayersTeam2.length) return;
-
     const neededVariables = dbPlayersTeam1.length
       ? [dbPlayersTeam1, team1Result, team1Name]
       : [dbPlayersTeam2, team2Result, team2Name];
@@ -265,7 +263,7 @@ async function sendMapPickerResult(
     }
     const tBot = getTelegramBot();
 
-    [...new Set([...teamsToSendNotification, -886965844])].map(
+    [...new Set([...teamsToSendNotification])].map(
       async (chat_id) => {
         const htmlMessage = prettifyMapPickerData(neededVariables);
         await sendPhoto(
