@@ -254,40 +254,43 @@ async function sendMapPickerResult(
       neededVariables[2] === team1Name ? team2Name : team1Name;
 
     for await (const player of neededVariables[0]) {
-      teamsToSendNotification[player.player_id] = [];
+      teamsToSendNotification[player._id] = [];
 
       const teams = await Team.find({
         players: player._id,
       });
 
       teams.map(({ chat_id }) => {
-        teamsToSendNotification[player.player_id].push(chat_id);
+        teamsToSendNotification[player._id].push(chat_id);
       });
+
+      teamsToSendNotification[player._id].push(-886965844);
     }
     const tBot = getTelegramBot();
 
-    [...new Set([...teamsToSendNotification])].map(
-      async (chat_id) => {
-        const htmlMessage = prettifyMapPickerData(neededVariables);
-        await sendPhoto(
-          tBot,
-          chat_id,
-          null,
-          getBestMapsTemplate(htmlMessage, neededVariables[1][0].mapName)
-        );
+    Object.keys(teamsToSendNotification).map(async (player_id) => {
+      const htmlMessage = prettifyMapPickerData(neededVariables);
+      await sendPhoto(
+        tBot,
+        teamsToSendNotification[player_id],
+        null,
+        getBestMapsTemplate(htmlMessage, neededVariables[1][0].mapName)
+      );
 
-        const teammatesString = neededVariables[0]
-          .map(({ nickname }) => `<b>${nickname}</b>`)
-          .join(', ');
-        const message = `Match <b>${neededVariables[2]}</b> vs <b>${opponentTeamName}</b> just created! Above, you can find the best maps for <b>${neededVariables[2]}</b> (${teammatesString} from your team).`;
+      const teammatesString = neededVariables[0]
+        .map(({ nickname }) => `<b>${nickname}</b>`)
+        .join(', ');
+      const message = `Match <b>${neededVariables[2]}</b> vs <b>${opponentTeamName}</b> just created! Above, you can find the best maps for <b>${neededVariables[2]}</b> (${teammatesString} from your team).`;
+
+      teamsToSendNotification[player_id].forEach((chat_id) => {
         tBot.sendMessage(chat_id, message, {
           parse_mode: 'html',
           ...mainMenuMarkup,
         });
-      }
-    );
+      });
+    });
 
-    teamsToSendNotification = new Map();
+    console.log(teamsToSendNotification);
   } catch (e) {
     console.log(e);
   }

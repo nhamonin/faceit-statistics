@@ -9,7 +9,7 @@ export async function getTeamKDWrapper(tBot, amount, opts, message_id) {
   if (!error) {
     await sendPhoto(
       tBot,
-      opts.chat_id,
+      [opts.chat_id],
       message_id,
       getKDTemplate(amount, message)
     );

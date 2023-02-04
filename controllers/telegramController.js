@@ -263,7 +263,12 @@ tBot.on('callback_query', async (callbackQuery) => {
               message,
               getBasicTelegramOptions(message_id)
             )
-          : await sendPhoto(tBot, opts.chat_id, null, getEloTemplate(message));
+          : await sendPhoto(
+              tBot,
+              [opts.chat_id],
+              null,
+              getEloTemplate(message)
+            );
         await tBot.deleteMessage(opts.chat_id, opts.message_id);
         await tBot.sendMessage(
           opts.chat_id,

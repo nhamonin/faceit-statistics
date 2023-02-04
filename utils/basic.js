@@ -25,7 +25,7 @@ function logEvent(chat, action) {
   console.log(`${name}: ${action}. Date: ${new Date().toLocaleString()}`);
 }
 
-async function sendPhoto(tBot, chatId, message_id, html) {
+async function sendPhoto(tBot, chatIDs, message_id, html) {
   let image = null;
   if (page) {
     await page.setContent(html);
@@ -42,9 +42,18 @@ async function sendPhoto(tBot, chatId, message_id, html) {
     console.log(e.message);
   }
 
-  message_id
-    ? await tBot.sendPhoto(chatId, image, getBasicTelegramOptions(message_id))
-    : await tBot.sendPhoto(chatId, image);
+  await Promise.all(
+    chatIDs.map(async (chat_id) => {
+      message_id
+        ? await tBot.sendPhoto(
+            chat_id,
+            image,
+            getBasicTelegramOptions(message_id)
+          )
+        : await tBot.sendPhoto(chat_id, image);
+    })
+  );
+
   console.log('image was generated successfully', new Date().toLocaleString());
 }
 
