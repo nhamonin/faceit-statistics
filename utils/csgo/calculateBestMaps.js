@@ -249,48 +249,42 @@ async function sendMapPickerResult(
     const neededVariables = dbPlayersTeam1.length
       ? [dbPlayersTeam1, team1Result, team1Name]
       : [dbPlayersTeam2, team2Result, team2Name];
-    let teamsToSendNotification = {};
+    let teamsToSendNotification = new Set();
     const opponentTeamName =
       neededVariables[2] === team1Name ? team2Name : team1Name;
 
     for await (const player of neededVariables[0]) {
-      teamsToSendNotification[player._id] = [];
-
       const teams = await Team.find({
         players: player._id,
       });
 
       teams.map(({ chat_id }) => {
-        teamsToSendNotification[player._id].push(chat_id);
+        teamsToSendNotification.add(chat_id);
       });
 
-      teamsToSendNotification[player._id].push(-886965844);
+      teamsToSendNotification.add(-886965844);
     }
     const tBot = getTelegramBot();
 
-    Object.keys(teamsToSendNotification).map(async (player_id) => {
-      const htmlMessage = prettifyMapPickerData(neededVariables);
-      await sendPhoto(
-        tBot,
-        teamsToSendNotification[player_id],
-        null,
-        getBestMapsTemplate(htmlMessage, neededVariables[1][0].mapName)
-      );
+    const htmlMessage = prettifyMapPickerData(neededVariables);
+    await sendPhoto(
+      tBot,
+      [...teamsToSendNotification],
+      null,
+      getBestMapsTemplate(htmlMessage, neededVariables[1][0].mapName)
+    );
 
-      const teammatesString = neededVariables[0]
-        .map(({ nickname }) => `<b>${nickname}</b>`)
-        .join(', ');
-      const message = `Match <b>${neededVariables[2]}</b> vs <b>${opponentTeamName}</b> just created! Above, you can find the best maps for <b>${neededVariables[2]}</b> (${teammatesString} from your team).`;
+    const teammatesString = neededVariables[0]
+      .map(({ nickname }) => `<b>${nickname}</b>`)
+      .join(', ');
+    const message = `Match <b>${neededVariables[2]}</b> vs <b>${opponentTeamName}</b> just created! Above, you can find the best maps for <b>${neededVariables[2]}</b> (${teammatesString} from your team).`;
 
-      teamsToSendNotification[player_id].forEach((chat_id) => {
-        tBot.sendMessage(chat_id, message, {
-          parse_mode: 'html',
-          ...mainMenuMarkup,
-        });
+    [...teamsToSendNotification].forEach((chat_id) => {
+      tBot.sendMessage(chat_id, message, {
+        parse_mode: 'html',
+        ...mainMenuMarkup,
       });
     });
-
-    console.log(teamsToSendNotification);
   } catch (e) {
     console.log(e);
   }
