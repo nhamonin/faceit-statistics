@@ -244,28 +244,29 @@ async function sendMapPickerResult(
   team1Name,
   team2Name
 ) {
-  console.log(dbPlayersTeam1, dbPlayersTeam2);
   if (!dbPlayersTeam1.length && !dbPlayersTeam2.length) return;
   try {
     const neededVariables = dbPlayersTeam1.length
       ? [dbPlayersTeam1, team1Result, team1Name]
       : [dbPlayersTeam2, team2Result, team2Name];
-    let teamsToSendNotification = new Set();
+    let teamsToSendNotification = {};
     const opponentTeamName =
       neededVariables[2] === team1Name ? team2Name : team1Name;
 
     for await (const player of neededVariables[0]) {
+      teamsToSendNotification[player.player_id] = [];
+
       const teams = await Team.find({
         players: player._id,
       });
 
       teams.map(({ chat_id }) => {
-        teamsToSendNotification.add(chat_id);
+        teamsToSendNotification[player.player_id].push(chat_id);
       });
     }
     const tBot = getTelegramBot();
 
-    [...new Set([...teamsToSendNotification, -886965844])].map(
+    [...new Set([...teamsToSendNotification])].map(
       async (chat_id) => {
         const htmlMessage = prettifyMapPickerData(neededVariables);
         await sendPhoto(
