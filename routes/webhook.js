@@ -81,7 +81,7 @@ router.post('/webhook', async (req, res) => {
             }
           }
         }
-      }, 3000);
+      }, 4500);
       break;
   }
 
