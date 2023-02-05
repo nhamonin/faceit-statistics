@@ -42,7 +42,7 @@ async function sendPhoto(tBot, chatIDs, message_id, html) {
     console.log(e.message);
   }
 
-  console.time('sending photos internally: start');
+  console.time('sending photos internally');
   await Promise.all(
     chatIDs.map(async (chat_id) => {
       message_id
@@ -54,7 +54,7 @@ async function sendPhoto(tBot, chatIDs, message_id, html) {
         : await tBot.sendPhoto(chat_id, image);
     })
   );
-  console.timeEnd('sending photos internally: end');
+  console.timeEnd('sending photos internally');
 
   console.log('image was generated successfully', new Date().toLocaleString());
 }
