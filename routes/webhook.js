@@ -58,7 +58,7 @@ router.post('/webhook', async (req, res) => {
         maxIntervalCount--;
         if (!maxIntervalCount) clearInterval(interval);
         const matchData = await matches.getMatchDetails(match_id);
-        console.log(`match ${match_id} data processing`);
+        console.time(`match ${match_id} data processing`);
         const allowedCompetitionName = allowedCompetitionNames.includes(
           matchData?.competition_name
         );
