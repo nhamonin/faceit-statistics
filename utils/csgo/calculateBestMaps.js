@@ -14,21 +14,21 @@ import { getBestMapsTemplate } from '#templates';
 import { mainMenuMarkup } from '#telegramReplyMarkup';
 
 export async function calculateBestMaps(matchData) {
-  if (caches.bestMapsMatchIDs.has(matchData?.payload?.id)) return;
-  caches.bestMapsMatchIDs.add(matchData?.payload?.id);
+  if (caches.bestMapsMatchIDs.has(matchData?.id)) return;
+  caches.bestMapsMatchIDs.add(matchData?.id);
   setTimeout(() => {
-    caches.bestMapsMatchIDs.delete(matchData?.payload?.id);
+    caches.bestMapsMatchIDs.delete(matchData?.id);
   }, 1000 * 10);
 
   try {
-    const faction1 = matchData?.payload?.teams?.faction1;
-    const faction2 = matchData?.payload?.teams?.faction2;
+    const faction1 = matchData?.teams?.faction1;
+    const faction2 = matchData?.teams?.faction2;
     const team1 = faction1?.roster;
     const team2 = faction2?.roster;
     const team1Name = faction1?.name;
     const team2Name = faction2?.name;
-    const team1playersIDs = team1.map(({ id }) => id);
-    const team2playersIDs = team2.map(({ id }) => id);
+    const team1playersIDs = team1.map(({ player_id }) => player_id);
+    const team2playersIDs = team2.map(({ player_id }) => player_id);
     const dbPlayersTeam1 = [];
     const dbPlayersTeam2 = [];
     const team1Stats = createStatsBoilerplate();
@@ -273,7 +273,6 @@ async function sendMapPickerResult(
       null,
       getBestMapsTemplate(htmlMessage, neededVariables[1][0].mapName)
     );
-    console.timeEnd('sending photos');
 
     const teammatesString = neededVariables[0]
       .map(({ nickname }) => `<b>${nickname}</b>`)
