@@ -8,7 +8,7 @@ export async function getMatchData(match_id) {
       return res.json();
     } else {
       console.log(
-        `Status code error : ${res.status}. Reason: ${res.statusText}`
+        `Status code error: ${res.status}. Reason: ${res.statusText}`
       );
     }
   } catch (e) {
