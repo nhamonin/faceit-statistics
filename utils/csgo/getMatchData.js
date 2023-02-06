@@ -3,10 +3,14 @@ import fetch from 'node-fetch';
 export async function getMatchData(match_id) {
   try {
     const url = `https://api.faceit.com/match/v2/match/${match_id}`;
-    const response = await fetch(url);
-    const data = await response.json();
-
-    return data;
+    const res = await fetch(url);
+    if (res.ok) {
+      return res.json();
+    } else {
+      console.log(
+        `Status code error : ${res.status}. Reason: ${res.statusText}`
+      );
+    }
   } catch (e) {
     console.log(e);
   }

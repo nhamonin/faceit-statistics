@@ -22,7 +22,7 @@ function changeWebhookPlayersList(action) {
     }
 
     const body = createBodyFromWebhookData(playersIDs, action, webhookData);
-    const response = await fetch(url, {
+    const res = await fetch(url, {
       headers: {
         ...getAuthorizationHeader(),
         'Content-Type': 'application/json',
@@ -30,9 +30,13 @@ function changeWebhookPlayersList(action) {
       method: 'PUT',
       body,
     });
-    const result = await response.json();
-
-    return result;
+    if (res.ok) {
+      return res.json();
+    } else {
+      console.log(
+        `Status code error : ${res.status}. Reason: ${res.statusText}`
+      );
+    }
   };
 }
 
