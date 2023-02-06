@@ -34,7 +34,7 @@ function changeWebhookPlayersList(action) {
       return res.json();
     } else {
       console.log(
-        `Status code error: ${res.status}. Reason: ${res.statusText}`
+        `Status code error: ${res.status}. Reason: ${res.statusText} Endpoint: ${url}`
       );
     }
   };
