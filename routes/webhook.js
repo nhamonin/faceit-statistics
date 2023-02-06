@@ -55,7 +55,6 @@ router.post('/webhook', async (req, res) => {
       const interval = setInterval(async () => {
         maxIntervalCount--;
         if (!maxIntervalCount) clearInterval(interval);
-        console.time('time to success');
         const matchData = await getMatchData(match_id);
         const allowedCompetitionName = allowedCompetitionNames.includes(
           matchData?.payload?.entity?.name
@@ -67,7 +66,6 @@ router.post('/webhook', async (req, res) => {
           allowedCompetitionName
         ) {
           clearInterval(interval);
-          console.timeEnd('time to success');
           const predictions = await calculateBestMaps(matchData);
           if (predictions?.length) {
             const prediction = await TempPrediction.findOne({ match_id });
