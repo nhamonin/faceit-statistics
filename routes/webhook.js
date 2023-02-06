@@ -1,6 +1,5 @@
 import express from 'express';
 
-import { Matches } from 'faceit-node-api';
 import { TempPrediction, Team } from '#models';
 import { updateTeamPlayers } from '#services';
 import {
@@ -12,7 +11,6 @@ import { clearInterval } from 'timers';
 import { allowedCompetitionNames } from '#config';
 
 const router = express.Router();
-const matches = new Matches();
 
 router.post('/webhook', async (req, res) => {
   const data = req.body;
@@ -57,17 +55,19 @@ router.post('/webhook', async (req, res) => {
       const interval = setInterval(async () => {
         maxIntervalCount--;
         if (!maxIntervalCount) clearInterval(interval);
-        const matchData = await matches.getMatchDetails(match_id);
+        console.time('time to success');
+        const matchData = await getMatchData(match_id);
         const allowedCompetitionName = allowedCompetitionNames.includes(
-          matchData?.competition_name
+          matchData?.payload?.entity?.name
         );
         if (!allowedCompetitionName) clearInterval(interval);
         if (
-          matchData?.teams?.faction1 &&
-          matchData?.teams?.faction2 &&
+          matchData?.payload?.teams?.faction1 &&
+          matchData?.payload?.teams?.faction2 &&
           allowedCompetitionName
         ) {
           clearInterval(interval);
+          console.timeEnd('time to success');
           const predictions = await calculateBestMaps(matchData);
           if (predictions?.length) {
             const prediction = await TempPrediction.findOne({ match_id });
