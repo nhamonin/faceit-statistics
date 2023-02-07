@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import fetch from 'node-fetch-retry';
 
 import {
   ENVIRONMENT,
@@ -29,6 +29,11 @@ function changeWebhookPlayersList(action) {
       },
       method: 'PUT',
       body,
+      retry: 3,
+      pause: 1000,
+      callback: (retry) => {
+        console.log(`Trying: ${retry}`);
+      },
     });
     if (res.ok) {
       return res.json();
@@ -104,6 +109,11 @@ function getAuthorizationHeader() {
 async function fetchWebhookData() {
   return await fetch(url, {
     headers: getAuthorizationHeader(),
+    retry: 3,
+    pause: 1000,
+    callback: (retry) => {
+      console.log(`Trying: ${retry}`);
+    },
   });
 }
 

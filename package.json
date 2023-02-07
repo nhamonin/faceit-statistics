@@ -23,7 +23,7 @@
     "faceit-node-api": "^2.0.0",
     "mongodb": "4.13.0",
     "mongoose": "6.9.0",
-    "node-fetch": "^3.2.10",
+    "node-fetch-retry": "^2.0.1",
     "node-telegram-bot-api": "^0.59.0",
     "puppeteer-extra": "^3.3.4",
     "puppeteer-extra-plugin-stealth": "^2.11.1"

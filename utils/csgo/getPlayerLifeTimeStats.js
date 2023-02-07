@@ -1,9 +1,15 @@
-import fetch from 'node-fetch';
+import fetch from 'node-fetch-retry';
 
 export async function getPlayerLifeTimeStats(player_id) {
   try {
     const url = `https://api.faceit.com/stats/v1/stats/users/${player_id}/games/csgo`;
-    const res = await fetch(url);
+    const res = await fetch(url, {
+      retry: 5,
+      pause: 1000,
+      callback: (retry) => {
+        console.log(`Trying: ${retry}`);
+      },
+    });
     if (res.ok) {
       return res.json();
     } else {
