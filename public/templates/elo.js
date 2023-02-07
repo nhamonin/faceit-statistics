@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 
 export const getEloTemplate = (msg) =>
   `<html lang="en">

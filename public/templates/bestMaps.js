@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 
 export const getBestMapsTemplate = (msg, bestMap) =>
   `<html lang="en">

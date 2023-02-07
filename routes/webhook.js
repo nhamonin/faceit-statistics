@@ -1,3 +1,5 @@
+import { clearInterval } from 'node:timers';
+
 import express from 'express';
 
 import { TempPrediction, Team } from '#models';
@@ -7,7 +9,6 @@ import {
   performMapPickerAnalytics,
   getMatchData,
 } from '#utils';
-import { clearInterval } from 'timers';
 import { allowedCompetitionNames } from '#config';
 
 const router = express.Router();
