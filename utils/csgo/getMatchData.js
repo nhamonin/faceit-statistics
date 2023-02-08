@@ -14,13 +14,7 @@ export async function getMatchData(match_id) {
         console.log(`Trying: ${retry}`);
       },
     });
-    if (res.ok) {
-      return res.json();
-    } else {
-      console.log(
-        `Status code error: ${res.status}. Reason: ${res.statusText} Endpoint: ${url}`
-      );
-    }
+    if (res.ok) return res.json();
   } catch (e) {
     console.log(e);
   }

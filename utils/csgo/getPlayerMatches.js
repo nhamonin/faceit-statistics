@@ -9,13 +9,7 @@ export async function getPlayerMatches(player_id, amount = 20, page = 0) {
         console.log(`Trying: ${retry}`);
       },
     });
-    if (res.ok) {
-      return res.json();
-    } else {
-      console.log(
-        `Status code error: ${res.status}. Reason: ${res.statusText} Endpoint: ${url}`
-      );
-    }
+    if (res.ok) return res.json();
   } catch (e) {
     console.log(e);
   }
