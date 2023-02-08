@@ -5,7 +5,6 @@ export async function getPlayerLifeTimeStats(player_id) {
     const url = `https://api.faceit.com/stats/v1/stats/users/${player_id}/games/csgo`;
     const res = await fetch(url, {
       retry: 5,
-      pause: 1000,
       callback: (retry) => {
         console.log(`Trying: ${retry}`);
       },

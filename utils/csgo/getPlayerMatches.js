@@ -5,7 +5,6 @@ export async function getPlayerMatches(player_id, amount = 20, page = 0) {
     const url = `https://api.faceit.com/stats/v1/stats/time/users/${player_id}/games/csgo?page=${page}&size=${amount}`;
     const res = await fetch(url, {
       retry: 5,
-      pause: 1000,
       callback: (retry) => {
         console.log(`Trying: ${retry}`);
       },

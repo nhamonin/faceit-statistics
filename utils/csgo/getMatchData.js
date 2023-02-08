@@ -10,7 +10,6 @@ export async function getMatchData(match_id) {
         Expires: 0,
       },
       retry: 5,
-      pause: 1000,
       callback: (retry) => {
         console.log(`Trying: ${retry}`);
       },
