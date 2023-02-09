@@ -101,7 +101,11 @@ async function fillInTeamVariablesWithPlayersStats(teamsObj) {
               _id: player._id,
             });
           await getPlayerLifeTimeStats(player_id).then((stats) => {
-            const segments = stats?.segments && stats.segments[0]?.segments;
+            const segments =
+              stats?.segments &&
+              stats.segments[
+                +!Object.keys(stats.segments[0]?.segments)[0].startsWith('de_')
+              ]?.segments;
             if (!segments || !Object.keys(segments).length) return;
             currentMapPool.map((map_id) => {
               variablesArr[2].lifetime[map_id].push(
