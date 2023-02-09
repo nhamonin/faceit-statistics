@@ -56,9 +56,9 @@ function initTelegramBotListener() {
   tBot.onText(/\/get_analytics/, async ({ chat, message_id }) => {
     const matchPrediction = await MatchPrediction.findOne();
     const tempMatchesCount = await TempPrediction.countDocuments();
-    const totalMatches = matchPrediction.totalMatches || 0;
-    const avgPredictions = matchPrediction.avgPredictions || 0;
-    const winratePrediction = matchPrediction.winratePredictions || 0;
+    const totalMatches = matchPrediction?.totalMatches || 0;
+    const avgPredictions = matchPrediction?.avgPredictions || 0;
+    const winratePrediction = matchPrediction?.winratePredictions || 0;
     const message = [
       `winrate predictions: ${
         ((winratePrediction / totalMatches) * 100).toFixed(2) || '-'
