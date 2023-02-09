@@ -14,6 +14,8 @@ import {
 import { getTelegramBot } from './telegram/telegram.js';
 import { getBasicTelegramOptions } from './telegram/telegram.js';
 import { getCallbackTelegramOptions } from './telegram/telegram.js';
+import { deleteMessage } from './telegram/telegram.js';
+import { editMessageText } from './telegram/telegram.js';
 // webhook
 import { webhookMgr } from './webhook/webhookMgr.js';
 import { getCurrentBearerToken } from './webhook/getCurrentBearerToken.js';
@@ -60,6 +62,8 @@ export {
   getTelegramBot,
   getBasicTelegramOptions,
   getCallbackTelegramOptions,
+  deleteMessage,
+  editMessageText,
   webhookMgr,
   getCurrentBearerToken,
   connectDB,

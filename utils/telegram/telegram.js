@@ -30,3 +30,19 @@ export function getTelegramBot() {
   bots.telegram = new TelegramBot(tToken, { polling: true });
   return bots.telegram;
 }
+
+export async function deleteMessage(chat_id, message_id) {
+  const tBot = getTelegramBot();
+
+  try {
+    await tBot.deleteMessage(chat_id, message_id);
+  } catch (e) {}
+}
+
+export async function editMessageText(text, opts) {
+  const tBot = getTelegramBot();
+
+  try {
+    await tBot.editMessageText(text, opts);
+  } catch (e) {}
+}

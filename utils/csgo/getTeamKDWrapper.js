@@ -1,5 +1,5 @@
 import { getTeamKDMessage } from '#services';
-import { sendPhoto } from '#utils';
+import { sendPhoto, deleteMessage } from '#utils';
 import { getKDTemplate } from '#templates';
 import { getTeamKDMenu } from '#telegramReplyMarkup';
 
@@ -15,7 +15,7 @@ export async function getTeamKDWrapper(tBot, amount, opts, message_id) {
     );
   }
 
-  await tBot.deleteMessage(opts.chat_id, opts.message_id);
+  await deleteMessage(opts.chat_id, opts.message_id);
   await tBot.sendMessage(
     opts.chat_id,
     error ? message : 'Done! Select one of the options below:',

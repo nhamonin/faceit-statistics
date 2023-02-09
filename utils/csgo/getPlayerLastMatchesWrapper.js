@@ -1,5 +1,5 @@
 import { getPlayerLastMatchesStats } from '#services';
-import { logEvent } from '#utils';
+import { logEvent, deleteMessage } from '#utils';
 import { lastPlayerMatchesMarkup } from '#telegramReplyMarkup';
 
 export async function getPlayerLastMatchesWrapper(
@@ -12,7 +12,7 @@ export async function getPlayerLastMatchesWrapper(
   const { message, error } = await getPlayerLastMatchesStats(nickname);
   logEvent(chat, 'Get player last matches stats');
   try {
-    await tBot.deleteMessage(opts.chat_id, opts.message_id);
+    await deleteMessage(opts.chat_id, opts.message_id);
     await tBot.sendMessage(opts.chat_id, message || error, {
       parse_mode: 'html',
     });

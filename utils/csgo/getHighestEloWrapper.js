@@ -1,5 +1,5 @@
 import { getHighestElo } from '#services';
-import { logEvent } from '#utils';
+import { logEvent, deleteMessage } from '#utils';
 import { getHighestEloMenu } from '#telegramReplyMarkup';
 
 export async function getHighestEloWrapper(
@@ -12,7 +12,7 @@ export async function getHighestEloWrapper(
   const { message, error } = await getHighestElo(nickname);
   logEvent(chat, `Get Highest Elo: ${nickname}`);
 
-  await tBot.deleteMessage(opts.chat_id, opts.message_id);
+  await deleteMessage(opts.chat_id, opts.message_id);
   await tBot.sendMessage(opts.chat_id, message || error, {
     parse_mode: 'html',
   });
