@@ -1,4 +1,4 @@
-import fetch from 'node-fetch-retry';
+import { fetch } from 'undici';
 
 import {
   ENVIRONMENT,
@@ -29,11 +29,6 @@ function changeWebhookPlayersList(action) {
       },
       method: 'PUT',
       body,
-      retry: 5,
-
-      callback: (retry) => {
-        console.log(`Trying: ${retry}`);
-      },
     });
 
     if (res.ok) return res.json();

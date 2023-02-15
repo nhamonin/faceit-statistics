@@ -1,4 +1,4 @@
-import fetch from 'node-fetch-retry';
+import { fetch } from 'undici';
 
 export async function getMatchData(match_id) {
   try {
@@ -8,10 +8,6 @@ export async function getMatchData(match_id) {
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         Pragma: 'no-cache',
         Expires: 0,
-      },
-      retry: 5,
-      callback: (retry) => {
-        console.log(`Trying: ${retry}`);
       },
     });
     if (res.ok) return res.json();
