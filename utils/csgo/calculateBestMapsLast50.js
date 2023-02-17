@@ -106,8 +106,8 @@ function createMapsBoilerplate() {
 function fillInStatsBoilerplateWithMaps(arrStats, arrMaps) {
   arrStats.map((teamStats, index) => {
     Object.keys(teamStats.last50).map((map_id) => {
-      teamStats.last50[map_id] = arrMaps[index].map((maps) =>
-        maps.filter(({ i1 }) => i1 === map_id)
+      teamStats.last50[map_id] = arrMaps[index].map(
+        (maps) => maps?.filter(({ i1 }) => i1 === map_id) || []
       );
 
       teamStats.last50[map_id] = teamStats.last50[map_id].map((maps) => ({
