@@ -1,13 +1,10 @@
 import { Team, Player } from '#models';
 import {
-  regulateWinrate,
-  regulateAvg,
   prettifyMapPickerData,
   calculateAverage,
   calculateDifference,
   getTelegramBot,
   sendPhoto,
-  getPlayerLifeTimeStats,
   getPlayerMatches,
 } from '#utils';
 import { currentMapPool, caches } from '#config';
@@ -81,16 +78,26 @@ async function getTeamsMatches(teamIDsArr) {
   );
 
   return {
-    team1Matches: resultArr[0].flat(),
-    team2Matches: resultArr[1].flat(),
+    team1Matches: resultArr[0],
+    team2Matches: resultArr[1],
   };
 }
 
 function createMapsBoilerplate() {
-  let res = {};
+  let res = {
+    last50: {},
+    avg: {},
+    totalMatches: {},
+    totalWinrate: {},
+    winrateMatches: {},
+  };
 
   currentMapPool.map((map_id) => {
-    res[map_id] = [];
+    res.last50[map_id] = [];
+    res.avg[map_id] = [];
+    res.totalMatches[map_id] = [];
+    res.totalWinrate[map_id] = [];
+    res.winrateMatches[map_id] = [];
   });
 
   return res;
@@ -98,8 +105,16 @@ function createMapsBoilerplate() {
 
 function fillInStatsBoilerplateWithMaps(arrStats, arrMaps) {
   arrStats.map((teamStats, index) => {
-    Object.keys(teamStats).map((map_id) => {
-      teamStats[map_id] = arrMaps[index].filter(({ i1 }) => i1 === map_id);
+    Object.keys(teamStats.last50).map((map_id) => {
+      teamStats.last50[map_id] = arrMaps[index].map((maps) =>
+        maps.filter(({ i1 }) => i1 === map_id)
+      );
+
+      teamStats.last50[map_id] = teamStats.last50[map_id].map((maps) => ({
+        matches: maps.length,
+        avg: calculateAverage(maps.map(({ i6 }) => +i6)) || 18,
+        winrate: calculateAverage(maps.map(({ i10 }) => +i10 * 100)) || 50,
+      }));
     });
   });
 }
@@ -117,25 +132,6 @@ async function fillInTeamVariablesWithPlayersStats(teamsObj) {
               nickname: player.nickname,
               _id: player._id,
             });
-          await getPlayerLifeTimeStats(player_id).then((stats) => {
-            const segments =
-              stats?.segments &&
-              stats.segments[
-                +!Object.keys(stats.segments[0]?.segments)[0].startsWith('de_')
-              ]?.segments;
-            if (!segments || !Object.keys(segments).length) return;
-            currentMapPool.map((map_id) => {
-              variablesArr[2].lifetime[map_id].push(
-                segments[map_id]
-                  ? {
-                      winrate: regulateWinrate(+segments[map_id].k6),
-                      avg: regulateAvg(+segments[map_id].k1),
-                      matches: +segments[map_id].m1,
-                    }
-                  : { winrate: 50, avg: 20, matches: 0 }
-              );
-            });
-          });
         })
       );
     }
@@ -147,9 +143,9 @@ async function fillInTeamVariablesWithPlayersStats(teamsObj) {
 function calculateAverageAvg(arr) {
   try {
     arr.map((teamStats) => {
-      Object.keys(teamStats.lifetime).map((mapName) => {
+      currentMapPool.map((mapName) => {
         teamStats.avg[mapName] = calculateAverage(
-          teamStats.lifetime[mapName].map(({ avg }) => avg)
+          teamStats.last50[mapName].map(({ avg }) => avg)
         );
       });
     });
@@ -161,16 +157,16 @@ function calculateAverageAvg(arr) {
 function calculateAndFillAllData(arr) {
   try {
     arr.map((teamStats) => {
-      const lifetime = teamStats.lifetime;
+      const last50 = teamStats.last50;
 
-      Object.keys(lifetime).map((mapName) => {
-        teamStats.winrateMatches[mapName] = lifetime[mapName].reduce(
+      currentMapPool.map((mapName) => {
+        teamStats.winrateMatches[mapName] = last50[mapName].reduce(
           (accumulator, currentValue) =>
             accumulator + currentValue?.winrate * currentValue?.matches,
           0
         );
         teamStats.totalMatches[mapName] =
-          lifetime[mapName].reduce(
+          last50[mapName].reduce(
             (accumulator, currentValue) => accumulator + currentValue?.matches,
             0
           ) || 0;
@@ -179,7 +175,7 @@ function calculateAndFillAllData(arr) {
             teamStats.winrateMatches[mapName] / teamStats.totalMatches[mapName]
           ).toFixed(2) || 0;
 
-        lifetime[mapName].map((soloStats) => {
+        last50[mapName].map((soloStats) => {
           const soloAvg = soloStats.avg;
           const teamAvg = teamStats.avg[mapName];
           soloStats.cf = (1 + (soloAvg - teamAvg) / teamAvg) * 0.2;
@@ -189,15 +185,15 @@ function calculateAndFillAllData(arr) {
         });
       });
 
-      Object.keys(lifetime).map((mapName) => {
-        lifetime[mapName] = {
+      Object.keys(last50).map((mapName) => {
+        last50[mapName] = {
           totalWinrate:
             +(
               teamStats.winrateMatches[mapName] /
               teamStats.totalMatches[mapName]
             ).toFixed(2) || 0,
           totalMatches: teamStats.totalMatches[mapName],
-          totalPoints: +lifetime[mapName]
+          totalPoints: +last50[mapName]
             .map(({ points }) => points)
             .reduce((a, b) => a + b, 0)
             .toFixed(2),
@@ -220,32 +216,32 @@ function calculateDifferencesAndSortResult(
       team1Result.push({
         mapName,
         totalPoints: calculateDifference(
-          team1Stats.lifetime[mapName].totalPoints,
-          team2Stats.lifetime[mapName].totalPoints
+          team1Stats.last50[mapName].totalPoints,
+          team2Stats.last50[mapName].totalPoints
         ),
         totalWinrate: calculateDifference(
-          team1Stats.lifetime[mapName].totalWinrate,
-          team2Stats.lifetime[mapName].totalWinrate
+          team1Stats.last50[mapName].totalWinrate,
+          team2Stats.last50[mapName].totalWinrate
         ),
         totalMatches: calculateDifference(
-          team1Stats.lifetime[mapName].totalMatches,
-          team2Stats.lifetime[mapName].totalMatches
+          team1Stats.last50[mapName].totalMatches,
+          team2Stats.last50[mapName].totalMatches
         ),
       });
 
       team2Result.push({
         mapName,
         totalPoints: calculateDifference(
-          team2Stats.lifetime[mapName].totalPoints,
-          team1Stats.lifetime[mapName].totalPoints
+          team2Stats.last50[mapName].totalPoints,
+          team1Stats.last50[mapName].totalPoints
         ),
         totalWinrate: calculateDifference(
-          team2Stats.lifetime[mapName].totalWinrate,
-          team1Stats.lifetime[mapName].totalWinrate
+          team2Stats.last50[mapName].totalWinrate,
+          team1Stats.last50[mapName].totalWinrate
         ),
         totalMatches: calculateDifference(
-          team2Stats.lifetime[mapName].totalMatches,
-          team1Stats.lifetime[mapName].totalMatches
+          team2Stats.last50[mapName].totalMatches,
+          team1Stats.last50[mapName].totalMatches
         ),
       });
     });

@@ -121,6 +121,7 @@ const puppeteerArgs = [
 const caches = {
   updateTeamPlayers: new Set(),
   bestMapsMatchIDs: new Set(),
+  bestMapsMatchIDsLast50: new Set(),
 };
 const loggedInCookie = {
   name: COOKIES_LOGGED_IN_NAME,

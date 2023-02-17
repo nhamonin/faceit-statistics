@@ -30,6 +30,7 @@ import { getTeamNicknames } from './csgo/getTeamNicknames.js';
 import { getTeamKDWrapper } from './csgo/getTeamKDWrapper.js';
 import { getPlayerLastMatchesWrapper } from './csgo/getPlayerLastMatchesWrapper.js';
 import { calculateBestMaps } from './csgo/calculateBestMaps.js';
+import { calculateBestMapsLast50 } from './csgo/calculateBestMapsLast50.js';
 import { prettifyMapPickerData } from './csgo/prettifyMapPickerData.js';
 import { getHighestEloWrapper } from './csgo/getHighestEloWrapper.js';
 import { performMapPickerAnalytics } from './csgo/performMapPickerAnalytics.js';
@@ -58,6 +59,7 @@ export {
   getHighestEloWrapper,
   performMapPickerAnalytics,
   calculateBestMaps,
+  calculateBestMapsLast50,
   prettifyMapPickerData,
   getTelegramBot,
   getBasicTelegramOptions,

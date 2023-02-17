@@ -6,6 +6,7 @@ import { TempPrediction, Team } from '#models';
 import { updateTeamPlayers } from '#services';
 import {
   calculateBestMaps,
+  calculateBestMapsLast50,
   performMapPickerAnalytics,
   getMatchData,
 } from '#utils';
@@ -67,7 +68,8 @@ router.post('/webhook', async (req, res) => {
           allowedCompetitionName
         ) {
           clearInterval(interval);
-          const predictions = await calculateBestMaps(matchData);
+          // const predictions = await calculateBestMaps(matchData);
+          const predictions = await calculateBestMapsLast50(matchData);
           if (predictions?.length) {
             const prediction = await TempPrediction.findOne({ match_id });
 
