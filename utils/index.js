@@ -34,6 +34,7 @@ import { calculateBestMapsLast50 } from './csgo/calculateBestMapsLast50.js';
 import { prettifyMapPickerData } from './csgo/prettifyMapPickerData.js';
 import { getHighestEloWrapper } from './csgo/getHighestEloWrapper.js';
 import { performMapPickerAnalytics } from './csgo/performMapPickerAnalytics.js';
+import { performMapPickerAnalyticsLast50 } from './csgo/performMapPickerAnalyticsLast50.js';
 import { getMatchData } from './csgo/getMatchData.js';
 // faceit
 import calculateFaceitDataAPILoad from './faceit/calculateFaceitDataAPILoad.js';
@@ -58,6 +59,7 @@ export {
   getPlayerLastMatchesWrapper,
   getHighestEloWrapper,
   performMapPickerAnalytics,
+  performMapPickerAnalyticsLast50,
   calculateBestMaps,
   calculateBestMapsLast50,
   prettifyMapPickerData,

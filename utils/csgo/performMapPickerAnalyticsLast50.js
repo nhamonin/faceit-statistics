@@ -1,10 +1,14 @@
-import { Match, MatchPrediction, TempPrediction } from '#models';
+import {
+  MatchLast50,
+  MatchPredictionLast50,
+  TempPredictionLast50,
+} from '#models';
 import { currentMapPool } from '#config';
 import { getMatchData } from '#utils';
 
-export async function performMapPickerAnalytics(match_id) {
+export async function performMapPickerAnalyticsLast50(match_id) {
   try {
-    const tempPrediction = await TempPrediction.findOne({ match_id });
+    const tempPrediction = await TempPredictionLast50.findOne({ match_id });
     if (!tempPrediction) return;
     const { predictions } = tempPrediction;
     if (!predictions) return;
@@ -18,15 +22,15 @@ export async function performMapPickerAnalytics(match_id) {
       (predictionObj) => predictionObj.mapName === pickedMap
     )[0];
     if (!predictedDataMap) return;
-    const match = new Match({
+    const match = new MatchLast50({
       match_id,
       winratePredictedValue: predictedDataMap.totalWinrate > 0,
       avgPredictedValue: predictedDataMap.totalPoints > 0,
     });
-    let matchPrediction = await MatchPrediction.findOne();
+    let matchPrediction = await MatchPredictionLast50.findOne();
     match.save().then(async () => {
       if (!matchPrediction) {
-        matchPrediction = new MatchPrediction({
+        matchPrediction = new MatchPredictionLast50({
           totalMatches: 1,
           winratePredictions: +match.winratePredictedValue,
           avgPredictions: +match.avgPredictedValue,
@@ -37,7 +41,7 @@ export async function performMapPickerAnalytics(match_id) {
         if (match.avgPredictedValue) matchPrediction.avgPredictions++;
       }
       await matchPrediction.save();
-      await TempPrediction.findOneAndDelete({ match_id });
+      await TempPredictionLast50.findOneAndDelete({ match_id });
     });
   } catch (e) {
     console.log(e);

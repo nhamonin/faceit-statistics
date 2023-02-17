@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
-export const matchPrediction = new Schema(
+export const matchPredictionLast50 = new Schema(
   {
     totalMatches: {
       type: Number,
@@ -18,7 +18,7 @@ export const matchPrediction = new Schema(
   { timestamp: true }
 );
 
-export const MatchPrediction = mongoose.model(
-  'MatchPrediction',
-  matchPrediction
+export const MatchPredictionLast50 = mongoose.model(
+  'MatchPredictionLast50',
+  matchPredictionLast50
 );

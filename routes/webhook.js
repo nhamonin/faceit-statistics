@@ -2,12 +2,13 @@ import { clearInterval } from 'node:timers';
 
 import express from 'express';
 
-import { TempPrediction, Team } from '#models';
+import { TempPrediction, TempPredictionLast50, Team } from '#models';
 import { updateTeamPlayers } from '#services';
 import {
   calculateBestMaps,
   calculateBestMapsLast50,
   performMapPickerAnalytics,
+  performMapPickerAnalyticsLast50,
   getMatchData,
 } from '#utils';
 import { allowedCompetitionNames } from '#config';
@@ -19,8 +20,56 @@ router.post('/webhook', async (req, res) => {
   const match_id = data.payload.id;
 
   switch (data.event) {
+    case 'match_object_created':
+      let maxIntervalCount = 15;
+      const interval = setInterval(async () => {
+        maxIntervalCount--;
+        if (!maxIntervalCount) clearInterval(interval);
+        const matchData = await getMatchData(match_id);
+        const allowedCompetitionName = allowedCompetitionNames.includes(
+          matchData?.payload?.entity?.name
+        );
+        if (!allowedCompetitionName) clearInterval(interval);
+        if (
+          matchData?.payload?.teams?.faction1 &&
+          matchData?.payload?.teams?.faction2 &&
+          allowedCompetitionName
+        ) {
+          clearInterval(interval);
+          const predictions = await calculateBestMaps(matchData);
+          const predictionsLast50 = await calculateBestMapsLast50(matchData);
+          if (predictions?.length) {
+            const prediction = await TempPrediction.findOne({ match_id });
+
+            if (!prediction) {
+              try {
+                const newPrediction = new TempPrediction({
+                  match_id,
+                  predictions,
+                });
+                await newPrediction.save();
+              } catch (e) {}
+            }
+          }
+          if (predictionsLast50?.length) {
+            const prediction = await TempPredictionLast50.findOne({ match_id });
+
+            if (!prediction) {
+              try {
+                const newPrediction = new TempPredictionLast50({
+                  match_id,
+                  predictions: predictionsLast50,
+                });
+                await newPrediction.save();
+              } catch (e) {}
+            }
+          }
+        }
+      }, 4500);
+      break;
     case 'match_status_finished':
       await performMapPickerAnalytics(match_id);
+      await performMapPickerAnalyticsLast50(match_id);
       if (
         !data?.payload?.teams?.length ||
         !data.payload.teams[0]?.roster?.length ||
@@ -51,40 +100,6 @@ router.post('/webhook', async (req, res) => {
           );
         }
       }
-      break;
-    case 'match_object_created':
-      let maxIntervalCount = 15;
-      const interval = setInterval(async () => {
-        maxIntervalCount--;
-        if (!maxIntervalCount) clearInterval(interval);
-        const matchData = await getMatchData(match_id);
-        const allowedCompetitionName = allowedCompetitionNames.includes(
-          matchData?.payload?.entity?.name
-        );
-        if (!allowedCompetitionName) clearInterval(interval);
-        if (
-          matchData?.payload?.teams?.faction1 &&
-          matchData?.payload?.teams?.faction2 &&
-          allowedCompetitionName
-        ) {
-          clearInterval(interval);
-          // const predictions = await calculateBestMaps(matchData);
-          const predictions = await calculateBestMapsLast50(matchData);
-          if (predictions?.length) {
-            const prediction = await TempPrediction.findOne({ match_id });
-
-            if (!prediction) {
-              try {
-                const newPrediction = new TempPrediction({
-                  match_id,
-                  predictions,
-                });
-                await newPrediction.save();
-              } catch (e) {}
-            }
-          }
-        }
-      }, 4500);
       break;
   }
 
