@@ -7,7 +7,7 @@ import {
   TempPrediction,
   TempPredictionLast50,
   MatchLast50,
-  Match
+  Match,
 } from '#models';
 import { getEloTemplate } from '#templates';
 import {
@@ -108,8 +108,8 @@ function initTelegramBotListener() {
       MatchLast50.deleteMany(),
       MatchPrediction.deleteMany(),
       MatchPredictionLast50.deleteMany(),
-      tempMatches.deleteMany(),
-      tempMatchesLast50.deleteMany(),
+      TempPrediction.deleteMany(),
+      TempPredictionLast50.deleteMany(),
     ]);
 
     tBot.sendMessage(chat.id, 'Success! Now try /get_analytics command.', {
