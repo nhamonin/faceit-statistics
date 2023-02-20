@@ -37,7 +37,7 @@ router.post('/webhook', async (req, res) => {
         ) {
           clearInterval(interval);
           const predictions = await calculateBestMaps(matchData);
-          const predictionsLast50 = await calculateBestMapsLast50(matchData);
+          // const predictionsLast50 = await calculateBestMapsLast50(matchData);
           if (predictions?.length) {
             const prediction = await TempPrediction.findOne({ match_id });
 
@@ -69,7 +69,7 @@ router.post('/webhook', async (req, res) => {
       break;
     case 'match_status_finished':
       await performMapPickerAnalytics(match_id);
-      await performMapPickerAnalyticsLast50(match_id);
+      // await performMapPickerAnalyticsLast50(match_id);
       if (
         !data?.payload?.teams?.length ||
         !data.payload.teams[0]?.roster?.length ||
