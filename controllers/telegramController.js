@@ -6,6 +6,8 @@ import {
   MatchPredictionLast50,
   TempPrediction,
   TempPredictionLast50,
+  MatchLast50,
+  Matches
 } from '#models';
 import { getEloTemplate } from '#templates';
 import {
@@ -96,6 +98,21 @@ function initTelegramBotListener() {
     ].join('\n');
 
     tBot.sendMessage(chat.id, message, {
+      ...getBasicTelegramOptions(message_id),
+    });
+  });
+
+  tBot.onText(/\/delete_analytics/, async ({ chat, message_id }) => {
+    await Promise.allSettled([
+      Matches.deleteMany(),
+      MatchLast50.deleteMany(),
+      MatchPrediction.deleteMany(),
+      MatchPredictionLast50.deleteMany(),
+      tempMatches.deleteMany(),
+      tempMatchesLast50.deleteMany(),
+    ]);
+
+    tBot.sendMessage(chat.id, 'Success! Now try /get_analytics command.', {
       ...getBasicTelegramOptions(message_id),
     });
   });
