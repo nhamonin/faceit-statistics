@@ -51,19 +51,19 @@ router.post('/webhook', async (req, res) => {
               } catch (e) {}
             }
           }
-          if (predictionsLast50?.length) {
-            const prediction = await TempPredictionLast50.findOne({ match_id });
+          // if (predictionsLast50?.length) {
+          //   const prediction = await TempPredictionLast50.findOne({ match_id });
 
-            if (!prediction) {
-              try {
-                const newPrediction = new TempPredictionLast50({
-                  match_id,
-                  predictions: predictionsLast50,
-                });
-                await newPrediction.save();
-              } catch (e) {}
-            }
-          }
+          //   if (!prediction) {
+          //     try {
+          //       const newPrediction = new TempPredictionLast50({
+          //         match_id,
+          //         predictions: predictionsLast50,
+          //       });
+          //       await newPrediction.save();
+          //     } catch (e) {}
+          //   }
+          // }
         }
       }, 4500);
       break;
