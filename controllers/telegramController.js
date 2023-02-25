@@ -148,30 +148,26 @@ tBot.on('callback_query', async (callbackQuery) => {
 
   switch (action) {
     case 'mainMenu':
-      try {
-        editMessageText(
-          `Your team: <b>${teamNicknames.join(
-            ', '
-          )}</b>.\nChoose one of the options below:`,
-          {
-            ...opts,
-            ...mainMenuMarkup,
-          }
-        );
-      } catch (e) {}
+      editMessageText(
+        `Your team: <b>${teamNicknames.join(
+          ', '
+        )}</b>.\nChoose one of the options below:`,
+        {
+          ...opts,
+          ...mainMenuMarkup,
+        }
+      );
       break;
     case 'modifyTeamMarkup':
-      try {
-        editMessageText(
-          `Your team: <b>${teamNicknames.join(
-            ', '
-          )}</b>.\nSelect one of the options below:`,
-          {
-            ...opts,
-            ...modifyTeamMarkup,
-          }
-        );
-      } catch (e) {}
+      editMessageText(
+        `Your team: <b>${teamNicknames.join(
+          ', '
+        )}</b>.\nSelect one of the options below:`,
+        {
+          ...opts,
+          ...modifyTeamMarkup,
+        }
+      );
       break;
     case 'addPlayer':
       tBot
@@ -189,12 +185,10 @@ tBot.on('callback_query', async (callbackQuery) => {
                 message_id
               );
               logEvent(chat, `Add player: ${nickname}`);
-              try {
-                editMessageText(message, {
-                  ...opts,
-                  ...modifyTeamMarkup,
-                });
-              } catch (e) {}
+              editMessageText(message, {
+                ...opts,
+                ...modifyTeamMarkup,
+              });
               await deleteMessage(opts.chat_id, message_id);
               await deleteMessage(opts.chat_id, bot_message_id);
             }
@@ -202,17 +196,15 @@ tBot.on('callback_query', async (callbackQuery) => {
         });
       break;
     case 'deletePlayerMenu':
-      try {
-        editMessageText(
-          `Your team: <b>${teamNicknames.join(
-            ', '
-          )}</b>.\nChose a player you want to delete:`,
-          {
-            ...opts,
-            ...deletePlayerMarkup(teamNicknames),
-          }
-        );
-      } catch (e) {}
+      editMessageText(
+        `Your team: <b>${teamNicknames.join(
+          ', '
+        )}</b>.\nChose a player you want to delete:`,
+        {
+          ...opts,
+          ...deletePlayerMarkup(teamNicknames),
+        }
+      );
       break;
     case 'deletePlayer':
       {
@@ -223,46 +215,38 @@ tBot.on('callback_query', async (callbackQuery) => {
             ? addPlayerOnlyMarkup
             : modifyTeamMarkup;
         logEvent(msg.chat, 'Delete player');
-        try {
-          editMessageText(message, {
-            ...opts,
-            ...options,
-          });
-        } catch (e) {}
+        editMessageText(message, {
+          ...opts,
+          ...options,
+        });
       }
       break;
     case 'resetTeam':
       {
         const { message, error } = await resetTeam(opts.chat_id);
         logEvent(msg.chat, 'Reset team');
-        try {
-          editMessageText(message || error, {
-            ...opts,
-            ...addPlayerOnlyMarkup,
-          });
-        } catch (e) {}
+        editMessageText(message || error, {
+          ...opts,
+          ...addPlayerOnlyMarkup,
+        });
       }
       break;
     case 'getStats':
-      try {
-        editMessageText(
-          `Your team: <b>${teamNicknames.join(
-            ', '
-          )}</b>.\nSelect one of the options below:`,
-          {
-            ...opts,
-            ...getStatsMarkup,
-          }
-        );
-      } catch (e) {}
+      editMessageText(
+        `Your team: <b>${teamNicknames.join(
+          ', '
+        )}</b>.\nSelect one of the options below:`,
+        {
+          ...opts,
+          ...getStatsMarkup,
+        }
+      );
       break;
     case 'getTeamKDMenu':
-      try {
-        editMessageText('Select one of the options below:', {
-          ...opts,
-          ...getTeamKDMenu,
-        });
-      } catch (e) {}
+      editMessageText('Select one of the options below:', {
+        ...opts,
+        ...getTeamKDMenu,
+      });
       break;
     case 'getTeamKD':
       {
@@ -270,6 +254,7 @@ tBot.on('callback_query', async (callbackQuery) => {
 
         if (amount !== 'custom') {
           getTeamKDWrapper(tBot, amount, opts);
+          logEvent(msg.chat, `get team KD last ${amount}`);
         } else {
           tBot
             .sendMessage(
@@ -284,8 +269,8 @@ tBot.on('callback_query', async (callbackQuery) => {
                 opts.chat_id,
                 bot_message_id,
                 async ({ text: amount, message_id }) => {
+                  logEvent(msg.chat, `get team KD last ${amount}`);
                   await getTeamKDWrapper(tBot, amount, opts, message_id);
-
                   await deleteMessage(opts.chat_id, message_id);
                   await deleteMessage(opts.chat_id, bot_message_id);
                 }
@@ -365,12 +350,10 @@ tBot.on('callback_query', async (callbackQuery) => {
       }
       break;
     case 'getHighestEloMenu':
-      try {
-        editMessageText('Select one of the options below:', {
-          ...opts,
-          ...getHighestEloMenu(teamNicknames),
-        });
-      } catch (e) {}
+      editMessageText('Select one of the options below:', {
+        ...opts,
+        ...getHighestEloMenu(teamNicknames),
+      });
       break;
     case 'getHighestElo':
       {
