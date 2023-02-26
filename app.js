@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import express from 'express';
 import { Faceit } from 'faceit-node-api';
 
-import { isProduction, FACEIT_API_KEY } from '#config';
+import { isProduction, host, port, FACEIT_API_KEY } from '#config';
 import { initTelegramBotListener } from '#controllers';
 import {
   connectDB,
@@ -20,8 +20,6 @@ await connectDB();
 adjustConsoleLog();
 initTelegramBotListener();
 
-const host = '185.166.216.70';
-const port = 443;
 const app = express();
 app.use(express.json());
 app.use(main);
@@ -33,6 +31,10 @@ if (isProduction) {
       {
         key: fs.readFileSync('./certs/private.key'),
         cert: fs.readFileSync('./certs/faceit-helper_pro.crt'),
+        ca: [
+          fs.readFileSync('./certs/faceit-helper_pro-root.crt'),
+          fs.readFileSync('./certs/faceit-helper_pro-bundle.crt'),
+        ],
       },
       app
     )
@@ -40,5 +42,7 @@ if (isProduction) {
       console.log(`Server listens https://${host}:${port}`);
     });
 } else {
-  app.listen(80, () => {});
+  app.listen(port, host, function () {
+    console.log(`Server listens http://${host}:${port}`);
+  });
 }
