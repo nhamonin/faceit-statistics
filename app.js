@@ -31,7 +31,11 @@ if (isProduction) {
     .createServer(
       {
         key: fs.readFileSync('./certs/private.key'),
-        cert: fs.readFileSync('./certs/bundle_chained.crt'),
+        cert: fs.readFileSync('./certs/faceit-helper_pro.crt'),
+        ca: [
+          fs.readFileSync('./certs/faceit-helper_pro-root.crt'),
+          fs.readFileSync('./certs/faceit-helper_pro-bundle.crt'),
+        ],
       },
       app
     )
