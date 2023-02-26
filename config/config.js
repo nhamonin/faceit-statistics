@@ -18,6 +18,9 @@ const {
   COOKIES_LOGGED_IN_VALUE,
 } = process.env;
 
+const isProduction = ENVIRONMENT === 'PRODUCTION';
+const host = isProduction ? '185.166.216.70' : '127.0.0.1';
+const port = isProduction ? 443 : 8000;
 const game_id = 'csgo';
 const currentMapPool = [
   'de_ancient',
@@ -129,6 +132,9 @@ const loggedInCookie = {
 };
 
 export {
+  isProduction,
+  host,
+  port,
   ENVIRONMENT,
   FACEIT_API_KEY,
   FACEIT_APP_ID,

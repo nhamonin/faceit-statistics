@@ -53,8 +53,6 @@ async function sendPhoto(tBot, chatIDs, message_id, html) {
         : await tBot.sendPhoto(chat_id, image);
     })
   );
-
-  console.log('image was generated successfully', new Date().toLocaleString());
 }
 
 async function getBrowserPage() {
