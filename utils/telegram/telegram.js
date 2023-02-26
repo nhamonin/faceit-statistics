@@ -28,8 +28,8 @@ export function getTelegramBot() {
     bots.telegram = new TelegramBot(TELEGRAM_BOT_API_TOKEN, {
       webHook: {
         port,
-        key: readFileSync('../../certs/private.key'),
-        cert: readFileSync('../../certs/faceit-helper_pro.crt'),
+        key: readFileSync('certs/private.key'),
+        cert: readFileSync('certs/faceit-helper_pro.crt'),
       },
     });
 
