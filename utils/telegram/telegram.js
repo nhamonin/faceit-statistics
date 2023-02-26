@@ -46,7 +46,7 @@ export async function getTelegramBot() {
 }
 
 export async function deleteMessage(chat_id, message_id) {
-  const tBot = getTelegramBot();
+  const tBot = await getTelegramBot();
 
   try {
     await tBot.deleteMessage(chat_id, message_id);
@@ -54,9 +54,11 @@ export async function deleteMessage(chat_id, message_id) {
 }
 
 export async function editMessageText(text, opts) {
-  const tBot = getTelegramBot();
+  const tBot = await getTelegramBot();
 
   try {
     await tBot.editMessageText(text, opts);
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 }
