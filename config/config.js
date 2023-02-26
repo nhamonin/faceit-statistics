@@ -18,7 +18,7 @@ const {
   COOKIES_LOGGED_IN_VALUE,
 } = process.env;
 
-const isProduction = ENVIRONMENT === 'production';
+const isProduction = ENVIRONMENT === 'PRODUCTION';
 const game_id = 'csgo';
 const currentMapPool = [
   'de_ancient',
