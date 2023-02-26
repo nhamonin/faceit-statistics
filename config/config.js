@@ -29,7 +29,7 @@ const FACEIT_WEBHOOK_ID = isProduction
   ? FACEIT_WEBHOOK_ID_PROD
   : FACEIT_WEBHOOK_ID_TEST;
 const host = isProduction ? '185.166.216.70' : '127.0.0.1';
-const port = isProduction ? 8443 : 8000;
+const port = isProduction ? 443 : 8000;
 const game_id = 'csgo';
 const currentMapPool = [
   'de_ancient',
