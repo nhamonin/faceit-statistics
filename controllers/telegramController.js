@@ -6,8 +6,6 @@ import {
   MatchPredictionLast50,
   TempPrediction,
   TempPredictionLast50,
-  MatchLast50,
-  Match,
 } from '#models';
 import { getEloTemplate } from '#templates';
 import {
@@ -104,8 +102,6 @@ function initTelegramBotListener() {
 
   tBot.onText(/\/delete_analytics/, async ({ chat, message_id }) => {
     await Promise.allSettled([
-      Match.deleteMany(),
-      MatchLast50.deleteMany(),
       MatchPrediction.deleteMany(),
       MatchPredictionLast50.deleteMany(),
       TempPrediction.deleteMany(),
