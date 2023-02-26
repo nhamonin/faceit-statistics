@@ -1,12 +1,10 @@
+import { readFileSync } from 'node:fs';
+
 import TelegramBot from 'node-telegram-bot-api';
 
 import { bots } from '#config';
 
-import {
-  ENVIRONMENT,
-  TELEGRAM_API_TOKEN,
-  TELEGRAM_API_TOKEN_TEST,
-} from '#config';
+import { isProduction, port, TELEGRAM_BOT_API_TOKEN } from '#config';
 
 export function getBasicTelegramOptions(message_id) {
   return {
@@ -24,10 +22,30 @@ export function getCallbackTelegramOptions() {
 }
 
 export function getTelegramBot() {
-  const tToken =
-    ENVIRONMENT === 'PRODUCTION' ? TELEGRAM_API_TOKEN : TELEGRAM_API_TOKEN_TEST;
   if (bots.telegram) return bots.telegram;
-  bots.telegram = new TelegramBot(tToken, { polling: true });
+
+  if (isProduction) {
+    bots.telegram = new TelegramBot(TELEGRAM_BOT_API_TOKEN, {
+      webHook: {
+        port,
+        key: readFileSync('../../certs/private.key'),
+        cert: readFileSync('../../certs/faceit-helper_pro.crt'),
+      },
+    });
+
+    bots.telegram.setWebHook(
+      `https://faceit-helper.pro:443/telegram-webhook-${TELEGRAM_BOT_API_TOKEN}`,
+      {
+        max_connections: 100000,
+      }
+    );
+
+    const webhookInfo = async () => await bots.telegram.getWebHookInfo();
+    console.log(webhookInfo());
+  } else {
+    bots.telegram = new TelegramBot(TELEGRAM_BOT_API_TOKEN, { polling: true });
+  }
+
   return bots.telegram;
 }
 

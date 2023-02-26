@@ -11,7 +11,7 @@ import {
   adjustConsoleLog,
   calculateFaceitDataAPILoad,
 } from '#utils';
-import { main, webhook } from '#routes';
+import { main, faceitWebhook, telegramWebhook } from '#routes';
 
 Faceit.setApiKeys([FACEIT_API_KEY]);
 
@@ -23,7 +23,8 @@ initTelegramBotListener();
 const app = express();
 app.use(express.json());
 app.use(main);
-app.use(webhook);
+app.use(faceitWebhook);
+app.use(telegramWebhook);
 
 if (isProduction) {
   https
