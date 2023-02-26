@@ -1,10 +1,6 @@
-import { readFileSync } from 'node:fs';
-
 import TelegramBot from 'node-telegram-bot-api';
 
-import { bots } from '#config';
-
-import { isProduction, port, TELEGRAM_BOT_API_TOKEN } from '#config';
+import { isProduction, bots, port, TELEGRAM_BOT_API_TOKEN } from '#config';
 
 export function getBasicTelegramOptions(message_id) {
   return {
@@ -21,15 +17,15 @@ export function getCallbackTelegramOptions() {
   };
 }
 
-export function getTelegramBot() {
+export async function getTelegramBot() {
   if (bots.telegram) return bots.telegram;
 
   if (isProduction) {
     bots.telegram = new TelegramBot(TELEGRAM_BOT_API_TOKEN, {
       webHook: {
         port,
-        key: readFileSync('certs/private.key'),
-        cert: readFileSync('certs/faceit-helper_pro.crt'),
+        key: 'certs/private.key',
+        cert: 'certs/faceit-helper_pro.crt',
       },
     });
 
@@ -40,8 +36,8 @@ export function getTelegramBot() {
       }
     );
 
-    const webhookInfo = async () => await bots.telegram.getWebHookInfo();
-    console.log(webhookInfo());
+    const webhookInfo = await bots.telegram.getWebHookInfo();
+    console.log(webhookInfo);
   } else {
     bots.telegram = new TelegramBot(TELEGRAM_BOT_API_TOKEN, { polling: true });
   }

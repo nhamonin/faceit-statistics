@@ -41,7 +41,7 @@ import {
   editMessageText,
 } from '#utils';
 
-const tBot = getTelegramBot();
+const tBot = await getTelegramBot();
 
 function initTelegramBotListener() {
   process.env.NTBA_FIX_350 = 1;
