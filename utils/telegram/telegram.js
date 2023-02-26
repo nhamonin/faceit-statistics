@@ -30,7 +30,7 @@ export async function getTelegramBot() {
     });
 
     bots.telegram.setWebHook(
-      `https://faceit-helper.pro:443/telegram-webhook-${TELEGRAM_BOT_API_TOKEN}`,
+      `https://faceit-helper.pro/telegram-webhook-${TELEGRAM_BOT_API_TOKEN}`,
       {
         max_connections: 100000,
       }
