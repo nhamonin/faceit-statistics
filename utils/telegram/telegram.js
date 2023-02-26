@@ -23,7 +23,6 @@ export async function getTelegramBot() {
   if (isProduction) {
     bots.telegram = new TelegramBot(TELEGRAM_BOT_API_TOKEN, {
       webHook: {
-        port,
         key: 'certs/private.key',
         cert: 'certs/bundle_chained.crt',
       },
