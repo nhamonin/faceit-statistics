@@ -1,4 +1,4 @@
-import { Match, MatchPrediction, TempPrediction } from '#models';
+import { MatchPrediction, TempPrediction } from '#models';
 import { currentMapPool } from '#config';
 import { getMatchData } from '#utils';
 
@@ -18,27 +18,24 @@ export async function performMapPickerAnalytics(match_id) {
       (predictionObj) => predictionObj.mapName === pickedMap
     )[0];
     if (!predictedDataMap) return;
-    const match = new Match({
-      match_id,
-      winratePredictedValue: predictedDataMap.totalWinrate > 0,
-      avgPredictedValue: predictedDataMap.totalPoints > 0,
-    });
+    const winratePredictedValue = predictedDataMap.totalWinrate > 0;
+    const avgPredictedValue = predictedDataMap.totalPoints > 0;
     let matchPrediction = await MatchPrediction.findOne();
-    match.save().then(async () => {
-      if (!matchPrediction) {
-        matchPrediction = new MatchPrediction({
-          totalMatches: 1,
-          winratePredictions: +match.winratePredictedValue,
-          avgPredictions: +match.avgPredictedValue,
-        });
-      } else {
-        matchPrediction.totalMatches++;
-        if (match.winratePredictedValue) matchPrediction.winratePredictions++;
-        if (match.avgPredictedValue) matchPrediction.avgPredictions++;
-      }
-      await matchPrediction.save();
-      await TempPrediction.findOneAndDelete({ match_id });
-    });
+
+    if (!matchPrediction) {
+      matchPrediction = new MatchPrediction({
+        totalMatches: 1,
+        winratePredictions: +winratePredictedValue,
+        avgPredictions: +avgPredictedValue,
+      });
+    } else {
+      matchPrediction.totalMatches++;
+      if (winratePredictedValue) matchPrediction.winratePredictions++;
+      if (avgPredictedValue) matchPrediction.avgPredictions++;
+    }
+
+    await matchPrediction.save();
+    await TempPrediction.findOneAndDelete({ match_id });
   } catch (e) {
     console.log(e);
   }

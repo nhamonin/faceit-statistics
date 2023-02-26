@@ -1,8 +1,4 @@
-import {
-  MatchLast50,
-  MatchPredictionLast50,
-  TempPredictionLast50,
-} from '#models';
+import { MatchPredictionLast50, TempPredictionLast50 } from '#models';
 import { currentMapPool } from '#config';
 import { getMatchData } from '#utils';
 
@@ -22,27 +18,24 @@ export async function performMapPickerAnalyticsLast50(match_id) {
       (predictionObj) => predictionObj.mapName === pickedMap
     )[0];
     if (!predictedDataMap) return;
-    const match = new MatchLast50({
-      match_id,
-      winratePredictedValue: predictedDataMap.totalWinrate > 0,
-      avgPredictedValue: predictedDataMap.totalPoints > 0,
-    });
-    let matchPrediction = await MatchPredictionLast50.findOne();
-    match.save().then(async () => {
-      if (!matchPrediction) {
-        matchPrediction = new MatchPredictionLast50({
-          totalMatches: 1,
-          winratePredictions: +match.winratePredictedValue,
-          avgPredictions: +match.avgPredictedValue,
-        });
-      } else {
-        matchPrediction.totalMatches++;
-        if (match.winratePredictedValue) matchPrediction.winratePredictions++;
-        if (match.avgPredictedValue) matchPrediction.avgPredictions++;
-      }
-      await matchPrediction.save();
-      await TempPredictionLast50.findOneAndDelete({ match_id });
-    });
+    const winratePredictedValue = predictedDataMap.totalWinrate > 0;
+    const avgPredictedValue = predictedDataMap.totalPoints > 0;
+    let matchPrediction = await MatchPrediction.findOne();
+
+    if (!matchPrediction) {
+      matchPrediction = new MatchPredictionLast50({
+        totalMatches: 1,
+        winratePredictions: +winratePredictedValue,
+        avgPredictions: +avgPredictedValue,
+      });
+    } else {
+      matchPrediction.totalMatches++;
+      if (winratePredictedValue) matchPrediction.winratePredictions++;
+      if (avgPredictedValue) matchPrediction.avgPredictions++;
+    }
+
+    await matchPrediction.save();
+    await TempPredictionLast50.findOneAndDelete({ match_id });
   } catch (e) {
     console.log(e);
   }
