@@ -18,6 +18,7 @@ const {
   COOKIES_LOGGED_IN_VALUE,
 } = process.env;
 
+const isProduction = ENVIRONMENT === 'production';
 const game_id = 'csgo';
 const currentMapPool = [
   'de_ancient',
@@ -129,6 +130,7 @@ const loggedInCookie = {
 };
 
 export {
+  isProduction,
   ENVIRONMENT,
   FACEIT_API_KEY,
   FACEIT_APP_ID,
