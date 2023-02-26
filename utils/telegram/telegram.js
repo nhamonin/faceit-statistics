@@ -25,7 +25,7 @@ export async function getTelegramBot() {
       webHook: {
         port,
         key: 'certs/private.key',
-        cert: 'certs/faceit-helper_pro.ca-bundle',
+        cert: 'certs/bundle_chained.crt',
       },
     });
 
