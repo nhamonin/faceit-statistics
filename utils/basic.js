@@ -21,7 +21,7 @@ function adjustConsoleLog() {
 }
 
 function logEvent(chat, action) {
-  const name = chat.username || chat.title;
+  const name = chat.username || chat.title || chat.id;
   console.log(`${name}: ${action}. Date: ${new Date().toLocaleString()}`);
 }
 

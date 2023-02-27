@@ -16,18 +16,20 @@ export const getHighestEloMenu = (teamNicknames) => ({
               text: 'Custom Player',
               callback_data: 'getHighestElo?custom',
             },
-            {
-              text: '« Back',
-              callback_data: 'getStats',
-            },
-            {
-              text: '« Menu',
-              callback_data: 'mainMenu',
-            },
           ],
         ],
         numberOfButtonsInRows
       ),
+      [
+        {
+          text: '« Back',
+          callback_data: 'getStats',
+        },
+        {
+          text: '« Menu',
+          callback_data: 'mainMenu',
+        },
+      ],
     ],
     force_reply: true,
   },

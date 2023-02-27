@@ -41,7 +41,6 @@ const currentMapPool = [
   'de_vertigo',
   'de_anubis',
 ];
-
 const allowedCompetitionNames = [
   '5v5 RANKED',
   '5v5 RANKED PREMIUM',
@@ -73,9 +72,18 @@ You can check stats or modify your team.`
     notExists:
       "You don't have a team to reset. Init it first via the command '/start.'",
   },
+  basicMenu: (teamNicknames) =>
+    `Your team: <b>${teamNicknames.join(
+      ', '
+    )}</b>.\nChoose one of the options below:`,
+  selectOnOfTheOptions: (isDone) =>
+    `${isDone ? 'Done! ' : ''}Select one of the options below:`,
+  sendLastMatchesCount: 'Send the number of matches you want to see.',
+  sendPlayerNickname: 'Send player nickname:',
   addPlayer: {
     success: (nickname, teamNicknames) =>
       `Player <b>${nickname}</b> was added.\nYour team: <b>${teamNicknames}</b>.`,
+    sendNickname: 'Send nickname of the player you want to add.',
     exists: (nickname, teamNicknames) =>
       `Sorry, but player <b>${nickname}</b> already exists in your team. Try to add another player.\nYour team: <b>${teamNicknames}</b>.`,
     notFound: (nickname, teamNicknames) =>
@@ -88,6 +96,10 @@ You can check stats or modify your team.`
       `Player <b>${nickname}</b> was deleted.\nYour team: <b>${teamNicknames}</b>.`,
     notExists: (nickname) =>
       `Sorry, but <b>${nickname}</b> doesn't exists in your team.`,
+    selectPlayer: (teamNicknames) =>
+      `Your team: <b>${teamNicknames.join(
+        ', '
+      )}</b>.\nChoose a player you want to delete:`,
     lastPlayerWasDeleted:
       'You just deleted the last player in your team. Please add at least one player via the button below',
   },

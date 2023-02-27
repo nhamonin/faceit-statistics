@@ -5,9 +5,7 @@ import { TELEGRAM_BOT_API_TOKEN, bots } from '#config';
 const router = express.Router();
 
 router.post(`/telegram-webhook-${TELEGRAM_BOT_API_TOKEN}`, async (req, res) => {
-  const update = req.body;
-
-  bots.telegram.processUpdate(update);
+  bots.telegram.processUpdate(req.body);
 
   res.sendStatus(200);
 });
