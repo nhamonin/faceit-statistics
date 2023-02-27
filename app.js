@@ -17,8 +17,8 @@ Faceit.setApiKeys([FACEIT_API_KEY]);
 
 calculateFaceitDataAPILoad(Faceit);
 await connectDB();
-adjustConsoleLog();
 initTelegramBotListener();
+adjustConsoleLog();
 
 const app = express();
 app.use(express.json());
