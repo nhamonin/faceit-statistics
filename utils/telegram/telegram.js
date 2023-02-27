@@ -36,6 +36,10 @@ export async function getTelegramBot() {
       }
     );
 
+    bots.telegram.on('update', (update) => {
+      res.sendStatus(200);
+    });
+
     const webhookInfo = await bots.telegram.getWebHookInfo();
     console.log(webhookInfo);
   } else {
