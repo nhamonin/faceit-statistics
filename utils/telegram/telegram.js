@@ -1,6 +1,6 @@
 import TelegramBot from 'node-telegram-bot-api';
 
-import { isProduction, bots, port, TELEGRAM_BOT_API_TOKEN } from '#config';
+import { isProduction, bots, TELEGRAM_BOT_API_TOKEN } from '#config';
 
 export function getBasicTelegramOptions(message_id) {
   return {
@@ -22,6 +22,7 @@ export async function getTelegramBot() {
 
   if (isProduction) {
     bots.telegram = new TelegramBot(TELEGRAM_BOT_API_TOKEN, {
+      polling: false,
       webHook: {
         key: 'certs/private.key',
         cert: 'certs/bundle_chained.crt',
