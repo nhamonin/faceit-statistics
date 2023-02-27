@@ -17,7 +17,7 @@ export function getCallbackTelegramOptions() {
   };
 }
 
-export async function getTelegramBot() {
+export function getTelegramBot() {
   if (bots.telegram) return bots.telegram;
 
   if (isProduction) {
@@ -35,13 +35,6 @@ export async function getTelegramBot() {
         max_connections: 100000,
       }
     );
-
-    bots.telegram.on('update', (update) => {
-      res.sendStatus(200);
-    });
-
-    const webhookInfo = await bots.telegram.getWebHookInfo();
-    console.log(webhookInfo);
   } else {
     bots.telegram = new TelegramBot(TELEGRAM_BOT_API_TOKEN, { polling: true });
   }
@@ -50,7 +43,7 @@ export async function getTelegramBot() {
 }
 
 export async function deleteMessage(chat_id, message_id) {
-  const tBot = await getTelegramBot();
+  const tBot = getTelegramBot();
 
   try {
     await tBot.deleteMessage(chat_id, message_id);
@@ -58,7 +51,7 @@ export async function deleteMessage(chat_id, message_id) {
 }
 
 export async function editMessageText(text, opts) {
-  const tBot = await getTelegramBot();
+  const tBot = getTelegramBot();
 
   try {
     await tBot.editMessageText(text, opts);

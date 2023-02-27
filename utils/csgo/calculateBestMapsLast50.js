@@ -281,7 +281,7 @@ async function sendMapPickerResult(
 
       teamsToSendNotification.add(-886965844);
     }
-    const tBot = await getTelegramBot();
+    const tBot = getTelegramBot();
 
     const htmlMessage = prettifyMapPickerData(neededVariables);
     await sendPhoto(
