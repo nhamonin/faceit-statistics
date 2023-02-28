@@ -32,8 +32,8 @@ export const getHighestElo = async (playerNickname) => {
     if (!player_id)
       return { error: strings.getPlayerLastMatches.notExists(playerNickname) };
 
-    const diffElo = currentElo - highestElo;
-    const diffDays = getDaysBetweenDates(highestEloDate, new Date());
+    let diffElo = currentElo - highestElo;
+    let diffDays = getDaysBetweenDates(highestEloDate, new Date());
 
     if (highestElo && highestEloDate) {
       return {
@@ -58,6 +58,8 @@ export const getHighestElo = async (playerNickname) => {
     const highestEloMatch = await getHighestEloMatch(player_id, pages);
     highestElo = highestEloMatch.elo;
     highestEloDate = new Date(highestEloMatch.date);
+    diffElo = currentElo - highestElo;
+    diffDays = getDaysBetweenDates(highestEloDate, new Date());
 
     if (playerInDB) {
       playerInDB.highestElo = highestElo;
