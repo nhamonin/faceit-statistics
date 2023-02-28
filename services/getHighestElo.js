@@ -1,55 +1,81 @@
 import { Players } from 'faceit-node-api';
-import { messages, game_id } from '#config';
-import { getPlayerInfo, getPlayerMatches } from '#utils';
 
-const MAX_MATCHES_PER_REQUEST = 2000;
+import { Player } from '#models';
+import { game_id, MAX_MATCHES_PER_REQUEST } from '#config';
+import {
+  getPlayerInfo,
+  getDaysBetweenDates,
+  getHighestEloMatch,
+  getHighestEloMessage,
+} from '#utils';
+import strings from '#strings';
 
 export const getHighestElo = async (playerNickname) => {
-  const players = new Players();
   try {
-    const { player_id, elo: currentElo } = await getPlayerInfo({
-      playerNickname,
-    });
+    const players = new Players();
+    const playerInDB = await Player.findOne({ nickname: playerNickname });
+    let player_id, currentElo, highestElo, highestEloDate;
+
+    if (playerInDB) {
+      player_id = playerInDB.player_id;
+      currentElo = playerInDB.elo;
+      highestElo = playerInDB.highestElo;
+      highestEloDate = playerInDB.highestEloDate;
+    } else {
+      const playerInfo = await getPlayerInfo({
+        playerNickname,
+      });
+      player_id = playerInfo.player_id;
+      currentElo = playerInfo.elo;
+    }
+
     if (!player_id)
-      return { error: messages.getPlayerLastMatches.notExists(playerNickname) };
-    const playerDetails = await players.getStatisticsOfAPlayer(
+      return { error: strings.getPlayerLastMatches.notExists(playerNickname) };
+
+    const diffElo = currentElo - highestElo;
+    const diffDays = getDaysBetweenDates(highestEloDate, new Date());
+
+    if (highestElo && highestEloDate) {
+      return {
+        message: getHighestEloMessage(
+          playerNickname,
+          highestElo,
+          highestEloDate,
+          diffElo,
+          diffDays
+        ),
+      };
+    }
+
+    const playerStatistics = await players.getStatisticsOfAPlayer(
       player_id,
       game_id
     );
-    const playerMatchesAmount = +playerDetails.lifetime.Matches;
+    const playerMatchesAmount = +playerStatistics.lifetime.Matches;
     const requestsAmount =
       Math.floor(playerMatchesAmount / MAX_MATCHES_PER_REQUEST) + 1;
     const pages = [...Array(requestsAmount).keys()];
-    const [highestEloMatch] = await Promise.all(
-      pages.map((page) => getPlayerMatches(player_id, 2000, page))
-    ).then((arr) =>
-      arr
-        .flat()
-        .filter(({ elo }) => elo)
-        .sort((a, b) => b.elo - a.elo)
-    );
+    const highestEloMatch = await getHighestEloMatch(player_id, pages);
+    highestElo = highestEloMatch.elo;
+    highestEloDate = new Date(highestEloMatch.date);
 
-    const highestEloDate = new Date(highestEloMatch.date);
-    const highestEloDateLocalized = highestEloDate.toLocaleDateString('en-us');
-    const currentDate = new Date();
-    const diffDays = parseInt(
-      (currentDate - highestEloDate) / (1000 * 60 * 60 * 24),
-      10
-    );
-    const message =
-      currentElo - highestEloMatch.elo < 0
-        ? `<b>${playerNickname}</b>'s highest elo was <b>${
-            highestEloMatch.elo
-          }</b> (${
-            currentElo - highestEloMatch.elo
-          } from now).\nDate when the highest elo was reached: ${highestEloDateLocalized} (${diffDays} days ago).`
-        : `<b>${playerNickname}</b>'s highest elo: <b>${currentElo}</b>.\nDate when the highest elo was reached: ${highestEloDateLocalized}.`;
+    if (playerInDB) {
+      playerInDB.highestElo = highestElo;
+      playerInDB.highestEloDate = highestEloDate;
+      playerInDB.save();
+    }
 
     return {
-      message,
+      message: getHighestEloMessage(
+        playerNickname,
+        highestElo,
+        highestEloDate,
+        diffElo,
+        diffDays
+      ),
     };
   } catch (e) {
     console.log(e.message);
-    return messages.serverError;
+    return strings.serverError;
   }
 };

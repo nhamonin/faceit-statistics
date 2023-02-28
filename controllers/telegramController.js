@@ -15,7 +15,7 @@ import {
   addPlayer,
   deletePlayer,
 } from '#services';
-import { messages } from '#config';
+import strings from '#strings';
 import {
   startActionMarkup,
   modifyTeamMarkup,
@@ -52,7 +52,7 @@ function initTelegramBotListener() {
     async ({ chat }) => {
       const players = await initTeam(chat);
       logEvent(chat, 'Init team');
-      tBot.sendMessage(chat.id, messages.start(players), {
+      tBot.sendMessage(chat.id, strings.start(players), {
         ...getBasicTelegramOptions(),
         ...startActionMarkup(players),
       });
@@ -139,20 +139,20 @@ function initTelegramBotListener() {
 
     switch (action) {
       case 'mainMenu':
-        editMessageText(messages.basicMenu(teamNicknames), {
+        editMessageText(strings.basicMenu(teamNicknames), {
           ...opts,
           ...mainMenuMarkup,
         });
         break;
       case 'modifyTeamMarkup':
-        editMessageText(messages.basicMenu(teamNicknames), {
+        editMessageText(strings.basicMenu(teamNicknames), {
           ...opts,
           ...modifyTeamMarkup,
         });
         break;
       case 'addPlayer':
         tBot
-          .sendMessage(opts.chat_id, messages.addPlayer.sendNickname, {
+          .sendMessage(opts.chat_id, strings.addPlayer.sendNickname, {
             reply_markup: { force_reply: true },
           })
           .then(({ message_id: bot_message_id, chat }) => {
@@ -177,7 +177,7 @@ function initTelegramBotListener() {
           });
         break;
       case 'deletePlayerMenu':
-        editMessageText(messages.deletePlayer.selectPlayer(teamNicknames), {
+        editMessageText(strings.deletePlayer.selectPlayer(teamNicknames), {
           ...opts,
           ...deletePlayerMarkup(teamNicknames),
         });
@@ -187,7 +187,7 @@ function initTelegramBotListener() {
           const nickname = callbackQuery.data.split('?')[1];
           const message = await deletePlayer(nickname, opts.chat_id);
           const options =
-            message === messages.deletePlayer.lastPlayerWasDeleted
+            message === strings.deletePlayer.lastPlayerWasDeleted
               ? addPlayerOnlyMarkup
               : modifyTeamMarkup;
           logEvent(msg.chat, 'Delete player');
@@ -208,13 +208,13 @@ function initTelegramBotListener() {
         }
         break;
       case 'getStats':
-        editMessageText(messages.basicMenu(teamNicknames), {
+        editMessageText(strings.basicMenu(teamNicknames), {
           ...opts,
           ...getStatsMarkup,
         });
         break;
       case 'getTeamKDMenu':
-        editMessageText(messages.selectOnOfTheOptions(false), {
+        editMessageText(strings.selectOnOfTheOptions(false), {
           ...opts,
           ...getTeamKDMenu,
         });
@@ -228,7 +228,7 @@ function initTelegramBotListener() {
             logEvent(msg.chat, `Get team KD last ${amount}`);
           } else {
             tBot
-              .sendMessage(opts.chat_id, messages.sendLastMatchesCount, {
+              .sendMessage(opts.chat_id, strings.sendLastMatchesCount, {
                 reply_markup: { force_reply: true },
               })
               .then(({ message_id: bot_message_id }) => {
@@ -265,7 +265,7 @@ function initTelegramBotListener() {
           await deleteMessage(opts.chat_id, opts.message_id);
           await tBot.sendMessage(
             opts.chat_id,
-            messages.selectOnOfTheOptions(true),
+            strings.selectOnOfTheOptions(true),
             {
               ...opts,
               ...getStatsMarkup,
@@ -274,7 +274,7 @@ function initTelegramBotListener() {
         }
         break;
       case 'getPlayerLastMatchesMenu':
-        editMessageText(messages.selectOnOfTheOptions(false), {
+        editMessageText(strings.selectOnOfTheOptions(false), {
           ...opts,
           ...lastPlayerMatchesMarkup(teamNicknames),
         });
@@ -293,7 +293,7 @@ function initTelegramBotListener() {
             );
           } else {
             tBot
-              .sendMessage(opts.chat_id, messages.sendPlayerNickname, {
+              .sendMessage(opts.chat_id, strings.sendPlayerNickname, {
                 reply_markup: { force_reply: true },
               })
               .then(async ({ message_id: bot_message_id }) => {
@@ -317,7 +317,7 @@ function initTelegramBotListener() {
         }
         break;
       case 'getHighestEloMenu':
-        editMessageText(messages.selectOnOfTheOptions(false), {
+        editMessageText(strings.selectOnOfTheOptions(false), {
           ...opts,
           ...getHighestEloMenu(teamNicknames),
         });
@@ -336,7 +336,7 @@ function initTelegramBotListener() {
             );
           } else {
             tBot
-              .sendMessage(opts.chat_id, messages.sendPlayerNickname, {
+              .sendMessage(opts.chat_id, strings.sendPlayerNickname, {
                 reply_markup: { force_reply: true },
               })
               .then(async ({ message_id: bot_message_id }) => {

@@ -1,6 +1,6 @@
 import { Players } from 'faceit-node-api';
 
-import { messages } from '#config';
+import strings from '#strings';
 import { getPlayerAvgKD } from '../index.js';
 
 export async function getPlayerInfo({
@@ -28,7 +28,7 @@ export async function getPlayerInfo({
     console.log(e.message);
     return {
       error: true,
-      errorMessage: messages.addPlayer.notFound(
+      errorMessage: strings.addPlayer.notFound(
         playerNickname,
         playersNicknames
       ),

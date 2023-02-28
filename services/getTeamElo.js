@@ -1,10 +1,11 @@
 import { calculateAverage } from '#utils';
-import { lvlClasses, messages } from '#config';
+import { lvlClasses } from '#config';
+import strings from '#strings';
 import { Team } from '#models';
 
 export const getTeamEloMessage = async (chat_id) => {
   const team = await Team.findOne({ chat_id });
-  if (!team) return { error: true, message: messages.teamNotExistError };
+  if (!team) return { error: true, message: strings.teamNotExistError };
   const { players } = await team.populate('players');
   const isTeamEmpty = !players || players?.length === 0;
   const statAttribute = 'Elo';
@@ -17,7 +18,7 @@ export const getTeamEloMessage = async (chat_id) => {
 function prepareEmptyTeamResult(statAttribute) {
   return {
     error: true,
-    message: messages.emptyTeamError(statAttribute),
+    message: strings.emptyTeamError(statAttribute),
   };
 }
 
@@ -30,7 +31,7 @@ function prepareProperResult(players, statAttribute) {
 
   return {
     error: false,
-    message: messages.getTeamStats(playerEloMessage, statAttribute, avgTeamElo),
+    message: strings.getTeamStats(playerEloMessage, statAttribute, avgTeamElo),
   };
 }
 

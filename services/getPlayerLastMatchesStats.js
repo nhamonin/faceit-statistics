@@ -1,18 +1,18 @@
-import { messages } from '#config';
+import strings from '#strings';
 import { getPlayerMatches, getPlayerInfo } from '#utils';
 
 export const getPlayerLastMatchesStats = async (playerNickname) => {
   try {
     const { player_id } = await getPlayerInfo({ playerNickname });
     if (!player_id)
-      return { error: messages.getPlayerLastMatches.notExists(playerNickname) };
+      return { error: strings.getPlayerLastMatches.notExists(playerNickname) };
     const playerMatches = await getPlayerMatches(player_id);
     const message = formatMessage(playerMatches, playerNickname);
 
     return { message };
   } catch (e) {
     console.log(e.message);
-    return { error: messages.serverError };
+    return { error: strings.serverError };
   }
 };
 

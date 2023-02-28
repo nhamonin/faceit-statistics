@@ -5,20 +5,21 @@ import {
   webhookMgr,
 } from '#utils';
 import { Player, Team } from '#models';
-import { messages, MAX_PLAYERS_AMOUNT } from '#config';
+import { MAX_PLAYERS_AMOUNT } from '#config';
+import strings from '#strings';
 
 export const addPlayer = async (playerNickname, chat_id) => {
   try {
     const team = await Team.findOne({ chat_id });
-    if (!team) return messages.teamNotExistError;
+    if (!team) return strings.teamNotExistError;
     const { players } = await team.populate('players');
     const playerInDB = await Player.findOne({ nickname: playerNickname });
     const playersNicknames = getTeamNicknames(team).join(', ');
     if (players?.length + 1 > MAX_PLAYERS_AMOUNT)
-      return messages.addPlayer.tooMany(playersNicknames);
+      return strings.addPlayer.tooMany(playersNicknames);
 
     if (isPlayerTeamMember(players, playerNickname)) {
-      return messages.addPlayer.exists(playerNickname, playersNicknames);
+      return strings.addPlayer.exists(playerNickname, playersNicknames);
     } else if (playerInDB) {
       team.players.push(playerInDB);
       console.log(
@@ -62,13 +63,13 @@ export const addPlayer = async (playerNickname, chat_id) => {
     return team
       .save()
       .then((team) =>
-        messages.addPlayer.success(
+        strings.addPlayer.success(
           playerNickname,
           getTeamNicknames(team).join(', ')
         )
       );
   } catch (e) {
     console.log(e.message);
-    return messages.serverError;
+    return strings.serverError;
   }
 };

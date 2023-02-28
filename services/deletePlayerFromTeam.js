@@ -1,15 +1,15 @@
 import { Player, Team } from '#models';
-import { messages } from '#config';
+import strings from '#strings';
 import { isPlayerTeamMember, webhookMgr, getTeamNicknames } from '#utils';
 
 export const deletePlayer = async (playerNickname, chat_id) => {
   try {
     const team = await Team.findOne({ chat_id });
-    if (!team) return messages.teamNotExistError;
+    if (!team) return strings.teamNotExistError;
     const { players } = await team.populate('players');
 
     if (!isPlayerTeamMember(players, playerNickname)) {
-      return messages.deletePlayer.notExists(playerNickname);
+      return strings.deletePlayer.notExists(playerNickname);
     }
 
     const noPlayersInTeamAfterDeletion = players.length === 1;
@@ -38,14 +38,14 @@ export const deletePlayer = async (playerNickname, chat_id) => {
         await updatedTeam.populate('players');
 
         return noPlayersInTeamAfterDeletion
-          ? messages.deletePlayer.lastPlayerWasDeleted
-          : messages.deletePlayer.success(
+          ? strings.deletePlayer.lastPlayerWasDeleted
+          : strings.deletePlayer.success(
               playerNickname,
               getTeamNicknames(updatedTeam).join(', ')
             );
       });
   } catch (e) {
     console.log(e.message);
-    return messages.serverError;
+    return strings.serverError;
   }
 };

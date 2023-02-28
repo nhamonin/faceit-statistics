@@ -1,5 +1,5 @@
 import { Team } from '#models';
-import { messages } from '#config';
+import strings from '#strings';
 
 export const initTeam = async ({ id, first_name, username, title, type }) => {
   try {
@@ -22,6 +22,6 @@ export const initTeam = async ({ id, first_name, username, title, type }) => {
     return players.map(({ nickname }) => nickname);
   } catch (e) {
     console.log(e.message);
-    return messages.serverError;
+    return strings.serverError;
   }
 };

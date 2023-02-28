@@ -30,6 +30,7 @@
   },
   "imports": {
     "#config": "./config/config.js",
+    "#strings": "./config/strings.js",
     "#telegramReplyMarkup": "./config/telegramReplyMarkup/index.js",
     "#controllers": "./controllers/index.js",
     "#jobs": "./jobs/index.js",

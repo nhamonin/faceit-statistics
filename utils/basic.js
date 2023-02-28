@@ -108,6 +108,19 @@ function regulateAvg(value) {
   }
 }
 
+function getDaysBetweenDates(date1, date2) {
+  const diffTime = Math.abs(date2 - date1);
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+function localizeDate(date, locale) {
+  return date.toLocaleString(locale, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
 export {
   adjustConsoleLog,
   logEvent,
@@ -118,4 +131,6 @@ export {
   chunk,
   regulateWinrate,
   regulateAvg,
+  getDaysBetweenDates,
+  localizeDate,
 };
