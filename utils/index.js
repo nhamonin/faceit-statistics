@@ -9,6 +9,8 @@ import {
   chunk,
   regulateWinrate,
   regulateAvg,
+  getDaysBetweenDates,
+  localizeDate,
 } from './basic.js';
 // telegram
 import { getTelegramBot } from './telegram/telegram.js';
@@ -36,6 +38,8 @@ import { getHighestEloWrapper } from './csgo/getHighestEloWrapper.js';
 import { performMapPickerAnalytics } from './csgo/performMapPickerAnalytics.js';
 import { performMapPickerAnalyticsLast50 } from './csgo/performMapPickerAnalyticsLast50.js';
 import { getMatchData } from './csgo/getMatchData.js';
+import { getHighestEloMatch } from './csgo/getHighestEloMatch.js';
+import { getHighestEloMessage } from './csgo/getHighestEloMessage.js';
 // faceit
 import calculateFaceitDataAPILoad from './faceit/calculateFaceitDataAPILoad.js';
 import addNewPlayersToWebhookList from './faceit/addNewPlayersToWebhookList.js';
@@ -50,6 +54,8 @@ export {
   chunk,
   regulateWinrate,
   regulateAvg,
+  getDaysBetweenDates,
+  localizeDate,
   getPlayerInfo,
   getPlayerMatches,
   getPlayerLifeTimeStats,
@@ -72,6 +78,8 @@ export {
   getCurrentBearerToken,
   connectDB,
   getMatchData,
+  getHighestEloMatch,
+  getHighestEloMessage,
   calculateFaceitDataAPILoad,
   addNewPlayersToWebhookList,
 };

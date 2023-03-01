@@ -1,16 +1,9 @@
 import { fetch } from 'undici';
 
-import {
-  ENVIRONMENT,
-  FACEIT_WEBHOOK_ID,
-  FACEIT_WEBHOOK_ID_TEST,
-  FACEIT_WEBHOOK_API_KEY,
-} from '#config';
+import { FACEIT_WEBHOOK_ID, FACEIT_WEBHOOK_API_KEY } from '#config';
 import { getCurrentBearerToken } from '#utils';
 
-const faceitWebhookID =
-  ENVIRONMENT === 'PRODUCTION' ? FACEIT_WEBHOOK_ID : FACEIT_WEBHOOK_ID_TEST;
-const url = `https://api.faceit.com/webhooks/v1/subscriptions/${faceitWebhookID}`;
+const url = `https://api.faceit.com/webhooks/v1/subscriptions/${FACEIT_WEBHOOK_ID}`;
 
 function changeWebhookPlayersList(action) {
   return async function (playersIDs) {

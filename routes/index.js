@@ -1,4 +1,5 @@
 import main from './main.js';
-import webhook from './webhook.js';
+import faceitWebhook from './faceitWebhook.js';
+import telegramWebhook from './telegramWebhook.js';
 
-export { main, webhook };
+export { main, faceitWebhook, telegramWebhook };

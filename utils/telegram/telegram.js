@@ -1,12 +1,6 @@
 import TelegramBot from 'node-telegram-bot-api';
 
-import { bots } from '#config';
-
-import {
-  ENVIRONMENT,
-  TELEGRAM_API_TOKEN,
-  TELEGRAM_API_TOKEN_TEST,
-} from '#config';
+import { isProduction, bots, TELEGRAM_BOT_API_TOKEN } from '#config';
 
 export function getBasicTelegramOptions(message_id) {
   return {
@@ -24,10 +18,27 @@ export function getCallbackTelegramOptions() {
 }
 
 export function getTelegramBot() {
-  const tToken =
-    ENVIRONMENT === 'PRODUCTION' ? TELEGRAM_API_TOKEN : TELEGRAM_API_TOKEN_TEST;
   if (bots.telegram) return bots.telegram;
-  bots.telegram = new TelegramBot(tToken, { polling: true });
+
+  if (isProduction) {
+    bots.telegram = new TelegramBot(TELEGRAM_BOT_API_TOKEN, {
+      polling: false,
+      webHook: {
+        key: 'certs/private.key',
+        cert: 'certs/bundle_chained.crt',
+      },
+    });
+
+    bots.telegram.setWebHook(
+      `https://faceit-helper.pro/telegram-webhook-${TELEGRAM_BOT_API_TOKEN}`,
+      {
+        max_connections: 100000,
+      }
+    );
+  } else {
+    bots.telegram = new TelegramBot(TELEGRAM_BOT_API_TOKEN, { polling: true });
+  }
+
   return bots.telegram;
 }
 
@@ -44,5 +55,7 @@ export async function editMessageText(text, opts) {
 
   try {
     await tBot.editMessageText(text, opts);
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 }

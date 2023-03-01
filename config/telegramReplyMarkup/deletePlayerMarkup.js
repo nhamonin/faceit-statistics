@@ -11,19 +11,19 @@ export const deletePlayerMarkup = (teamNicknames) => ({
             text: nickname,
             callback_data: `deletePlayer?${nickname}`,
           })),
-          ...[
-            {
-              text: '« Back',
-              callback_data: 'modifyTeamMarkup',
-            },
-            {
-              text: '« Menu',
-              callback_data: 'mainMenu',
-            },
-          ],
         ],
         numberOfButtonsInRows
       ),
+      [
+        {
+          text: '« Back',
+          callback_data: 'modifyTeamMarkup',
+        },
+        {
+          text: '« Menu',
+          callback_data: 'mainMenu',
+        },
+      ],
     ],
     force_reply: true,
   },

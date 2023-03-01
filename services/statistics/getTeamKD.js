@@ -1,17 +1,18 @@
 import { calculateAverage, getPlayerAvgKD } from '#utils';
-import { messages, DEFAULT_MATCH_GET_LIMIT } from '#config';
+import { DEFAULT_MATCH_GET_LIMIT } from '#config';
 import { Team } from '#models';
+import strings from '#strings';
 
 export const getTeamKDMessage = async (matchLimit, chat_id) => {
   const limit = matchLimit || DEFAULT_MATCH_GET_LIMIT;
   if (matchLimit && (!Number.isInteger(+matchLimit) || +matchLimit === 0)) {
     return {
       error: true,
-      message: messages.getTeamKD.validationError,
+      message: strings.getTeamKD.validationError,
     };
   }
   const team = await Team.findOne({ chat_id });
-  if (!team) return { error: true, message: messages.teamNotExistError };
+  if (!team) return { error: true, message: strings.teamNotExistError };
   const { players } = await team.populate('players');
   const isTeamEmpty = players.length === 0;
   const statAttribute = 'K/D';
@@ -24,7 +25,7 @@ export const getTeamKDMessage = async (matchLimit, chat_id) => {
 function prepareEmptyTeamResult(statAttribute) {
   return {
     error: true,
-    message: messages.emptyTeamError(statAttribute),
+    message: strings.emptyTeamError(statAttribute),
   };
 }
 
@@ -40,7 +41,7 @@ async function prepareProperResult(players, limit, statAttribute) {
 
   return {
     error: false,
-    message: messages.getTeamStats(playersKDMessage, statAttribute, avgTeamKD),
+    message: strings.getTeamStats(playersKDMessage, statAttribute, avgTeamKD),
   };
 }
 

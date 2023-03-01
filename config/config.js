@@ -3,24 +3,37 @@ config();
 
 const {
   ENVIRONMENT,
+  HOST_PROD,
+  HOST_TEST,
+  PORT_PROD,
+  PORT_TEST,
   FACEIT_API_KEY,
   FACEIT_APP_ID,
-  FACEIT_WEBHOOK_ID,
+  FACEIT_WEBHOOK_ID_PROD,
   FACEIT_WEBHOOK_ID_TEST,
   FACEIT_WEBHOOK_API_KEY,
-  TELEGRAM_API_TOKEN,
-  TELEGRAM_API_TOKEN_TEST,
+  TELEGRAM_BOT_API_TOKEN_PROD,
+  TELEGRAM_BOT_API_TOKEN_TEST,
   MONGO_DB_NAME,
   MONGO_DB_PASSWORD,
-  MONGO_DB_CLUSTER_NAME,
+  MONGO_DB_CLUSTER_NAME_PROD,
   MONGO_DB_CLUSTER_NAME_TEST,
   COOKIES_LOGGED_IN_NAME,
   COOKIES_LOGGED_IN_VALUE,
 } = process.env;
 
 const isProduction = ENVIRONMENT === 'PRODUCTION';
-const host = isProduction ? '185.166.216.70' : '127.0.0.1';
-const port = isProduction ? 443 : 8000;
+const TELEGRAM_BOT_API_TOKEN = isProduction
+  ? TELEGRAM_BOT_API_TOKEN_PROD
+  : TELEGRAM_BOT_API_TOKEN_TEST;
+const MONGO_DB_CLUSTER_NAME = isProduction
+  ? MONGO_DB_CLUSTER_NAME_PROD
+  : MONGO_DB_CLUSTER_NAME_TEST;
+const FACEIT_WEBHOOK_ID = isProduction
+  ? FACEIT_WEBHOOK_ID_PROD
+  : FACEIT_WEBHOOK_ID_TEST;
+const host = isProduction ? HOST_PROD : HOST_TEST;
+const port = isProduction ? PORT_PROD : PORT_TEST;
 const game_id = 'csgo';
 const currentMapPool = [
   'de_ancient',
@@ -32,7 +45,6 @@ const currentMapPool = [
   'de_vertigo',
   'de_anubis',
 ];
-
 const allowedCompetitionNames = [
   '5v5 RANKED',
   '5v5 RANKED PREMIUM',
@@ -50,67 +62,10 @@ const lvlClasses = {
   9: 'ninth',
   10: 'tenth',
 };
-
-const messages = {
-  start: (players) =>
-    players.length
-      ? `Welcome back!
-Your team: <b>${players.join(', ')}</b>.
-You can check stats or modify your team.`
-      : 'Welcome to the faceit stats bot! You are now able to add players to your list.',
-  resetTeam: {
-    success:
-      "Team has been successfully reset. Now you don't have any players. You can add some via the button below.",
-    notExists:
-      "You don't have a team to reset. Init it first via the command '/start.'",
-  },
-  addPlayer: {
-    success: (nickname, teamNicknames) =>
-      `Player <b>${nickname}</b> was added.\nYour team: <b>${teamNicknames}</b>.`,
-    exists: (nickname, teamNicknames) =>
-      `Sorry, but player <b>${nickname}</b> already exists in your team. Try to add another player.\nYour team: <b>${teamNicknames}</b>.`,
-    notFound: (nickname, teamNicknames) =>
-      `Sorry, but player <b>${nickname}</b> doesn't exist. Try to add another player.\nYour team: <b>${teamNicknames}</b>.`,
-    tooMany: (teamNicknames) =>
-      `Sorry, but you can't add more players. Try to delete the existing one to add a new one.\nYour team: <b>${teamNicknames}</b>.`,
-  },
-  deletePlayer: {
-    success: (nickname, teamNicknames) =>
-      `Player <b>${nickname}</b> was deleted.\nYour team: <b>${teamNicknames}</b>.`,
-    notExists: (nickname) =>
-      `Sorry, but <b>${nickname}</b> doesn't exists in your team.`,
-    lastPlayerWasDeleted:
-      'You just deleted the last player in your team. Please add at least one player via the button below',
-  },
-  updateTeamPlayers: {
-    success:
-      'Team players was successfully updated. Check out Elo rating via the /get_team_elo or K/D via /get_team_kd commands.',
-    error:
-      'Unfortunately, dut to the technical reasons it is impossible to update players right now. Please wait and try again later.',
-  },
-  emptyTeamError: (attribute) =>
-    `Please add at least one player via '/add_player nickname' command to check ${attribute}.`,
-  emptyMatchesError: 'Your teammates have no matches in CS:GO.',
-  getTeamStats: (playerStatMessage, statAttribute, avgTeamStat) =>
-    `${playerStatMessage}<br>${
-      avgTeamStat ? `<div>Avg Team ${statAttribute}: ${avgTeamStat}</div>` : ''
-    }`,
-  getPlayerLastMatches: {
-    notExists: (nickname) =>
-      `Sorry, but player with nickname <b>${nickname}</b> doesn't exists. Try to check another player.`,
-  },
-  getTeamKD: {
-    validationError:
-      'Bad value error: Your input must be an integer number greater than 0.',
-  },
-  teamNotExistError:
-    "You don't have a team. Init it first via the command '/start.'",
-  serverError: 'Oops, something went wrong. Try again later.',
-};
-
 const DEFAULT_MATCH_GET_LIMIT = 20;
 const DEFAULT_MATCH_STORE_LIMIT = 20;
 const MAX_PLAYERS_AMOUNT = 7;
+const MAX_MATCHES_PER_REQUEST = 2000;
 const bots = {};
 const puppeteerArgs = [
   '--disable-gpu',
@@ -136,26 +91,23 @@ export {
   host,
   port,
   ENVIRONMENT,
+  TELEGRAM_BOT_API_TOKEN,
   FACEIT_API_KEY,
   FACEIT_APP_ID,
   FACEIT_WEBHOOK_ID,
-  FACEIT_WEBHOOK_ID_TEST,
   FACEIT_WEBHOOK_API_KEY,
-  TELEGRAM_API_TOKEN,
-  TELEGRAM_API_TOKEN_TEST,
   MONGO_DB_NAME,
   MONGO_DB_PASSWORD,
   MONGO_DB_CLUSTER_NAME,
-  MONGO_DB_CLUSTER_NAME_TEST,
   loggedInCookie,
   game_id,
   currentMapPool,
   allowedCompetitionNames,
   lvlClasses,
-  messages,
   DEFAULT_MATCH_GET_LIMIT,
   DEFAULT_MATCH_STORE_LIMIT,
   MAX_PLAYERS_AMOUNT,
+  MAX_MATCHES_PER_REQUEST,
   bots,
   puppeteerArgs,
   caches,

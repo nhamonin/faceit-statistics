@@ -2,19 +2,15 @@ import puppeteer from 'puppeteer-extra';
 import stealthPlugin from 'puppeteer-extra-plugin-stealth';
 
 import {
-  ENVIRONMENT,
   FACEIT_APP_ID,
   FACEIT_WEBHOOK_ID,
-  FACEIT_WEBHOOK_ID_TEST,
   puppeteerArgs,
   loggedInCookie,
 } from '#config';
 
 puppeteer.use(stealthPlugin());
 
-const webhookID =
-  ENVIRONMENT === 'PRODUCTION' ? FACEIT_WEBHOOK_ID : FACEIT_WEBHOOK_ID_TEST;
-const webhookEditURL = `https://developers.faceit.com/apps/${FACEIT_APP_ID}/webhooks/${webhookID}/edit`;
+const webhookEditURL = `https://developers.faceit.com/apps/${FACEIT_APP_ID}/webhooks/${FACEIT_WEBHOOK_ID}/edit`;
 const waitUntil = 'networkidle2';
 
 export async function getCurrentBearerToken() {

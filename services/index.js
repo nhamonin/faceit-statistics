@@ -1,12 +1,13 @@
-import { initTeam } from './initTeam.js';
-import { resetTeam } from './resetTeam.js';
-import { addPlayer } from './addPlayerToTeam.js';
-import { deletePlayer } from './deletePlayerFromTeam.js';
-import { updateTeamPlayers } from './updateTeamPlayers.js';
-import { getTeamEloMessage } from './getTeamElo.js';
-import { getTeamKDMessage } from './getTeamKD.js';
-import { getPlayerLastMatchesStats } from './getPlayerLastMatchesStats.js';
-import { getHighestElo } from './getHighestElo.js';
+import { initTeam } from './modifyTeam/initTeam.js';
+import { resetTeam } from './modifyTeam/resetTeam.js';
+import { addPlayer } from './modifyTeam/addPlayerToTeam.js';
+import { deletePlayer } from './modifyTeam/deletePlayerFromTeam.js';
+import { updateTeamPlayers } from './modifyTeam/updateTeamPlayers.js';
+
+import { getTeamEloMessage } from './statistics/getTeamElo.js';
+import { getTeamKDMessage } from './statistics/getTeamKD.js';
+import { getPlayerLastMatchesStats } from './statistics/getPlayerLastMatchesStats.js';
+import { getHighestElo } from './statistics/getHighestElo.js';
 
 export {
   initTeam,

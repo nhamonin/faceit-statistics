@@ -31,6 +31,14 @@ export const playerSchema = new Schema(
       type: Number,
       required: true,
     },
+    highestElo: {
+      type: Number,
+      required: false,
+    },
+    highestEloDate: {
+      type: Date,
+      required: false,
+    },
   },
   { timestamp: true }
 );
