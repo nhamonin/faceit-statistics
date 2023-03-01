@@ -1,7 +1,7 @@
 import { calculateAverage, getPlayerAvgKD } from '#utils';
 import { DEFAULT_MATCH_GET_LIMIT } from '#config';
-import strings from '#strings';
 import { Team } from '#models';
+import strings from '#strings';
 
 export const getTeamKDMessage = async (matchLimit, chat_id) => {
   const limit = matchLimit || DEFAULT_MATCH_GET_LIMIT;

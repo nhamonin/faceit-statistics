@@ -1,7 +1,7 @@
 import { Players } from 'faceit-node-api';
 
-import strings from '#strings';
 import { getPlayerAvgKD } from '../index.js';
+import strings from '#strings';
 
 export async function getPlayerInfo({
   playerNickname,

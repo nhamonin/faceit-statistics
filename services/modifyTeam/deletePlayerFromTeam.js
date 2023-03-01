@@ -1,6 +1,6 @@
 import { Player, Team } from '#models';
-import strings from '#strings';
 import { isPlayerTeamMember, webhookMgr, getTeamNicknames } from '#utils';
+import strings from '#strings';
 
 export const deletePlayer = async (playerNickname, chat_id) => {
   try {
@@ -13,7 +13,6 @@ export const deletePlayer = async (playerNickname, chat_id) => {
     }
 
     const noPlayersInTeamAfterDeletion = players.length === 1;
-
     const playerInDB = await Player.findOne({ nickname: playerNickname });
 
     return await Team.findOneAndUpdate(
@@ -35,6 +34,7 @@ export const deletePlayer = async (playerNickname, chat_id) => {
       })
       .then(async () => {
         const updatedTeam = await Team.findOne({ chat_id });
+
         await updatedTeam.populate('players');
 
         return noPlayersInTeamAfterDeletion

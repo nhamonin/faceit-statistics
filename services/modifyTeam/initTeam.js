@@ -14,6 +14,7 @@ export const initTeam = async ({ id, first_name, username, title, type }) => {
         title,
         players: [],
       });
+      logEvent(chat, 'Init team');
       await team.save();
     }
 

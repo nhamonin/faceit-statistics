@@ -15,7 +15,6 @@ import {
   addPlayer,
   deletePlayer,
 } from '#services';
-import strings from '#strings';
 import {
   startActionMarkup,
   modifyTeamMarkup,
@@ -40,6 +39,7 @@ import {
   deleteMessage,
   editMessageText,
 } from '#utils';
+import strings from '#strings';
 
 function initTelegramBotListener() {
   process.env.NTBA_FIX_350 = 1;
@@ -51,7 +51,6 @@ function initTelegramBotListener() {
     /\/(start|reset\_team|add\_player.*|delete\_player.*|update\_team\_players|get\_team\_kd.*|get\_team\_elo|get\_player\_last\_matches.*)/,
     async ({ chat }) => {
       const players = await initTeam(chat);
-      logEvent(chat, 'Init team');
       tBot.sendMessage(chat.id, strings.start(players), {
         ...getBasicTelegramOptions(),
         ...startActionMarkup(players),

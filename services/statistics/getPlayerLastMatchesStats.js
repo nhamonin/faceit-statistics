@@ -1,5 +1,5 @@
-import strings from '#strings';
 import { getPlayerMatches, getPlayerInfo } from '#utils';
+import strings from '#strings';
 
 export const getPlayerLastMatchesStats = async (playerNickname) => {
   try {

@@ -31,7 +31,7 @@ export const updateTeamPlayers = async (chat_id) => {
         { player_id },
         { nickname, elo, lvl, last20KD, last50KD }
       ).then(({ elo, highestElo, highestEloDate }) => {
-        if (highestElo && highestEloDate && elo > highestElo) {
+        if (highestElo && highestEloDate && elo >= highestElo) {
           Player.findOneAndUpdate(
             { player_id },
             { highestElo: elo, highestEloDate: new Date() }
