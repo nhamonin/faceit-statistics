@@ -1,4 +1,5 @@
 import { Team } from '#models';
+import { logEvent } from '#utils';
 import strings from '#strings';
 
 export const initTeam = async ({ id, first_name, username, title, type }) => {
