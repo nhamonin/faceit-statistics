@@ -3,6 +3,10 @@ config();
 
 const {
   ENVIRONMENT,
+  HOST_PROD,
+  HOST_TEST,
+  PORT_PROD,
+  PORT_TEST,
   FACEIT_API_KEY,
   FACEIT_APP_ID,
   FACEIT_WEBHOOK_ID_PROD,
@@ -28,8 +32,8 @@ const MONGO_DB_CLUSTER_NAME = isProduction
 const FACEIT_WEBHOOK_ID = isProduction
   ? FACEIT_WEBHOOK_ID_PROD
   : FACEIT_WEBHOOK_ID_TEST;
-const host = isProduction ? '185.166.216.70' : '127.0.0.1';
-const port = isProduction ? 443 : 8000;
+const host = isProduction ? HOST_PROD : HOST_TEST;
+const port = isProduction ? PORT_PROD : PORT_TEST;
 const game_id = 'csgo';
 const currentMapPool = [
   'de_ancient',
