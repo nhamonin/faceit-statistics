@@ -77,7 +77,9 @@ router.post('/webhook', async (req, res) => {
 
           console.log(
             `Players of the teams: ${teams
-              .map(({ username, title }) => username || title)
+              .map(
+                ({ username, title, chat_id }) => username || title || chat_id
+              )
               .join(',')} were updated.`,
             new Date().toLocaleString()
           );

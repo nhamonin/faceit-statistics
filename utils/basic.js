@@ -1,20 +1,27 @@
 import puppeteer from 'puppeteer-extra';
 
-import { getBasicTelegramOptions } from '#utils';
-import { bots, ENVIRONMENT, puppeteerArgs } from '#config';
+import {
+  getBasicTelegramOptions,
+  handleBotWasBlockedByTheUser,
+  telegramSendMessage,
+} from '#utils';
+import {
+  ENVIRONMENT,
+  puppeteerArgs,
+  ERROR_BOT_BLOCKED_BY_THE_USER,
+} from '#config';
 
 let page = await getBrowserPage();
 
 function adjustConsoleLog() {
   if (ENVIRONMENT !== 'PRODUCTION') return;
   const oldConsoleLog = console.log;
-  const tBot = bots.telegram;
   const logsChatID = -886965844;
 
   console.log = function () {
     oldConsoleLog(...[...arguments]);
     if (ENVIRONMENT !== 'PRODUCTION') return;
-    tBot.sendMessage(logsChatID, [...arguments].join(', '), {
+    telegramSendMessage(logsChatID, [...arguments].join(', '), {
       disable_notification: true,
     });
   };
@@ -44,13 +51,19 @@ async function sendPhoto(tBot, chatIDs, message_id, html) {
 
   await Promise.all(
     chatIDs.map(async (chat_id) => {
-      message_id
-        ? await tBot.sendPhoto(
-            chat_id,
-            image,
-            getBasicTelegramOptions(message_id)
-          )
-        : await tBot.sendPhoto(chat_id, image);
+      try {
+        await tBot.sendPhoto(
+          chat_id,
+          image,
+          message_id ? getBasicTelegramOptions(message_id) : {}
+        );
+      } catch (e) {
+        if (e.message === ERROR_BOT_BLOCKED_BY_THE_USER) {
+          await handleBotWasBlockedByTheUser(chat_id);
+        } else {
+          console.log(e.message);
+        }
+      }
     })
   );
 }

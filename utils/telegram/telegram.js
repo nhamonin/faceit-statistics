@@ -1,6 +1,15 @@
 import TelegramBot from 'node-telegram-bot-api';
 
-import { isProduction, bots, TELEGRAM_BOT_API_TOKEN } from '#config';
+import { Team, Player } from '#models';
+import { webhookMgr } from '#utils';
+import {
+  isProduction,
+  bots,
+  TELEGRAM_BOT_API_TOKEN,
+  ERROR_BOT_BLOCKED_BY_THE_USER,
+} from '#config';
+
+const tBot = getTelegramBot();
 
 export function getBasicTelegramOptions(message_id) {
   return {
@@ -42,20 +51,58 @@ export function getTelegramBot() {
   return bots.telegram;
 }
 
-export async function deleteMessage(chat_id, message_id) {
-  const tBot = getTelegramBot();
-
+export async function telegramDeleteMessage(chat_id, message_id) {
   try {
     await tBot.deleteMessage(chat_id, message_id);
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 }
 
-export async function editMessageText(text, opts) {
-  const tBot = getTelegramBot();
-
+export async function telegramEditMessage(text, opts) {
   try {
     await tBot.editMessageText(text, opts);
   } catch (e) {
     console.log(e);
   }
+}
+
+export async function telegramSendMessage(chat_id, text, opts) {
+  let res = null;
+
+  try {
+    res = await tBot.sendMessage(chat_id, text, opts);
+  } catch (e) {
+    if (e.message === ERROR_BOT_BLOCKED_BY_THE_USER) {
+      handleBotWasBlockedByTheUser(opts.chat_id);
+    } else {
+      console.log(e.message);
+    }
+  }
+
+  return res;
+}
+
+export async function handleBotWasBlockedByTheUser(chat_id) {
+  const team = await Team.findOne({ chat_id }).populate('players');
+  if (!team) return;
+  const { players } = team;
+
+  team.delete().then(async () => {
+    players.forEach(async (player) => {
+      const teams = await Team.find({
+        players: player._id,
+      });
+      if (teams.length) return;
+      Player.findByIdAndRemove({ _id: player._id }, () => {
+        webhookMgr.removePlayersFromList([player.player_id]);
+      });
+
+      console.log(
+        `Successfully deleted team ${
+          team.first_name || team.title || team.chat_id
+        }`
+      );
+    });
+  });
 }

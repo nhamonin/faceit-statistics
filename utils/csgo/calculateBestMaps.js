@@ -6,6 +6,7 @@ import {
   calculateAverage,
   calculateDifference,
   getTelegramBot,
+  telegramSendMessage,
   sendPhoto,
   getPlayerLifeTimeStats,
 } from '#utils';
@@ -284,7 +285,7 @@ async function sendMapPickerResult(
     const message = `Match <b>${neededVariables[2]}</b> vs <b>${opponentTeamName}</b> just created! Above, you can find the best maps for <b>${neededVariables[2]}</b> (${teammatesString} from your team).`;
 
     [...teamsToSendNotification].forEach((chat_id) => {
-      tBot.sendMessage(chat_id, message, {
+      telegramSendMessage(chat_id, message, {
         parse_mode: 'html',
         ...mainMenuMarkup,
       });

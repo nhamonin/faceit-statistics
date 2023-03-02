@@ -84,6 +84,8 @@ const loggedInCookie = {
   name: COOKIES_LOGGED_IN_NAME,
   value: COOKIES_LOGGED_IN_VALUE,
 };
+const ERROR_BOT_BLOCKED_BY_THE_USER =
+  'ETELEGRAM: 403 Forbidden: bot was blocked by the user';
 
 export {
   isProduction,
@@ -110,4 +112,5 @@ export {
   bots,
   puppeteerArgs,
   caches,
+  ERROR_BOT_BLOCKED_BY_THE_USER,
 };

@@ -30,8 +30,9 @@ import {
   getTelegramBot,
   logEvent,
   addNewPlayersToWebhookList,
-  deleteMessage,
-  editMessageText,
+  telegramSendMessage,
+  telegramDeleteMessage,
+  telegramEditMessage,
   webhookMgr,
 } from '#utils';
 import { syncWebhookStaticListWithDB } from '#jobs';
@@ -47,7 +48,7 @@ function initTelegramBotListener() {
     /\/(start|reset\_team|add\_player.*|delete\_player.*|update\_team\_players|get\_team\_kd.*|get\_team\_elo|get\_player\_last\_matches.*)/,
     async ({ chat }) => {
       const players = await initTeam(chat);
-      tBot.sendMessage(chat.id, strings.start(players), {
+      telegramSendMessage(chat.id, strings.start(players), {
         ...getBasicTelegramOptions(),
         ...startActionMarkup(players),
       });
@@ -77,7 +78,7 @@ function initTelegramBotListener() {
       `Webhook static list length: ${webhookListLength}`,
     ].join('\n');
 
-    tBot.sendMessage(chat.id, message, {
+    telegramSendMessage(chat.id, message, {
       ...getBasicTelegramOptions(message_id),
     });
   });
@@ -88,7 +89,7 @@ function initTelegramBotListener() {
       TempPrediction.deleteMany(),
     ]);
 
-    tBot.sendMessage(chat.id, 'Success! Now try /get_analytics command.', {
+    telegramSendMessage(chat.id, 'Success! Now try /get_analytics command.', {
       ...getBasicTelegramOptions(message_id),
     });
   });
@@ -97,7 +98,7 @@ function initTelegramBotListener() {
     /\/add_new_wh_players.* (\S*)/,
     async ({ chat, message_id }, match) => {
       const message = await addNewPlayersToWebhookList(match[1]);
-      tBot.sendMessage(chat.id, message, {
+      telegramSendMessage(chat.id, message, {
         ...getBasicTelegramOptions(message_id),
       });
     }
@@ -105,7 +106,7 @@ function initTelegramBotListener() {
 
   tBot.onText(/\/sync_db_with_static_list/, async ({ chat, message_id }) => {
     await syncWebhookStaticListWithDB();
-    tBot.sendMessage(
+    telegramSendMessage(
       chat.id,
       'Sync static list with db Done! Now try /get_analytics command.',
       {
@@ -118,7 +119,7 @@ function initTelegramBotListener() {
     /\/limit_restrictions.* (\S*)/,
     async ({ chat, message_id }, match) => {
       await webhookMgr.limitRestrictions(+match[1]);
-      tBot.sendMessage(
+      telegramSendMessage(
         chat.id,
         'Limit restrictions done! Now try /get_analytics command.',
         {
@@ -144,45 +145,43 @@ function initTelegramBotListener() {
 
     switch (action) {
       case 'mainMenu':
-        editMessageText(strings.basicMenu(teamNicknames), {
+        telegramEditMessage(strings.basicMenu(teamNicknames), {
           ...opts,
           ...mainMenuMarkup,
         });
         break;
       case 'modifyTeamMarkup':
-        editMessageText(strings.basicMenu(teamNicknames), {
+        telegramEditMessage(strings.basicMenu(teamNicknames), {
           ...opts,
           ...modifyTeamMarkup,
         });
         break;
       case 'addPlayer':
-        tBot
-          .sendMessage(opts.chat_id, strings.addPlayer.sendNickname, {
-            reply_markup: { force_reply: true },
-          })
-          .then(({ message_id: bot_message_id, chat }) => {
-            tBot.onReplyToMessage(
-              opts.chat_id,
-              bot_message_id,
-              async ({ text: nickname, message_id }) => {
-                const message = await addPlayer(
-                  nickname,
-                  opts.chat_id,
-                  message_id
-                );
-                logEvent(chat, `Add player: ${nickname}`);
-                editMessageText(message, {
-                  ...opts,
-                  ...modifyTeamMarkup,
-                });
-                await deleteMessage(opts.chat_id, message_id);
-                await deleteMessage(opts.chat_id, bot_message_id);
-              }
-            );
-          });
+        telegramSendMessage(opts.chat_id, strings.addPlayer.sendNickname, {
+          reply_markup: { force_reply: true },
+        }).then(({ message_id: bot_message_id, chat }) => {
+          tBot.onReplyToMessage(
+            opts.chat_id,
+            bot_message_id,
+            async ({ text: nickname, message_id }) => {
+              const message = await addPlayer(
+                nickname,
+                opts.chat_id,
+                message_id
+              );
+              logEvent(chat, `Add player: ${nickname}`);
+              telegramEditMessage(message, {
+                ...opts,
+                ...modifyTeamMarkup,
+              });
+              await telegramDeleteMessage(opts.chat_id, message_id);
+              await telegramDeleteMessage(opts.chat_id, bot_message_id);
+            }
+          );
+        });
         break;
       case 'deletePlayerMenu':
-        editMessageText(strings.deletePlayer.selectPlayer(teamNicknames), {
+        telegramEditMessage(strings.deletePlayer.selectPlayer(teamNicknames), {
           ...opts,
           ...deletePlayerMarkup(teamNicknames),
         });
@@ -196,7 +195,7 @@ function initTelegramBotListener() {
               ? addPlayerOnlyMarkup
               : modifyTeamMarkup;
           logEvent(msg.chat, 'Delete player');
-          editMessageText(message, {
+          telegramEditMessage(message, {
             ...opts,
             ...options,
           });
@@ -206,20 +205,20 @@ function initTelegramBotListener() {
         {
           const { message, error } = await resetTeam(opts.chat_id);
           logEvent(msg.chat, 'Reset team');
-          editMessageText(message || error, {
+          telegramEditMessage(message || error, {
             ...opts,
             ...addPlayerOnlyMarkup,
           });
         }
         break;
       case 'getStats':
-        editMessageText(strings.basicMenu(teamNicknames), {
+        telegramEditMessage(strings.basicMenu(teamNicknames), {
           ...opts,
           ...getStatsMarkup,
         });
         break;
       case 'getTeamKDMenu':
-        editMessageText(strings.selectOnOfTheOptions(false), {
+        telegramEditMessage(strings.selectOnOfTheOptions(false), {
           ...opts,
           ...getTeamKDMenu,
         });
@@ -232,22 +231,20 @@ function initTelegramBotListener() {
             getTeamKDWrapper(tBot, amount, opts);
             logEvent(msg.chat, `Get team KD last ${amount}`);
           } else {
-            tBot
-              .sendMessage(opts.chat_id, strings.sendLastMatchesCount, {
-                reply_markup: { force_reply: true },
-              })
-              .then(({ message_id: bot_message_id }) => {
-                tBot.onReplyToMessage(
-                  opts.chat_id,
-                  bot_message_id,
-                  async ({ text: amount, message_id }) => {
-                    logEvent(msg.chat, `get team KD last ${amount}`);
-                    await getTeamKDWrapper(tBot, amount, opts, message_id);
-                    await deleteMessage(opts.chat_id, message_id);
-                    await deleteMessage(opts.chat_id, bot_message_id);
-                  }
-                );
-              });
+            telegramSendMessage(opts.chat_id, strings.sendLastMatchesCount, {
+              reply_markup: { force_reply: true },
+            }).then(({ message_id: bot_message_id }) => {
+              tBot.onReplyToMessage(
+                opts.chat_id,
+                bot_message_id,
+                async ({ text: amount, message_id }) => {
+                  logEvent(msg.chat, `get team KD last ${amount}`);
+                  await getTeamKDWrapper(tBot, amount, opts, message_id);
+                  await telegramDeleteMessage(opts.chat_id, message_id);
+                  await telegramDeleteMessage(opts.chat_id, bot_message_id);
+                }
+              );
+            });
           }
         }
         break;
@@ -256,10 +253,10 @@ function initTelegramBotListener() {
           const { message, error } = await getTeamEloMessage(opts.chat_id);
           logEvent(msg.chat, 'Get team Elo');
           error
-            ? await tBot.sendMessage(
+            ? await telegramSendMessage(
                 opts.chat_id,
                 message,
-                getBasicTelegramOptions(message_id)
+                getBasicTelegramOptions(opts.message_id)
               )
             : await sendPhoto(
                 tBot,
@@ -267,8 +264,8 @@ function initTelegramBotListener() {
                 null,
                 getEloTemplate(message)
               );
-          await deleteMessage(opts.chat_id, opts.message_id);
-          await tBot.sendMessage(
+          await telegramDeleteMessage(opts.chat_id, opts.message_id);
+          await telegramSendMessage(
             opts.chat_id,
             strings.selectOnOfTheOptions(true),
             {
@@ -279,7 +276,7 @@ function initTelegramBotListener() {
         }
         break;
       case 'getPlayerLastMatchesMenu':
-        editMessageText(strings.selectOnOfTheOptions(false), {
+        telegramEditMessage(strings.selectOnOfTheOptions(false), {
           ...opts,
           ...lastPlayerMatchesMarkup(teamNicknames),
         });
@@ -297,32 +294,30 @@ function initTelegramBotListener() {
               teamNicknames
             );
           } else {
-            tBot
-              .sendMessage(opts.chat_id, strings.sendPlayerNickname, {
-                reply_markup: { force_reply: true },
-              })
-              .then(async ({ message_id: bot_message_id }) => {
-                await tBot.onReplyToMessage(
-                  opts.chat_id,
-                  bot_message_id,
-                  async ({ text: nickname, message_id }) => {
-                    await getPlayerLastMatchesWrapper(
-                      tBot,
-                      nickname,
-                      msg.chat,
-                      opts,
-                      teamNicknames
-                    );
-                    await deleteMessage(opts.chat_id, message_id);
-                    await deleteMessage(opts.chat_id, bot_message_id);
-                  }
-                );
-              });
+            telegramSendMessage(opts.chat_id, strings.sendPlayerNickname, {
+              reply_markup: { force_reply: true },
+            }).then(async ({ message_id: bot_message_id }) => {
+              await tBot.onReplyToMessage(
+                opts.chat_id,
+                bot_message_id,
+                async ({ text: nickname, message_id }) => {
+                  await getPlayerLastMatchesWrapper(
+                    tBot,
+                    nickname,
+                    msg.chat,
+                    opts,
+                    teamNicknames
+                  );
+                  await telegramDeleteMessage(opts.chat_id, message_id);
+                  await telegramDeleteMessage(opts.chat_id, bot_message_id);
+                }
+              );
+            });
           }
         }
         break;
       case 'getHighestEloMenu':
-        editMessageText(strings.selectOnOfTheOptions(false), {
+        telegramEditMessage(strings.selectOnOfTheOptions(false), {
           ...opts,
           ...getHighestEloMenu(teamNicknames),
         });
@@ -340,28 +335,26 @@ function initTelegramBotListener() {
               msg.chat
             );
           } else {
-            tBot
-              .sendMessage(opts.chat_id, strings.sendPlayerNickname, {
-                reply_markup: { force_reply: true },
-              })
-              .then(async ({ message_id: bot_message_id }) => {
-                await tBot.onReplyToMessage(
-                  opts.chat_id,
-                  bot_message_id,
-                  async ({ text: nickname, message_id }) => {
-                    logEvent(msg.chat, `Get Highest Elo: ${nickname}`);
-                    await deleteMessage(opts.chat_id, message_id);
-                    await deleteMessage(opts.chat_id, bot_message_id);
-                    await getHighestEloWrapper(
-                      tBot,
-                      nickname,
-                      teamNicknames,
-                      opts,
-                      msg.chat
-                    );
-                  }
-                );
-              });
+            telegramSendMessage(opts.chat_id, strings.sendPlayerNickname, {
+              reply_markup: { force_reply: true },
+            }).then(async ({ message_id: bot_message_id }) => {
+              await tBot.onReplyToMessage(
+                opts.chat_id,
+                bot_message_id,
+                async ({ text: nickname, message_id }) => {
+                  logEvent(msg.chat, `Get Highest Elo: ${nickname}`);
+                  await telegramDeleteMessage(opts.chat_id, message_id);
+                  await telegramDeleteMessage(opts.chat_id, bot_message_id);
+                  await getHighestEloWrapper(
+                    tBot,
+                    nickname,
+                    teamNicknames,
+                    opts,
+                    msg.chat
+                  );
+                }
+              );
+            });
           }
         }
         break;
