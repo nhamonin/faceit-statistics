@@ -21,7 +21,7 @@ function adjustConsoleLog() {
   console.log = function () {
     oldConsoleLog(...[...arguments]);
     if (ENVIRONMENT !== 'PRODUCTION') return;
-    telegramSendMessage(logsChatID, [...arguments].join(', '), {
+    telegramSendMessage(logsChatID, [...arguments].join(' '), {
       disable_notification: true,
     });
   };
