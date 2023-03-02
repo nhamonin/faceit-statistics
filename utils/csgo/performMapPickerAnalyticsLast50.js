@@ -34,7 +34,7 @@ export async function performMapPickerAnalyticsLast50(match_id) {
       if (avgPredictedValue) matchPrediction.avgPredictions++;
     }
 
-    await matchPredictionLast50.save();
+    await MatchPredictionLast50.save();
     await TempPredictionLast50.findOneAndDelete({ match_id });
   } catch (e) {
     console.log(e);
