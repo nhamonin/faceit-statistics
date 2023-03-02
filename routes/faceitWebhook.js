@@ -2,13 +2,11 @@ import { clearInterval } from 'node:timers';
 
 import express from 'express';
 
-import { TempPrediction, TempPredictionLast50, Team } from '#models';
+import { TempPrediction, Team } from '#models';
 import { updateTeamPlayers } from '#services';
 import {
   calculateBestMaps,
-  calculateBestMapsLast50,
   performMapPickerAnalytics,
-  performMapPickerAnalyticsLast50,
   getMatchData,
 } from '#utils';
 import { allowedCompetitionNames } from '#config';
@@ -36,29 +34,15 @@ router.post('/webhook', async (req, res) => {
           allowedCompetitionName
         ) {
           clearInterval(interval);
-          // const predictions = await calculateBestMaps(matchData);
-          const predictionsLast50 = await calculateBestMapsLast50(matchData);
-          // if (predictions?.length) {
-          //   const prediction = await TempPrediction.findOne({ match_id });
-
-          //   if (!prediction) {
-          //     try {
-          //       const newPrediction = new TempPrediction({
-          //         match_id,
-          //         predictions,
-          //       });
-          //       await newPrediction.save();
-          //     } catch (e) {}
-          //   }
-          // }
-          if (predictionsLast50?.length) {
-            const prediction = await TempPredictionLast50.findOne({ match_id });
+          const predictions = await calculateBestMaps(matchData);
+          if (predictions?.length) {
+            const prediction = await TempPrediction.findOne({ match_id });
 
             if (!prediction) {
               try {
-                const newPrediction = new TempPredictionLast50({
+                const newPrediction = new TempPrediction({
                   match_id,
-                  predictions: predictionsLast50,
+                  predictions,
                 });
                 await newPrediction.save();
               } catch (e) {}
@@ -68,8 +52,7 @@ router.post('/webhook', async (req, res) => {
       }, 4500);
       break;
     case 'match_status_finished':
-      // await performMapPickerAnalytics(match_id);
-      await performMapPickerAnalyticsLast50(match_id);
+      await performMapPickerAnalytics(match_id);
       if (
         !data?.payload?.teams?.length ||
         !data.payload.teams[0]?.roster?.length ||

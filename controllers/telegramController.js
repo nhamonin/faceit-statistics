@@ -1,12 +1,6 @@
 import { Faceit } from 'faceit-node-api';
 
-import {
-  Team,
-  MatchPrediction,
-  MatchPredictionLast50,
-  TempPrediction,
-  TempPredictionLast50,
-} from '#models';
+import { Team, MatchPrediction, TempPrediction } from '#models';
 import { getEloTemplate } from '#templates';
 import {
   initTeam,
@@ -63,37 +57,21 @@ function initTelegramBotListener() {
   tBot.onText(/\/get_analytics/, async ({ chat, message_id }) => {
     const matchPrediction = await MatchPrediction.findOne();
     const tempMatchesCount = await TempPrediction.countDocuments();
-    const matchPredictionLast50 = await MatchPredictionLast50.findOne();
-    const tempMatchesCountLast50 = await TempPredictionLast50.countDocuments();
     const totalMatches = matchPrediction?.totalMatches || 0;
     const avgPredictions = matchPrediction?.avgPredictions || 0;
     const winratePrediction = matchPrediction?.winratePredictions || 0;
-    const totalMatchesLast50 = matchPredictionLast50?.totalMatches || 0;
-    const avgPredictionsLast50 = matchPredictionLast50?.avgPredictions || 0;
     const { restrictions } = await webhookMgr.getWebhookDataPayload();
     const webhookListLength = restrictions?.length || 0;
-    const winratePredictionLast50 =
-      matchPredictionLast50?.winratePredictions || 0;
     const message = [
-      `winrate predictions lifetime: ${(
+      `winrate predictions: ${(
         (winratePrediction / totalMatches || 0) * 100
       ).toFixed(2)} %`,
-      `avg predictions lifetime: ${(
-        (avgPredictions / totalMatches || 0) * 100
-      ).toFixed(2)} %`,
+      `avg predictions: ${((avgPredictions / totalMatches || 0) * 100).toFixed(
+        2
+      )} %`,
       '',
-      `winrate predictions last 50: ${(
-        (winratePredictionLast50 / totalMatchesLast50 || 0) * 100
-      ).toFixed(2)} %`,
-      `avg predictions last 50: ${(
-        (avgPredictionsLast50 / totalMatchesLast50 || 0) * 100
-      ).toFixed(2)} %`,
-      '',
-      `Total matches lifetime: ${totalMatches}`,
-      `Pending matches lifetime: ${tempMatchesCount}`,
-      '',
-      `Total matches last 50: ${totalMatchesLast50}`,
-      `Pending matches last 50: ${tempMatchesCountLast50}`,
+      `Total matches: ${totalMatches}`,
+      `Pending matches: ${tempMatchesCount}`,
       '',
       `Current hour Faceit API load: ${Faceit.prototype._counter / 2}`,
       `Webhook static list length: ${webhookListLength}`,
@@ -107,9 +85,7 @@ function initTelegramBotListener() {
   tBot.onText(/\/delete_analytics/, async ({ chat, message_id }) => {
     await Promise.allSettled([
       MatchPrediction.deleteMany(),
-      MatchPredictionLast50.deleteMany(),
       TempPrediction.deleteMany(),
-      TempPredictionLast50.deleteMany(),
     ]);
 
     tBot.sendMessage(chat.id, 'Success! Now try /get_analytics command.', {
