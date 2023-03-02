@@ -1,6 +1,7 @@
 import { MatchPredictionLast50, TempPredictionLast50 } from '#models';
 import { currentMapPool } from '#config';
 import { getMatchData } from '#utils';
+import { matchPredictionLast50 } from 'models/matchPredictionLast50';
 
 export async function performMapPickerAnalyticsLast50(match_id) {
   try {
@@ -34,7 +35,7 @@ export async function performMapPickerAnalyticsLast50(match_id) {
       if (avgPredictedValue) matchPrediction.avgPredictions++;
     }
 
-    await matchPrediction.save();
+    await matchPredictionLast50.save();
     await TempPredictionLast50.findOneAndDelete({ match_id });
   } catch (e) {
     console.log(e);
