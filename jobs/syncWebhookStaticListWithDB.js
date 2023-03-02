@@ -3,8 +3,7 @@ import { webhookMgr } from '#utils';
 
 export async function syncWebhookStaticListWithDB() {
   try {
-    const players = await Player.find();
-    const playersIDs = players.map(({ player_id }) => player_id);
+    const playersIDs = await Player.find().select('player_id').lean();
     const { restrictions } = await webhookMgr.getWebhookDataPayload();
 
     const playersIDsNotInWebHook = playersIDs.filter((player_id) => {
