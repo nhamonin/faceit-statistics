@@ -36,40 +36,40 @@ router.post('/webhook', async (req, res) => {
           allowedCompetitionName
         ) {
           clearInterval(interval);
-          const predictions = await calculateBestMaps(matchData);
-          // const predictionsLast50 = await calculateBestMapsLast50(matchData);
-          if (predictions?.length) {
-            const prediction = await TempPrediction.findOne({ match_id });
-
-            if (!prediction) {
-              try {
-                const newPrediction = new TempPrediction({
-                  match_id,
-                  predictions,
-                });
-                await newPrediction.save();
-              } catch (e) {}
-            }
-          }
-          // if (predictionsLast50?.length) {
-          //   const prediction = await TempPredictionLast50.findOne({ match_id });
+          // const predictions = await calculateBestMaps(matchData);
+          const predictionsLast50 = await calculateBestMapsLast50(matchData);
+          // if (predictions?.length) {
+          //   const prediction = await TempPrediction.findOne({ match_id });
 
           //   if (!prediction) {
           //     try {
-          //       const newPrediction = new TempPredictionLast50({
+          //       const newPrediction = new TempPrediction({
           //         match_id,
-          //         predictions: predictionsLast50,
+          //         predictions,
           //       });
           //       await newPrediction.save();
           //     } catch (e) {}
           //   }
           // }
+          if (predictionsLast50?.length) {
+            const prediction = await TempPredictionLast50.findOne({ match_id });
+
+            if (!prediction) {
+              try {
+                const newPrediction = new TempPredictionLast50({
+                  match_id,
+                  predictions: predictionsLast50,
+                });
+                await newPrediction.save();
+              } catch (e) {}
+            }
+          }
         }
       }, 4500);
       break;
     case 'match_status_finished':
-      await performMapPickerAnalytics(match_id);
-      // await performMapPickerAnalyticsLast50(match_id);
+      // await performMapPickerAnalytics(match_id);
+      await performMapPickerAnalyticsLast50(match_id);
       if (
         !data?.payload?.teams?.length ||
         !data.payload.teams[0]?.roster?.length ||

@@ -20,7 +20,7 @@ export async function performMapPickerAnalyticsLast50(match_id) {
     if (!predictedDataMap) return;
     const winratePredictedValue = predictedDataMap.totalWinrate > 0;
     const avgPredictedValue = predictedDataMap.totalPoints > 0;
-    let matchPrediction = await MatchPrediction.findOne();
+    let matchPrediction = await MatchPredictionLast50.findOne();
 
     if (!matchPrediction) {
       matchPrediction = new MatchPredictionLast50({
