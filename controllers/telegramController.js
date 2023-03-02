@@ -38,7 +38,9 @@ import {
   addNewPlayersToWebhookList,
   deleteMessage,
   editMessageText,
+  webhookMgr,
 } from '#utils';
+import { syncWebhookStaticListWithDB } from '#jobs';
 import strings from '#strings';
 
 function initTelegramBotListener() {
@@ -68,6 +70,8 @@ function initTelegramBotListener() {
     const winratePrediction = matchPrediction?.winratePredictions || 0;
     const totalMatchesLast50 = matchPredictionLast50?.totalMatches || 0;
     const avgPredictionsLast50 = matchPredictionLast50?.avgPredictions || 0;
+    const { restrictions } = await webhookMgr.getWebhookDataPayload();
+    const webhookListLength = restrictions?.length || 0;
     const winratePredictionLast50 =
       matchPredictionLast50?.winratePredictions || 0;
     const message = [
@@ -92,6 +96,7 @@ function initTelegramBotListener() {
       `Pending matches last 50: ${tempMatchesCountLast50}`,
       '',
       `Current hour Faceit API load: ${Faceit.prototype._counter / 2}`,
+      `Webhook static list length: ${webhookListLength}`,
     ].join('\n');
 
     tBot.sendMessage(chat.id, message, {
@@ -119,6 +124,31 @@ function initTelegramBotListener() {
       tBot.sendMessage(chat.id, message, {
         ...getBasicTelegramOptions(message_id),
       });
+    }
+  );
+
+  tBot.onText(/\/sync_db_with_static_list/, async ({ chat, message_id }) => {
+    await syncWebhookStaticListWithDB();
+    tBot.sendMessage(
+      chat.id,
+      'Sync static list with db Done! Now try /get_analytics command.',
+      {
+        ...getBasicTelegramOptions(message_id),
+      }
+    );
+  });
+
+  tBot.onText(
+    /\/limit_restrictions.* (\S*)/,
+    async ({ chat, message_id }, match) => {
+      await webhookMgr.limitRestrictions(+match[1]);
+      tBot.sendMessage(
+        chat.id,
+        'Limit restrictions done! Now try /get_analytics command.',
+        {
+          ...getBasicTelegramOptions(message_id),
+        }
+      );
     }
   );
 

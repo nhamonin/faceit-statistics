@@ -2,6 +2,7 @@ import { fetch } from 'undici';
 
 import { FACEIT_WEBHOOK_ID, FACEIT_WEBHOOK_API_KEY } from '#config';
 import { getCurrentBearerToken } from '#utils';
+import { syncWebhookStaticListWithDB } from '#jobs';
 
 const url = `https://api.faceit.com/webhooks/v1/subscriptions/${FACEIT_WEBHOOK_ID}`;
 
@@ -100,7 +101,22 @@ async function fetchWebhookData() {
   });
 }
 
+async function limitRestrictions(limit) {
+  const webhookData = await getWebhookDataPayload();
+  const { restrictions } = webhookData;
+
+  if (restrictions.length > limit) {
+    const rest = restrictions.length - limit;
+    const playersIDs = restrictions.map(({ value }) => value);
+    const playersIDsToRemove = playersIDs.slice(-rest);
+    await changeWebhookPlayersList('remove')(playersIDsToRemove);
+    await syncWebhookStaticListWithDB();
+  }
+}
+
 export const webhookMgr = {
+  getWebhookDataPayload,
+  limitRestrictions,
   addPlayersToList: changeWebhookPlayersList('add'),
   removePlayersFromList: changeWebhookPlayersList('remove'),
 };

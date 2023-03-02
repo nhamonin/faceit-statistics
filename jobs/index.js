@@ -1,3 +1,3 @@
-import { syncWebhookStaticListWithDB } from './syncWebhookStaticListWithDB';
+import { syncWebhookStaticListWithDB } from './syncWebhookStaticListWithDB.js';
 
 export { syncWebhookStaticListWithDB };
