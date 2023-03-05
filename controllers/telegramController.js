@@ -8,6 +8,7 @@ import {
   getTeamEloMessage,
   addPlayer,
   deletePlayer,
+  updateTeamPlayers,
 } from '#services';
 import {
   startActionMarkup,
@@ -128,6 +129,24 @@ function initTelegramBotListener() {
       );
     }
   );
+
+  tBot.onText(/\/update_players/, async ({ chat, message_id }) => {
+    const teams = (await Team.find().select('chat_id').lean()).map(
+      ({ chat_id }) => chat_id
+    );
+
+    for await (const team of teams) {
+      await updateTeamPlayers(team);
+    }
+
+    telegramSendMessage(
+      chat.id,
+      'Update players done! Now try /get_analytics command.',
+      {
+        ...getBasicTelegramOptions(message_id),
+      }
+    );
+  });
 
   tBot.on('callback_query', async (callbackQuery) => {
     const action = callbackQuery.data.split('?')[0];

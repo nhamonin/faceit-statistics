@@ -23,21 +23,67 @@ export const playerSchema = new Schema(
       type: Number,
       required: true,
     },
-    last20KD: {
-      type: Number,
-      required: true,
+    premium: {
+      type: Boolean,
     },
-    last50KD: {
-      type: Number,
-      required: true,
+    kd: {
+      lifetime: {
+        type: Number,
+      },
+      last10: {
+        type: Number,
+      },
+      last20: {
+        type: Number,
+      },
+      last50: {
+        type: Number,
+      },
+    },
+    avg: {
+      last10: {
+        type: Number,
+      },
+      last20: {
+        type: Number,
+      },
+      last50: {
+        type: Number,
+      },
+    },
+    winrate: {
+      lifetime: {
+        type: Number,
+      },
+      last10: {
+        type: Number,
+      },
+      last20: {
+        type: Number,
+      },
+      last50: {
+        type: Number,
+      },
+    },
+    hs: {
+      lifetime: {
+        type: Number,
+      },
+      last10: {
+        type: Number,
+      },
+      last20: {
+        type: Number,
+      },
+      last50: {
+        type: Number,
+      },
     },
     highestElo: {
       type: Number,
-      required: false,
     },
     highestEloDate: {
       type: Date,
-      required: false,
     },
   },
   { timestamp: true }

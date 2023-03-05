@@ -1,6 +1,6 @@
 import { Players } from 'faceit-node-api';
 
-import { getPlayerAvgKD } from '../index.js';
+import { getPlayerLastStats } from '../index.js';
 import strings from '#strings';
 
 export async function getPlayerInfo({
@@ -14,15 +14,17 @@ export async function getPlayerInfo({
       ? await players.getPlayerDetailsByPlayerID(playerID)
       : await players.getPlayerDetailsByNickname(playerNickname);
     const { nickname, player_id, games } = playerDetails;
-    const { last20KD, last50KD } = await getPlayerAvgKD(player_id, [20, 50]);
+    const { kd, avg, winrate, hs } = await getPlayerLastStats(player_id);
 
     return {
       nickname,
       player_id,
       elo: games.csgo.faceit_elo,
       lvl: games.csgo.skill_level,
-      last20KD,
-      last50KD,
+      kd,
+      avg,
+      winrate,
+      hs,
     };
   } catch (e) {
     console.log(e.message);

@@ -101,24 +101,25 @@ async function fillInTeamVariablesWithPlayersStats(teamsObj) {
               nickname: player.nickname,
               _id: player._id,
             });
-          await getPlayerLifeTimeStats(player_id).then((stats) => {
-            const segments =
-              stats?.segments &&
-              stats.segments[
-                +!Object.keys(stats.segments[0]?.segments)[0].startsWith('de_')
-              ]?.segments;
-            if (!segments || !Object.keys(segments).length) return;
-            currentMapPool.map((map_id) => {
-              variablesArr[2].lifetime[map_id].push(
-                segments[map_id]
-                  ? {
-                      winrate: regulateWinrate(+segments[map_id].k6),
-                      avg: regulateAvg(+segments[map_id].k1),
-                      matches: +segments[map_id].m1,
-                    }
-                  : { winrate: 50, avg: 18, matches: 0 }
-              );
-            });
+          const lifeTimeStats = await getPlayerLifeTimeStats(player_id);
+          const segments =
+            lifeTimeStats?.segments &&
+            lifeTimeStats.segments[
+              +!Object.keys(lifeTimeStats.segments[0]?.segments)[0].startsWith(
+                'de_'
+              )
+            ]?.segments;
+          if (!segments || !Object.keys(segments).length) return;
+          currentMapPool.map((map_id) => {
+            variablesArr[2].lifetime[map_id].push(
+              segments[map_id]
+                ? {
+                    winrate: regulateWinrate(+segments[map_id].k6),
+                    avg: regulateAvg(+segments[map_id].k1),
+                    matches: +segments[map_id].m1,
+                  }
+                : { winrate: 50, avg: 18, matches: 0 }
+            );
           });
         })
       );

@@ -28,7 +28,7 @@ import connectDB from './db/mongo.js';
 // csgo
 import { getPlayerMatches } from './csgo/getPlayerMatches.js';
 import { getPlayerLifeTimeStats } from './csgo/getPlayerLifeTimeStats.js';
-import { getPlayerAvgKD } from './csgo/getPlayerAvgKD.js';
+import { getPlayerLastStats } from './csgo/getPlayerLastStats.js';
 import { getPlayerInfo } from './csgo/getPlayerInfo.js';
 import { getTeamNicknames } from './csgo/getTeamNicknames.js';
 import { getTeamKDWrapper } from './csgo/getTeamKDWrapper.js';
@@ -59,7 +59,7 @@ export {
   getPlayerInfo,
   getPlayerMatches,
   getPlayerLifeTimeStats,
-  getPlayerAvgKD,
+  getPlayerLastStats,
   getTeamNicknames,
   getTeamKDWrapper,
   getPlayerLastMatchesWrapper,

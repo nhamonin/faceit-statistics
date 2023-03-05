@@ -27,20 +27,21 @@ export const addPlayer = async (playerNickname, chat_id) => {
         new Date().toLocaleString()
       );
     } else {
-      const playerInfo = await getPlayerInfo({
-        playerNickname,
-        playersNicknames,
-      });
       const {
         player_id,
         nickname,
         elo,
         lvl,
-        last20KD,
-        last50KD,
+        kd,
+        avg,
+        hs,
+        winrate,
         error,
         errorMessage,
-      } = playerInfo;
+      } = await getPlayerInfo({
+        playerNickname,
+        playersNicknames,
+      });
       if (error) return errorMessage;
       const player = new Player({
         _id: player_id,
@@ -48,8 +49,10 @@ export const addPlayer = async (playerNickname, chat_id) => {
         nickname,
         elo,
         lvl,
-        last20KD,
-        last50KD,
+        kd,
+        avg,
+        hs,
+        winrate,
       });
       player.save().then(() => {
         webhookMgr.addPlayersToList([player.player_id]);

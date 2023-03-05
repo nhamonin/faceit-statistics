@@ -1,5 +1,5 @@
-import { calculateAverage, getPlayerAvgKD } from '#utils';
-import { DEFAULT_MATCH_GET_LIMIT } from '#config';
+import { calculateAverage, getPlayerLastStats } from '#utils';
+import { DEFAULT_MATCH_GET_LIMIT, statsNumberArray } from '#config';
 import { Team } from '#models';
 import strings from '#strings';
 
@@ -47,19 +47,23 @@ async function prepareProperResult(players, limit, statAttribute) {
 
 async function getAvgPlayersKD(players, limit = 20) {
   switch (+limit) {
+    case 10:
+      return players.map(({ nickname, kd }) => ({
+        [nickname]: kd.last10 || 0,
+      }));
     case 20:
-      return players.map(({ nickname, last20KD }) => ({
-        [nickname]: last20KD,
+      return players.map(({ nickname, kd }) => ({
+        [nickname]: kd.last20 || 0,
       }));
     case 50:
-      return players.map(({ nickname, last50KD }) => ({
-        [nickname]: last50KD,
+      return players.map(({ nickname, kd }) => ({
+        [nickname]: kd.last50 || 0,
       }));
     default:
       const res = [];
       for await (const { nickname, player_id } of players) {
-        const { lastKD } = await getPlayerAvgKD(player_id, [limit], true);
-        res.push({ [nickname]: lastKD });
+        const { kd } = await getPlayerLastStats(player_id, limit);
+        res.push({ [nickname]: kd.last || 0 });
       }
       return res;
   }
