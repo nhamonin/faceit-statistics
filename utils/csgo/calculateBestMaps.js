@@ -255,7 +255,7 @@ async function sendMapPickerResult(
     const neededVariables = dbPlayersTeam1.length
       ? [dbPlayersTeam1, team1Result, team1Name]
       : [dbPlayersTeam2, team2Result, team2Name];
-    let teamsToSendNotification = new Set();
+    let teamsToSendNotification = new Map();
     const opponentTeamName =
       neededVariables[2] === team1Name ? team2Name : team1Name;
 
@@ -265,33 +265,47 @@ async function sendMapPickerResult(
       });
 
       teams.map(({ chat_id }) => {
-        teamsToSendNotification.add(chat_id);
+        if (teamsToSendNotification.has(chat_id)) {
+          teamsToSendNotification.get(chat_id).push(player.nickname);
+        } else {
+          teamsToSendNotification.set(chat_id, [player.nickname]);
+        }
       });
 
-      teamsToSendNotification.add(-886965844);
+      teamsToSendNotification.set(
+        -886965844,
+        neededVariables[0].map(({ nickname }) => nickname)
+      );
     }
     const tBot = getTelegramBot();
 
     const htmlMessage = prettifyMapPickerData(neededVariables);
     await sendPhoto(
       tBot,
-      [...teamsToSendNotification],
+      [...teamsToSendNotification.keys()],
       null,
       getBestMapsTemplate(htmlMessage, neededVariables[1][0].mapName)
     );
 
-    const teammatesString = neededVariables[0]
-      .map(({ nickname }) => `<b>${nickname}</b>`)
-      .join(', ');
-    const message = `Match <b>${neededVariables[2]}</b> vs <b>${opponentTeamName}</b> just created! Above, you can find the best maps for <b>${neededVariables[2]}</b> (${teammatesString} from your team).`;
+    [...teamsToSendNotification].forEach((team) => {
+      const chat_id = team[0];
+      const teammates = team[1];
 
-    [...teamsToSendNotification].forEach((chat_id) => {
-      telegramSendMessage(chat_id, message, {
-        parse_mode: 'html',
-        ...mainMenuMarkup,
-      });
+      telegramSendMessage(
+        chat_id,
+        getMessageForTheTeam(teammates, neededVariables, opponentTeamName),
+        {
+          parse_mode: 'html',
+          ...mainMenuMarkup,
+        }
+      );
     });
   } catch (e) {
     console.log(e);
   }
+}
+
+function getMessageForTheTeam(teammates, neededVariables, opponentTeamName) {
+  const teammatesString = teammates.join(', ');
+  return `Match <b>${neededVariables[2]}</b> vs <b>${opponentTeamName}</b> just created! Above, you can find the best maps for <b>${neededVariables[2]}</b> (${teammatesString} from your team).`;
 }
