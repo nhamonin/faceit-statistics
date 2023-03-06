@@ -26,16 +26,16 @@ export async function getPlayerLastStats(player_id, limit) {
     hs: {},
   };
 
-  res.kd.lifetime = +stats.lifetime.k5;
-  res.winrate.lifetime = +stats.lifetime.k6;
-  res.hs.lifetime = +stats.lifetime.k8;
+  res.kd.lifetime = stats ? +stats.lifetime.k5 : 0;
+  res.winrate.lifetime = stats ? +stats.lifetime.k6 : 0;
+  res.hs.lifetime = stats ? +stats.lifetime.k8 : 0;
 
   statsNumberArray.forEach((number) => {
     Object.keys(res).forEach((attr) => {
       res[attr][`last${limit ? '' : number}`] =
-        calculateAverage(
+        (calculateAverage(
           statsArr.map((attrsObj) => attrsObj[attr]).slice(0, number)
-        ) * (attr === 'winrate' ? 100 : 1);
+        ) || 0) * (attr === 'winrate' ? 100 : 1);
     });
   });
 

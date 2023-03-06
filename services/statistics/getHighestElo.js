@@ -51,13 +51,15 @@ export const getHighestElo = async (playerNickname) => {
       player_id,
       game_id
     );
-    const playerMatchesAmount = +playerStatistics.lifetime.Matches;
+    const playerMatchesAmount = +playerStatistics?.lifetime?.Matches || 0;
     const requestsAmount =
       Math.floor(playerMatchesAmount / MAX_MATCHES_PER_REQUEST) + 1;
     const pages = [...Array(requestsAmount).keys()];
     const highestEloMatch = await getHighestEloMatch(player_id, pages);
-    highestElo = highestEloMatch.elo;
-    highestEloDate = new Date(highestEloMatch.date);
+    highestElo = highestEloMatch?.elo || currentElo;
+    highestEloDate = highestEloMatch?.date
+      ? new Date(highestEloMatch?.date)
+      : new Date();
     diffElo = currentElo - highestElo;
     diffDays = getDaysBetweenDates(highestEloDate, new Date());
 
