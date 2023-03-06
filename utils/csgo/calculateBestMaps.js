@@ -306,6 +306,8 @@ async function sendMapPickerResult(
 }
 
 function getMessageForTheTeam(teammates, neededVariables, opponentTeamName) {
-  const teammatesString = teammates.join(', ');
+  const teammatesString = teammates
+    .map((nickname) => `<b>${nickname}</b>`)
+    .join(', ');
   return `Match <b>${neededVariables[2]}</b> vs <b>${opponentTeamName}</b> just created! Above, you can find the best maps for <b>${neededVariables[2]}</b> (${teammatesString} from your team).`;
 }
