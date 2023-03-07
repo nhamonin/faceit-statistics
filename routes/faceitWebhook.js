@@ -108,7 +108,7 @@ export default router;
 
 async function sendSummaryStatsWrapper(chatIDs) {
   chatIDs.map(async (chat_id) => {
-    const { message, error } = await getSummaryStats(chat_id);
+    let { message, error } = await getSummaryStats(chat_id);
     error
       ? await telegramSendMessage(chat_id, message)
       : await sendPhoto(
