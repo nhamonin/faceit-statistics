@@ -87,6 +87,7 @@ const loggedInCookie = {
 const ERROR_BOT_BLOCKED_BY_THE_USER =
   'ETELEGRAM: 403 Forbidden: bot was blocked by the user';
 const statsNumberArray = [10, 20, 50];
+const teamTesters = [146612362, 392067613];
 
 export {
   isProduction,
@@ -115,4 +116,5 @@ export {
   caches,
   ERROR_BOT_BLOCKED_BY_THE_USER,
   statsNumberArray,
+  teamTesters,
 };
