@@ -14,6 +14,9 @@ export const initTeam = async ({ id, first_name, username, title, type }) => {
         first_name,
         title,
         players: [],
+        settings: {
+          lastMatches: 20,
+        },
       });
       logEvent({ username, title, id }, 'Init team');
       await team.save();

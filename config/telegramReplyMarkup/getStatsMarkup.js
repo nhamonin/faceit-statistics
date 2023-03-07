@@ -3,6 +3,12 @@ export const getStatsMarkup = {
     inline_keyboard: [
       [
         {
+          text: 'Get summary stats',
+          callback_data: 'getSummaryStatsMenu',
+        },
+      ],
+      [
+        {
           text: 'Team K/D ratio',
           callback_data: 'getTeamKDMenu',
         },

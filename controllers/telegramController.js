@@ -1,11 +1,12 @@
 import { Faceit } from 'faceit-node-api';
 
 import { Team, MatchPrediction, TempPrediction } from '#models';
-import { getEloTemplate } from '#templates';
+import { getEloTemplate, getSummaryStatsTemplate } from '#templates';
 import {
   initTeam,
   resetTeam,
   getTeamEloMessage,
+  getSummaryStats,
   addPlayer,
   deletePlayer,
   updateTeamPlayers,
@@ -235,6 +236,33 @@ function initTelegramBotListener() {
           ...opts,
           ...getStatsMarkup,
         });
+        break;
+      case 'getSummaryStatsMenu':
+        {
+          const { message, error } = await getSummaryStats(opts.chat_id);
+          logEvent(msg.chat, 'Get summary stats');
+          error
+            ? await telegramSendMessage(
+                opts.chat_id,
+                message,
+                getBasicTelegramOptions(opts.message_id)
+              )
+            : await sendPhoto(
+                tBot,
+                [opts.chat_id],
+                null,
+                getSummaryStatsTemplate(message)
+              );
+          await telegramDeleteMessage(opts.chat_id, opts.message_id);
+          await telegramSendMessage(
+            opts.chat_id,
+            strings.selectOnOfTheOptions(true),
+            {
+              ...opts,
+              ...getStatsMarkup,
+            }
+          );
+        }
         break;
       case 'getTeamKDMenu':
         telegramEditMessage(strings.selectOnOfTheOptions(false), {

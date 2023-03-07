@@ -1,5 +1,5 @@
-import { calculateAverage, getPlayerLastStats } from '#utils';
-import { DEFAULT_MATCH_GET_LIMIT, statsNumberArray } from '#config';
+import { calculateAverage, getPlayerLastStats, getClass } from '#utils';
+import { DEFAULT_MATCH_GET_LIMIT } from '#config';
 import { Team } from '#models';
 import strings from '#strings';
 
@@ -79,25 +79,11 @@ function formatMessage(avgPlayersKD) {
       return `
       <div class="player-kd-block">
         <span>${playerNickname}</span>
-        <span class="${getKDColorClass(+playerKD)}">
+        <span class="${getClass.kd(+playerKD)}">
           ${playerKD}
           <span class='white'>&nbsp;K/D</span>
         </span>
       </div>`;
     })
     .join('');
-}
-
-function getKDColorClass(kdValue) {
-  if (kdValue < 1) {
-    return 'red';
-  } else if (kdValue < 1.1) {
-    return 'yellow';
-  } else if (kdValue < 1.3) {
-    return 'green';
-  } else if (kdValue < 1.5) {
-    return 'aqua';
-  } else {
-    return 'purple';
-  }
 }

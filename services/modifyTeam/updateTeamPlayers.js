@@ -1,5 +1,6 @@
 import { Player, Team } from '#models';
 import { getPlayerInfo } from '#utils';
+import { getHighestElo } from '#services';
 import { caches } from '#config';
 import strings from '#strings';
 
@@ -32,7 +33,8 @@ export const updateTeamPlayers = async (chat_id) => {
       await Player.findOneAndUpdate(
         { player_id },
         { nickname, elo, lvl, kd, avg, hs, winrate }
-      ).then(({ elo, highestElo, highestEloDate }) => {
+      ).then(async ({ elo, highestElo, highestEloDate }) => {
+        await getHighestElo(nickname);
         if (highestElo && highestEloDate && elo >= highestElo) {
           Player.findOneAndUpdate(
             { player_id },

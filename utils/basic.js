@@ -40,7 +40,7 @@ async function sendPhoto(tBot, chatIDs, message_id, html) {
     page = await getBrowserPage();
     await page.setContent(html);
   }
-
+  await wait(1000);
   try {
     image = await page.screenshot({
       fullPage: true,
@@ -134,6 +134,10 @@ function localizeDate(date, locale) {
   });
 }
 
+async function wait(ms) {
+  return await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export {
   adjustConsoleLog,
   logEvent,
@@ -146,4 +150,5 @@ export {
   regulateAvg,
   getDaysBetweenDates,
   localizeDate,
+  wait,
 };

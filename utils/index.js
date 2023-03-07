@@ -11,6 +11,7 @@ import {
   regulateAvg,
   getDaysBetweenDates,
   localizeDate,
+  wait,
 } from './basic.js';
 // telegram
 import { getTelegramBot } from './telegram/telegram.js';
@@ -40,6 +41,7 @@ import { performMapPickerAnalytics } from './csgo/performMapPickerAnalytics.js';
 import { getMatchData } from './csgo/getMatchData.js';
 import { getHighestEloMatch } from './csgo/getHighestEloMatch.js';
 import { getHighestEloMessage } from './csgo/getHighestEloMessage.js';
+import { getClass } from './csgo/getStatsClasses.js';
 // faceit
 import calculateFaceitDataAPILoad from './faceit/calculateFaceitDataAPILoad.js';
 import addNewPlayersToWebhookList from './faceit/addNewPlayersToWebhookList.js';
@@ -56,6 +58,7 @@ export {
   regulateAvg,
   getDaysBetweenDates,
   localizeDate,
+  wait,
   getPlayerInfo,
   getPlayerMatches,
   getPlayerLifeTimeStats,
@@ -80,6 +83,7 @@ export {
   getMatchData,
   getHighestEloMatch,
   getHighestEloMessage,
+  getClass,
   calculateFaceitDataAPILoad,
   addNewPlayersToWebhookList,
 };

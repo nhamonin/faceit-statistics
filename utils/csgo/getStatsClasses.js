@@ -1,0 +1,77 @@
+export const getClass = {
+  kd: getKDColorClass,
+  elo: getEloColorClass,
+  avg: getAvgColorClass,
+  winrate: getWinRateColorClass,
+  hs: getHsColorClass,
+};
+
+function getEloColorClass(value) {
+  if (value < 1000) {
+    return 'red';
+  } else if (value < 2000) {
+    return 'yellow';
+  } else if (value < 3000) {
+    return 'green';
+  } else if (value < 4000) {
+    return 'aqua';
+  } else {
+    return 'purple';
+  }
+}
+
+function getKDColorClass(value) {
+  if (value < 1) {
+    return 'red';
+  } else if (value < 1.1) {
+    return 'yellow';
+  } else if (value < 1.3) {
+    return 'green';
+  } else if (value < 1.5) {
+    return 'aqua';
+  } else {
+    return 'purple';
+  }
+}
+
+function getAvgColorClass(value) {
+  if (value < 15) {
+    return 'red';
+  } else if (value < 17.5) {
+    return 'yellow';
+  } else if (value < 20) {
+    return 'green';
+  } else if (value < 24) {
+    return 'aqua';
+  } else {
+    return 'purple';
+  }
+}
+
+function getWinRateColorClass(value) {
+  if (value < 46) {
+    return 'red';
+  } else if (value < 48) {
+    return 'yellow';
+  } else if (value < 52) {
+    return 'green';
+  } else if (value < 55) {
+    return 'aqua';
+  } else {
+    return 'purple';
+  }
+}
+
+function getHsColorClass(value) {
+  if (value < 40) {
+    return 'red';
+  } else if (value < 45) {
+    return 'yellow';
+  } else if (value < 50) {
+    return 'green';
+  } else if (value < 55) {
+    return 'aqua';
+  } else {
+    return 'purple';
+  }
+}

@@ -28,6 +28,11 @@ const teamSchema = new Schema(
       type: [{ type: String, ref: 'Player' }],
       required: true,
     },
+    settings: {
+      lastMatches: {
+        type: Number,
+      },
+    },
   },
   { timestamp: true }
 );
