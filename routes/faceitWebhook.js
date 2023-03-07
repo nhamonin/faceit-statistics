@@ -72,6 +72,7 @@ router.post('/webhook', async (req, res) => {
       ];
       const playersIDs = playersRoster.map(({ id }) => id);
       const teamsToSendSummary = new Set();
+      const updatedTeams = new Map();
 
       for await (const player_id of playersIDs) {
         const teams = await Team.find({
@@ -82,20 +83,19 @@ router.post('/webhook', async (req, res) => {
           for await (const team of teams) {
             await updateTeamPlayers(team.chat_id);
 
+            updatedTeams.set(team.chat_id, team);
             if (teamTesters.includes(team.chat_id))
               teamsToSendSummary.add(team.chat_id);
           }
-
-          console.log(
-            `Players of the teams: ${teams
-              .map(
-                ({ username, title, chat_id }) => username || title || chat_id
-              )
-              .join(',')} were updated.`,
-            new Date().toLocaleString()
-          );
         }
       }
+
+      console.log(
+        `Players of the teams: ${[...updatedTeams.values()]
+          .map(({ username, title, chat_id }) => username || title || chat_id)
+          .join(',')} were updated.`,
+        new Date().toLocaleString()
+      );
 
       await sendSummaryStatsWrapper([...teamsToSendSummary]);
       break;
@@ -104,21 +104,29 @@ router.post('/webhook', async (req, res) => {
   res.sendStatus(200);
 });
 
-export default router;
-
 async function sendSummaryStatsWrapper(chatIDs) {
-  chatIDs.map(async (chat_id) => {
-    let { message, error } = await getSummaryStats(chat_id);
-    error
-      ? await telegramSendMessage(chat_id, message)
-      : await sendPhoto(
-          bots.telegram,
-          [chat_id],
-          null,
-          getSummaryStatsTemplate(message)
-        );
-    await telegramSendMessage(chat_id, strings.selectOnOfTheOptions(true), {
-      ...getStatsMarkup,
-    });
-  });
+  const summaryStatsArr = await Promise.all(chatIDs.map(getSummaryStats));
+
+  for await (const [index, { message, error }] of summaryStatsArr.entries()) {
+    if (error) {
+      await telegramSendMessage(chatIDs[index], message);
+    } else {
+      await sendPhoto(
+        bots.telegram,
+        [chatIDs[index]],
+        null,
+        getSummaryStatsTemplate(message)
+      );
+
+      await telegramSendMessage(
+        chatIDs[index],
+        strings.selectOnOfTheOptions(true),
+        {
+          ...getStatsMarkup,
+        }
+      );
+    }
+  }
 }
+
+export default router;
