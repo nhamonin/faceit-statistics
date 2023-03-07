@@ -74,6 +74,12 @@ export const getSummaryStatsTemplate = (playersMarkup) =>
         margin-top: 0px;
     }
 
+    .player-container__main-stats .stats-attribute-wrapper,
+    .player-container__main-stats .stats-value-wrapper,
+    .player-container__last-stats .stats-value-wrapper  {
+        margin-top: 4px;
+    }
+
     .stats-attribute-wrapper,
     .stats-value-wrapper {
         width: 100%;
