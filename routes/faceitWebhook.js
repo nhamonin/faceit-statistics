@@ -80,7 +80,7 @@ router.post('/webhook', async (req, res) => {
 
         if (teams.length) {
           for await (const team of teams) {
-            updateTeamPlayers(team.chat_id);
+            await updateTeamPlayers(team.chat_id);
 
             if (teamTesters.includes(team.chat_id))
               teamsToSendSummary.add(team.chat_id);
