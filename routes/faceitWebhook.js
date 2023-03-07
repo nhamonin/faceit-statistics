@@ -90,12 +90,14 @@ router.post('/webhook', async (req, res) => {
         }
       }
 
-      console.log(
-        `Players of the teams: ${[...updatedTeams.values()]
-          .map(({ username, title, chat_id }) => username || title || chat_id)
-          .join(',')} were updated.`,
-        new Date().toLocaleString()
-      );
+      if (updatedTeams.size) {
+        console.log(
+          `Players of the teams: ${[...updatedTeams.values()]
+            .map(({ username, title, chat_id }) => username || title || chat_id)
+            .join(',')} were updated.`,
+          new Date().toLocaleString()
+        );
+      }
 
       await sendSummaryStatsWrapper([...teamsToSendSummary]);
       break;
