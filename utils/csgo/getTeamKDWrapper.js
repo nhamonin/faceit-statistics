@@ -3,7 +3,7 @@ import { sendPhoto, telegramSendMessage, telegramDeleteMessage } from '#utils';
 import { getKDTemplate } from '#templates';
 import { getTeamKDMenu } from '#telegramReplyMarkup';
 
-export async function getTeamKDWrapper(tBot, amount, opts, message_id) {
+export async function getTeamKDWrapper(amount, opts, message_id) {
   const { message, error } = await getTeamKDMessage(amount, opts.chat_id);
 
   if (!error) {

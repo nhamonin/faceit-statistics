@@ -274,7 +274,7 @@ function initTelegramBotListener() {
           const amount = callbackQuery.data.split('?')[1];
 
           if (amount !== 'custom') {
-            getTeamKDWrapper(tBot, amount, opts);
+            getTeamKDWrapper(amount, opts);
             logEvent(msg.chat, `Get team KD last ${amount}`);
           } else {
             telegramSendMessage(opts.chat_id, strings.sendLastMatchesCount, {
@@ -285,7 +285,7 @@ function initTelegramBotListener() {
                 bot_message_id,
                 async ({ text: amount, message_id }) => {
                   logEvent(msg.chat, `get team KD last ${amount}`);
-                  await getTeamKDWrapper(tBot, amount, opts, message_id);
+                  await getTeamKDWrapper(amount, opts, message_id);
                   await telegramDeleteMessage(opts.chat_id, message_id);
                   await telegramDeleteMessage(opts.chat_id, bot_message_id);
                 }
