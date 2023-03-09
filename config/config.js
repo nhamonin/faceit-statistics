@@ -79,6 +79,7 @@ const puppeteerArgs = [
 const caches = {
   updateTeamPlayers: new Set(),
   bestMapsMatchIDs: new Set(),
+  summaryStatsMatchIDs: new Set(),
 };
 const loggedInCookie = {
   name: COOKIES_LOGGED_IN_NAME,

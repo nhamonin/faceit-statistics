@@ -3,18 +3,14 @@ import { clearInterval } from 'node:timers';
 import express from 'express';
 
 import { TempPrediction, Team } from '#models';
-import { updateTeamPlayers, getSummaryStats } from '#services';
+import { updateTeamPlayers } from '#services';
 import {
   calculateBestMaps,
   performMapPickerAnalytics,
   getMatchData,
-  telegramSendMessage,
-  sendPhoto,
+  handleSummaryStatsAutoSend,
 } from '#utils';
-import { getSummaryStatsTemplate } from '#templates';
 import { allowedCompetitionNames, teamTesters } from '#config';
-import { getStatsMarkup } from '#telegramReplyMarkup';
-import strings from '#strings';
 
 const router = express.Router();
 
@@ -99,23 +95,11 @@ router.post('/webhook', async (req, res) => {
         );
       }
 
-      await sendSummaryStatsWrapper([...teamsToSendSummary]);
+      await handleSummaryStatsAutoSend(match_id, [...teamsToSendSummary]);
       break;
   }
 
   res.sendStatus(200);
 });
-
-async function sendSummaryStatsWrapper(chatIDs) {
-  chatIDs.map(async (chat_id) => {
-    const { message, error } = await getSummaryStats(chat_id);
-    error
-      ? await telegramSendMessage(chat_id, message)
-      : await sendPhoto([chat_id], null, getSummaryStatsTemplate(message));
-    await telegramSendMessage(chat_id, strings.selectOnOfTheOptions(true), {
-      ...getStatsMarkup,
-    });
-  });
-}
 
 export default router;

@@ -42,6 +42,7 @@ import { getMatchData } from './csgo/getMatchData.js';
 import { getHighestEloMatch } from './csgo/getHighestEloMatch.js';
 import { getHighestEloMessage } from './csgo/getHighestEloMessage.js';
 import { getClass } from './csgo/getStatsClasses.js';
+import { handleSummaryStatsAutoSend } from './csgo/handleSummaryStatsAutoSend.js';
 // faceit
 import calculateFaceitDataAPILoad from './faceit/calculateFaceitDataAPILoad.js';
 import addNewPlayersToWebhookList from './faceit/addNewPlayersToWebhookList.js';
@@ -84,6 +85,7 @@ export {
   getHighestEloMatch,
   getHighestEloMessage,
   getClass,
+  handleSummaryStatsAutoSend,
   calculateFaceitDataAPILoad,
   addNewPlayersToWebhookList,
 };
