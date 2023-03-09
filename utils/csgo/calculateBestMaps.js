@@ -5,7 +5,6 @@ import {
   prettifyMapPickerData,
   calculateAverage,
   calculateDifference,
-  getTelegramBot,
   telegramSendMessage,
   sendPhoto,
   getPlayerLifeTimeStats,
@@ -277,11 +276,9 @@ async function sendMapPickerResult(
         neededVariables[0].map(({ nickname }) => nickname)
       );
     }
-    const tBot = getTelegramBot();
 
     const htmlMessage = prettifyMapPickerData(neededVariables);
     await sendPhoto(
-      tBot,
       [...teamsToSendNotification.keys()],
       null,
       getBestMapsTemplate(htmlMessage, neededVariables[1][0].mapName)

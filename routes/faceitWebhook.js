@@ -12,7 +12,7 @@ import {
   sendPhoto,
 } from '#utils';
 import { getSummaryStatsTemplate } from '#templates';
-import { allowedCompetitionNames, teamTesters, bots } from '#config';
+import { allowedCompetitionNames, teamTesters } from '#config';
 import { getStatsMarkup } from '#telegramReplyMarkup';
 import strings from '#strings';
 
@@ -113,12 +113,7 @@ async function sendSummaryStatsWrapper(chatIDs) {
     if (error) {
       await telegramSendMessage(chatIDs[index], message);
     } else {
-      await sendPhoto(
-        bots.telegram,
-        [chatIDs[index]],
-        null,
-        getSummaryStatsTemplate(message)
-      );
+      await sendPhoto([chatIDs[index]], null, getSummaryStatsTemplate(message));
 
       await telegramSendMessage(
         chatIDs[index],

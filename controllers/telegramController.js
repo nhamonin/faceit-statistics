@@ -248,7 +248,6 @@ function initTelegramBotListener() {
                 getBasicTelegramOptions(opts.message_id)
               )
             : await sendPhoto(
-                tBot,
                 [opts.chat_id],
                 null,
                 getSummaryStatsTemplate(message)
@@ -305,12 +304,7 @@ function initTelegramBotListener() {
                 message,
                 getBasicTelegramOptions(opts.message_id)
               )
-            : await sendPhoto(
-                tBot,
-                [opts.chat_id],
-                null,
-                getEloTemplate(message)
-              );
+            : await sendPhoto([opts.chat_id], null, getEloTemplate(message));
           await telegramDeleteMessage(opts.chat_id, opts.message_id);
           await telegramSendMessage(
             opts.chat_id,

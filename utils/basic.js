@@ -4,6 +4,7 @@ import {
   getBasicTelegramOptions,
   handleBotWasBlockedByTheUser,
   telegramSendMessage,
+  getTelegramBot,
 } from '#utils';
 import {
   ENVIRONMENT,
@@ -32,7 +33,8 @@ function logEvent(chat, action) {
   console.log(`${name}: ${action}. Date: ${new Date().toLocaleString()}`);
 }
 
-async function sendPhoto(tBot, chatIDs, message_id, html) {
+async function sendPhoto(chatIDs, message_id, html) {
+  const tBot = getTelegramBot();
   let image = null;
   if (page) {
     await page.setContent(html);
