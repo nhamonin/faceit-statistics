@@ -7,12 +7,7 @@ export async function getTeamKDWrapper(tBot, amount, opts, message_id) {
   const { message, error } = await getTeamKDMessage(amount, opts.chat_id);
 
   if (!error) {
-    await sendPhoto(
-      tBot,
-      [opts.chat_id],
-      message_id,
-      getKDTemplate(amount, message)
-    );
+    await sendPhoto([opts.chat_id], message_id, getKDTemplate(amount, message));
   }
 
   await telegramDeleteMessage(opts.chat_id, opts.message_id);
