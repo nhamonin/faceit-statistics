@@ -107,23 +107,15 @@ router.post('/webhook', async (req, res) => {
 });
 
 async function sendSummaryStatsWrapper(chatIDs) {
-  const summaryStatsArr = await Promise.all(chatIDs.map(getSummaryStats));
-
-  for await (const [index, { message, error }] of summaryStatsArr.entries()) {
-    if (error) {
-      await telegramSendMessage(chatIDs[index], message);
-    } else {
-      await sendPhoto([chatIDs[index]], null, getSummaryStatsTemplate(message));
-
-      await telegramSendMessage(
-        chatIDs[index],
-        strings.selectOnOfTheOptions(true),
-        {
-          ...getStatsMarkup,
-        }
-      );
-    }
-  }
+  chatIDs.map(async (chat_id) => {
+    const { message, error } = await getSummaryStats(chat_id);
+    error
+      ? await telegramSendMessage(chat_id, message)
+      : await sendPhoto([chat_id], null, getSummaryStatsTemplate(message));
+    await telegramSendMessage(chat_id, strings.selectOnOfTheOptions(true), {
+      ...getStatsMarkup,
+    });
+  });
 }
 
 export default router;

@@ -12,7 +12,7 @@ import {
   ERROR_BOT_BLOCKED_BY_THE_USER,
 } from '#config';
 
-let page = await getBrowserPage();
+const browser = await getBrowser();
 
 function adjustConsoleLog() {
   if (ENVIRONMENT !== 'PRODUCTION') return;
@@ -35,18 +35,15 @@ function logEvent(chat, action) {
 
 async function sendPhoto(chatIDs, message_id, html) {
   const tBot = getTelegramBot();
+  const page = await browser.newPage();
   let image = null;
-  if (page) {
-    await page.setContent(html);
-  } else {
-    page = await getBrowserPage();
-    await page.setContent(html);
-  }
-  await wait(1000);
+
+  await page.setContent(html);
   try {
     image = await page.screenshot({
       fullPage: true,
     });
+    page.close();
   } catch (e) {
     console.log(e.message);
   }
@@ -70,13 +67,11 @@ async function sendPhoto(chatIDs, message_id, html) {
   );
 }
 
-async function getBrowserPage() {
-  const browser = await puppeteer.launch({
+async function getBrowser() {
+  return puppeteer.launch({
     headless: true,
     args: puppeteerArgs,
   });
-
-  return browser.newPage();
 }
 
 function calculateAverage(arr, digits = 2) {
