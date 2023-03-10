@@ -276,11 +276,6 @@ async function sendMapPickerResult(
           teamsToSendNotification.set(chat_id, [player.nickname]);
         }
       });
-
-      teamsToSendNotification.set(
-        -886965844,
-        neededVariables[0].map(({ nickname }) => nickname)
-      );
     }
 
     const htmlMessage = prettifyMapPickerData(neededVariables);
