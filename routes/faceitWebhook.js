@@ -10,7 +10,7 @@ import {
   getMatchData,
   handleSummaryStatsAutoSend,
 } from '#utils';
-import { allowedCompetitionNames, chatToGetNotifications } from '#config';
+import { allowedCompetitionNames } from '#config';
 
 const router = express.Router();
 
@@ -82,8 +82,6 @@ router.post('/webhook', async (req, res) => {
             updatedTeams.set(team.chat_id, team);
             teamsToSendSummary.add(team.chat_id);
           }
-
-          teamsToSendSummary.add(chatToGetNotifications);
         }
       }
 
