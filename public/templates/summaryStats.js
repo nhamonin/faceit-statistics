@@ -5,7 +5,7 @@ export const getSummaryStatsTemplate = (playersMarkup) =>
     html {
         background-color: rgb(16, 22, 34);
         font-family: Kharkiv Tone;
-        border-bottom: 150px solid rgb(16, 22, 34);
+        border-bottom: 50px solid rgb(16, 22, 34);
         padding: 30px;
         width: 920px;
     }

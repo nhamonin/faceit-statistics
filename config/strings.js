@@ -77,6 +77,26 @@ You can check stats or modify your team.`
         'en'
       )}</b>. (${diffDays} days ago)`,
   },
+  subscriptions: {
+    summaryStats: {
+      message:
+        'You or someone from your team just finished a match. Here is updated statistics of your team: upper half shows the lifetime stats, lower half shows the stats for the last 20 matches.',
+      unsubscribed:
+        'You have been successfully unsubscribed from the summary stats.',
+      subscribed: 'You have been successfully subscribed to the summary stats.',
+    },
+    calculateBestMaps: {
+      message: (teammatesString, neededVariables, opponentTeamName) =>
+        `Match <b>${neededVariables[2]}</b> vs <b>${opponentTeamName}</b> just created! Above, you can find the best maps for <b>${neededVariables[2]}</b> (${teammatesString} from your team).`,
+      unsubscribed:
+        'You have been successfully unsubscribed from the best maps calculation.',
+      subscribed:
+        'You have been successfully subscribed to the best maps calculation.',
+    },
+    manage: 'Manage subscriptions below:',
+  },
+  settings: 'Settings of your team below:',
+  comingSoon: 'Coming soon...',
   teamNotExistError:
     "You don't have a team. Init it first via the command '/start.'",
   serverError: 'Oops, something went wrong. Try again later.',

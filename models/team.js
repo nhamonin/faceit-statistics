@@ -32,6 +32,18 @@ const teamSchema = new Schema(
       lastMatches: {
         type: Number,
       },
+      subscriptions: {
+        match_object_created: {
+          calculateBestMaps: {
+            type: Boolean,
+          },
+        },
+        match_status_finished: {
+          summaryStats: {
+            type: Boolean,
+          },
+        },
+      },
     },
   },
   { timestamp: true }

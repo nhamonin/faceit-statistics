@@ -11,7 +11,8 @@ import {
 } from '#utils';
 import { currentMapPool, caches } from '#config';
 import { getBestMapsTemplate } from '#templates';
-import { mainMenuMarkup } from '#telegramReplyMarkup';
+import { subscriptionReceivedMarkup } from '#telegramReplyMarkup';
+import strings from '#strings';
 
 export async function calculateBestMaps(matchData) {
   if (caches.bestMapsMatchIDs.has(matchData?.payload?.id)) return;
@@ -259,9 +260,14 @@ async function sendMapPickerResult(
       neededVariables[2] === team1Name ? team2Name : team1Name;
 
     for await (const player of neededVariables[0]) {
-      const teams = await Team.find({
-        players: player._id,
-      });
+      const teams = (
+        await Team.find({
+          players: player._id,
+        }).lean()
+      ).filter(
+        (team) =>
+          team.settings.subscriptions.match_object_created.calculateBestMaps
+      );
 
       teams.map(({ chat_id }) => {
         if (teamsToSendNotification.has(chat_id)) {
@@ -287,24 +293,27 @@ async function sendMapPickerResult(
     [...teamsToSendNotification].forEach((team) => {
       const chat_id = team[0];
       const teammates = team[1];
+      const teammatesString = teammates
+        .map((nickname) => `<b>${nickname}</b>`)
+        .join(', ');
 
       telegramSendMessage(
         chat_id,
-        getMessageForTheTeam(teammates, neededVariables, opponentTeamName),
+        strings.subscriptions.calculateBestMaps.message(
+          teammatesString,
+          neededVariables,
+          opponentTeamName
+        ),
         {
           parse_mode: 'html',
-          ...mainMenuMarkup,
+          ...subscriptionReceivedMarkup(
+            'match_object_created',
+            'calculateBestMaps'
+          ),
         }
       );
     });
   } catch (e) {
     console.log(e);
   }
-}
-
-function getMessageForTheTeam(teammates, neededVariables, opponentTeamName) {
-  const teammatesString = teammates
-    .map((nickname) => `<b>${nickname}</b>`)
-    .join(', ');
-  return `Match <b>${neededVariables[2]}</b> vs <b>${opponentTeamName}</b> just created! Above, you can find the best maps for <b>${neededVariables[2]}</b> (${teammatesString} from your team).`;
 }

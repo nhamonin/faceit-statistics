@@ -49,11 +49,11 @@ function getAvgColorClass(value) {
 }
 
 function getWinRateColorClass(value) {
-  if (value < 46) {
+  if (value < 49) {
     return 'red';
-  } else if (value < 48) {
+  } else if (value < 51) {
     return 'yellow';
-  } else if (value < 52) {
+  } else if (value < 53) {
     return 'green';
   } else if (value < 55) {
     return 'aqua';

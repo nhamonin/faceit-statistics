@@ -7,6 +7,9 @@ import { getStatsMarkup } from './getStatsMarkup.js';
 import { getTeamKDMenu } from './getTeamKDMenu.js';
 import { lastPlayerMatchesMarkup } from './lastPlayerMatchesMarkup.js';
 import { getHighestEloMenu } from './getHighestEloMenu.js';
+import { settingsMarkup } from './settingsMarkup.js';
+import { subscriptionReceivedMarkup } from './subscriptionReceivedMarkup.js';
+import { manageSubscriptionsMarkup } from './manageSubscriptionsMarkup.js';
 
 export {
   startActionMarkup,
@@ -18,4 +21,7 @@ export {
   getTeamKDMenu,
   lastPlayerMatchesMarkup,
   getHighestEloMenu,
+  settingsMarkup,
+  subscriptionReceivedMarkup,
+  manageSubscriptionsMarkup,
 };

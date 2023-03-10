@@ -21,6 +21,8 @@ import {
   getTeamKDMenu,
   lastPlayerMatchesMarkup,
   getHighestEloMenu,
+  settingsMarkup,
+  manageSubscriptionsMarkup,
 } from '#telegramReplyMarkup';
 import {
   sendPhoto,
@@ -162,6 +164,11 @@ function initTelegramBotListener() {
       'players'
     );
     const teamNicknames = getTeamNicknames(team);
+    const subscriptions = team.settings.subscriptions;
+    const isCalculateBestMapsSubscribed =
+      subscriptions['match_object_created'].calculateBestMaps;
+    const isSummaryStatsSubscribed =
+      subscriptions['match_status_finished'].summaryStats;
 
     switch (action) {
       case 'mainMenu':
@@ -398,6 +405,52 @@ function initTelegramBotListener() {
             });
           }
         }
+        break;
+      case 'settingsMenu':
+        {
+          telegramEditMessage(strings.settings, {
+            ...opts,
+            ...settingsMarkup,
+          });
+        }
+        break;
+      case 'subscription':
+        {
+          const subscription = callbackQuery.data.split('?')[1];
+          const [action, type, name] = subscription.split('-');
+
+          subscriptions[type][name] = action === 'subscribe';
+
+          logEvent(msg.chat, `${action}d ${name} subscription`);
+
+          await team.save();
+
+          telegramEditMessage(strings.subscriptions[name][`${action}d`], {
+            ...opts,
+            ...manageSubscriptionsMarkup({
+              isCalculateBestMapsSubscribed:
+                subscriptions['match_object_created'].calculateBestMaps,
+              isSummaryStatsSubscribed:
+                subscriptions['match_status_finished'].summaryStats,
+            }),
+          });
+        }
+        break;
+      case 'manageSubscriptions':
+        telegramEditMessage(strings.subscriptions.manage, {
+          ...opts,
+          ...manageSubscriptionsMarkup({
+            isCalculateBestMapsSubscribed,
+            isSummaryStatsSubscribed,
+          }),
+        });
+
+        break;
+      case 'chooseLanguage':
+        telegramEditMessage(strings.comingSoon, {
+          ...opts,
+          ...settingsMarkup,
+        });
         break;
     }
   });

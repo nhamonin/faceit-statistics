@@ -11,6 +11,12 @@ export const mainMenuMarkup = {
           callback_data: 'modifyTeamMarkup',
         },
       ],
+      [
+        {
+          text: 'Settings',
+          callback_data: 'settingsMenu',
+        },
+      ],
     ],
     force_reply: true,
   },
