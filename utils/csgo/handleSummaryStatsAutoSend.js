@@ -3,7 +3,7 @@ import { getSummaryStats } from '#services';
 import { telegramSendMessage, sendPhoto } from '#utils';
 import { getSummaryStatsTemplate } from '#templates';
 import { subscriptionReceivedMarkup } from '#telegramReplyMarkup';
-import { caches, chatToGetNotifications } from '#config';
+import { caches } from '#config';
 import strings from '#strings';
 
 export async function handleSummaryStatsAutoSend(matchID, chatIDs) {
@@ -20,11 +20,7 @@ export async function handleSummaryStatsAutoSend(matchID, chatIDs) {
     const { message, error } = await getSummaryStats(chat_id);
     error
       ? await telegramSendMessage(chat_id, message)
-      : await sendPhoto(
-          [chat_id, chatToGetNotifications],
-          null,
-          getSummaryStatsTemplate(message)
-        );
+      : await sendPhoto([chat_id], null, getSummaryStatsTemplate(message));
     await telegramSendMessage(
       chat_id,
       strings.subscriptions.summaryStats.message,

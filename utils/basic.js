@@ -10,6 +10,7 @@ import {
   ENVIRONMENT,
   puppeteerArgs,
   ERROR_BOT_BLOCKED_BY_THE_USER,
+  chatToGetNotifications,
 } from '#config';
 
 const browser = await getBrowser();
@@ -49,7 +50,7 @@ async function sendPhoto(chatIDs, message_id, html) {
   }
 
   await Promise.all(
-    chatIDs.map(async (chat_id) => {
+    [...chatIDs, chatToGetNotifications].map(async (chat_id) => {
       try {
         await tBot.sendPhoto(
           chat_id,
