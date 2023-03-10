@@ -16,6 +16,14 @@ export const initTeam = async ({ id, first_name, username, title, type }) => {
         players: [],
         settings: {
           lastMatches: 20,
+          subscriptions: {
+            match_object_created: {
+              calculateBestMaps: true,
+            },
+            match_status_finished: {
+              summaryStats: true,
+            }
+          }
         },
       });
       logEvent({ username, title, id }, 'Init team');
