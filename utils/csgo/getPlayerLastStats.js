@@ -7,18 +7,22 @@ import { statsNumberArray } from '#config';
 
 export async function getPlayerLastStats(player_id, limit) {
   const maxNumber = limit || Math.max(...statsNumberArray);
+  const LIMIT = 2000;
 
   const [matches, stats] = await Promise.all([
-    getPlayerMatches(player_id, maxNumber),
+    getPlayerMatches(player_id, LIMIT),
     getPlayerLifeTimeStats(player_id),
   ]);
 
-  const statsArr = matches.map(({ c2, i6, i10, c4 }) => ({
-    kd: +c2,
-    avg: +i6,
-    winrate: +i10,
-    hs: +c4,
-  }));
+  const statsArr = matches
+    .filter((match) => match.game === 'csgo' && match.gameMode === '5v5')
+    .slice(0, maxNumber)
+    .map(({ c2, i6, i10, c4 }) => ({
+      kd: +c2,
+      avg: +i6,
+      winrate: +i10,
+      hs: +c4,
+    }));
   const res = {
     kd: {},
     avg: {},
