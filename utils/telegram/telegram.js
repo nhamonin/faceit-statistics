@@ -100,7 +100,7 @@ export async function handleBotWasBlockedByTheUser(chat_id) {
 
       console.log(
         `Successfully deleted team ${
-          team.first_name || team.title || team.chat_id
+          team.username || team.title || team.chat_id
         }`
       );
     });
