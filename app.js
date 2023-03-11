@@ -6,16 +6,11 @@ import { Faceit } from 'faceit-node-api';
 
 import { isProduction, host, port, FACEIT_API_KEY } from '#config';
 import { initTelegramBotListener } from '#controllers';
-import {
-  connectDB,
-  adjustConsoleLog,
-  calculateFaceitDataAPILoad,
-} from '#utils';
+import { connectDB, adjustConsoleLog } from '#utils';
 import { main, faceitWebhook, telegramWebhook } from '#routes';
 
 Faceit.setApiKeys([FACEIT_API_KEY]);
 
-calculateFaceitDataAPILoad(Faceit);
 await connectDB();
 initTelegramBotListener();
 adjustConsoleLog();

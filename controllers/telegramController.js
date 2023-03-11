@@ -78,7 +78,6 @@ function initTelegramBotListener() {
       `Total matches: ${totalMatches}`,
       `Pending matches: ${tempMatchesCount}`,
       '',
-      `Current hour Faceit API load: ${Faceit.prototype._counter / 2}`,
       `Webhook static list length: ${webhookListLength}`,
     ].join('\n');
 

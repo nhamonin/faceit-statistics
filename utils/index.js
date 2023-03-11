@@ -44,7 +44,6 @@ import { getHighestEloMessage } from './csgo/getHighestEloMessage.js';
 import { getClass } from './csgo/getStatsClasses.js';
 import { handleSummaryStatsAutoSend } from './csgo/handleSummaryStatsAutoSend.js';
 // faceit
-import calculateFaceitDataAPILoad from './faceit/calculateFaceitDataAPILoad.js';
 import addNewPlayersToWebhookList from './faceit/addNewPlayersToWebhookList.js';
 
 export {
@@ -86,6 +85,5 @@ export {
   getHighestEloMessage,
   getClass,
   handleSummaryStatsAutoSend,
-  calculateFaceitDataAPILoad,
   addNewPlayersToWebhookList,
 };
