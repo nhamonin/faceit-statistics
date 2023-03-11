@@ -50,7 +50,8 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
   }
 
   const chatsToSend =
-    (logEnabled && !isProduction) ||
+    !logEnabled ||
+    !isProduction ||
     (chatIDs.length === 1 && chatIDs[0] === 146612362)
       ? chatIDs
       : [...chatIDs, chatToGetNotifications];
