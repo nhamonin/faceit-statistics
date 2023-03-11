@@ -14,8 +14,9 @@ export async function handleSummaryStatsAutoSend(matchID, chatIDs) {
   }, 1000 * 10);
 
   chatIDs.map(async (chat_id) => {
-    const statusFinishedSubscriptions = (await Team.findOne({ chat_id }))
-      .settings.subscriptions.match_status_finished;
+    const team = await Team.findOne({ chat_id });
+    const statusFinishedSubscriptions =
+      team.settings.subscriptions.match_status_finished;
     if (!statusFinishedSubscriptions.summaryStats) return;
     const { message, error } = await getSummaryStats(chat_id);
     error

@@ -64,7 +64,7 @@ function formatMessage(team, players) {
               )}">${player.highestElo}</div>
               <div class="stats-value__item ${getClass.winrate(
                 player.winrate.lifetime
-              )}">${player.winrate.lifetime}</div>
+              )} percent">${player.winrate.lifetime}
             </div>
           </div>
         </div>
@@ -84,11 +84,12 @@ function formatMessage(team, players) {
               )}">${player.avg[`last${lastMatchesSetting}`]}</div>
               <div class="stats-value__item ${getClass.hs(
                 player.hs[`last${lastMatchesSetting}`]
-              )}">${player.hs[`last${lastMatchesSetting}`]}</div>
+              )} percent">${player.hs[`last${lastMatchesSetting}`]}</div>
             </div>
           </div>
         </div>
-      </div>`
+      </div>
+    </div>`
     )
     .join('');
 }

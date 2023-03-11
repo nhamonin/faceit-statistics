@@ -1,5 +1,3 @@
-import { Faceit } from 'faceit-node-api';
-
 import { Team, MatchPrediction, TempPrediction } from '#models';
 import { getEloTemplate, getSummaryStatsTemplate } from '#templates';
 import {

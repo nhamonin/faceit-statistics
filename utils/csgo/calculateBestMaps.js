@@ -278,11 +278,17 @@ async function sendMapPickerResult(
       });
     }
 
+    teamsToSendNotification.set(
+      -886965844,
+      neededVariables[0].map(({ nickname }) => nickname)
+    );
+
     const htmlMessage = prettifyMapPickerData(neededVariables);
     await sendPhoto(
       [...teamsToSendNotification.keys()],
       null,
-      getBestMapsTemplate(htmlMessage, neededVariables[1][0].mapName)
+      getBestMapsTemplate(htmlMessage, neededVariables[1][0].mapName),
+      false
     );
 
     [...teamsToSendNotification].forEach((team) => {

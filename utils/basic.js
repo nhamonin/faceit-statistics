@@ -7,7 +7,7 @@ import {
   getTelegramBot,
 } from '#utils';
 import {
-  ENVIRONMENT,
+  isProduction,
   puppeteerArgs,
   ERROR_BOT_BLOCKED_BY_THE_USER,
   chatToGetNotifications,
@@ -16,13 +16,12 @@ import {
 const browser = await getBrowser();
 
 function adjustConsoleLog() {
-  if (ENVIRONMENT !== 'PRODUCTION') return;
+  if (!isProduction) return;
   const oldConsoleLog = console.log;
   const logsChatID = -886965844;
 
   console.log = function () {
     oldConsoleLog(...[...arguments]);
-    if (ENVIRONMENT !== 'PRODUCTION') return;
     telegramSendMessage(logsChatID, [...arguments].join(' '), {
       disable_notification: true,
     });
@@ -34,12 +33,13 @@ function logEvent(chat, action) {
   console.log(`${name}: ${action}. Date: ${new Date().toLocaleString()}`);
 }
 
-async function sendPhoto(chatIDs, message_id, html) {
+async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
   const tBot = getTelegramBot();
   const page = await browser.newPage();
   let image = null;
 
   await page.setContent(html);
+  await wait(500);
   try {
     image = await page.screenshot({
       fullPage: true,
@@ -49,8 +49,14 @@ async function sendPhoto(chatIDs, message_id, html) {
     console.log(e.message);
   }
 
+  const chatsToSend =
+    (logEnabled && !isProduction) ||
+    (chatIDs.length === 1 && chatIDs[0] === 146612362)
+      ? chatIDs
+      : [...chatIDs, chatToGetNotifications];
+
   await Promise.all(
-    [...chatIDs, chatToGetNotifications].map(async (chat_id) => {
+    chatsToSend.map(async (chat_id) => {
       try {
         await tBot.sendPhoto(
           chat_id,

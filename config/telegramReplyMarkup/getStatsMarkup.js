@@ -3,27 +3,27 @@ export const getStatsMarkup = {
     inline_keyboard: [
       [
         {
-          text: 'Get summary stats',
+          text: "Team's Summary Statistics",
           callback_data: 'getSummaryStatsMenu',
         },
       ],
       [
         {
-          text: 'Team K/D ratio',
+          text: "Team's K/D ratio",
           callback_data: 'getTeamKDMenu',
         },
         {
-          text: 'Team Elo',
+          text: "Team's Elo",
           callback_data: 'getTeamElo',
         },
       ],
       [
         {
-          text: 'Highest Elo',
+          text: "Player's Highest Elo",
           callback_data: 'getHighestEloMenu',
         },
         {
-          text: 'Matches',
+          text: "Player's Matches",
           callback_data: 'getPlayerLastMatchesMenu',
         },
       ],

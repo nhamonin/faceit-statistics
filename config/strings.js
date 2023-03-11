@@ -70,12 +70,12 @@ You can check stats or modify your team.`
       `<b>${playerNickname}</b>'s highest elo rating was <b>${highestElo}</b> (${diffElo} from now).\nDate when the highest elo rating was reached: <b>${localizeDate(
         date,
         'en'
-      )}</b> (${diffDays} days ago).`,
+      )}</b> (${diffDays} day${diffDays === 1 ? '' : 's'} ago).`,
     peakEloMessage: (playerNickname, highestElo, date, diffDays) =>
       `<b>${playerNickname}</b> is at its peak now! Current elo rating: <b>${highestElo}</b>.\nDate when the highest elo rating was reached: <b>${localizeDate(
         date,
         'en'
-      )}</b>. (${diffDays} days ago)`,
+      )}</b> (${diffDays} day${diffDays === 1 ? '' : 's'} ago).`,
   },
   subscriptions: {
     summaryStats: {

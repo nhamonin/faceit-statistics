@@ -1,19 +1,23 @@
-export const getSummaryStatsTemplate = (playersMarkup) =>
+export const getSummaryStatsTemplate = (playersMarkup, playersAmount) =>
   `<html lang="en">
   <head>
   <style>
     html {
         background-color: rgb(16, 22, 34);
         font-family: Kharkiv Tone;
-        border-bottom: 50px solid rgb(16, 22, 34);
+        border-bottom: ${
+          playersAmount > 1 ? '50' : '0'
+        }px solid rgb(16, 22, 34);
         padding: 30px;
         width: 920px;
+        ${playersAmount === 1 ? 'height: 300px;' : ''}
     }
 
     .player-container {
         display: flex;
         flex-direction: column;
         width: 900px;
+        height: 225px;
         margin-bottom: 10px;
     }
 
@@ -40,6 +44,7 @@ export const getSummaryStatsTemplate = (playersMarkup) =>
         height: 84px;
         border: 2px solid #fff;
         border-radius: 30px;
+        margin-top: 3px;
     }
 
     .player-container__last-stats {
@@ -71,7 +76,7 @@ export const getSummaryStatsTemplate = (playersMarkup) =>
     }
 
     .player-container__last-stats .stats-wrapper {
-        margin-top: 0px;
+        margin-top: -4px;
     }
 
     .player-container__main-stats .stats-attribute-wrapper,
@@ -91,9 +96,9 @@ export const getSummaryStatsTemplate = (playersMarkup) =>
     .stats-value-wrapper {
         width: 107%;
         background-color: #2e3541;
-        margin-bottom: 2px;
+        margin-bottom: -3px;
         border-radius: 10px 10px 0px 0px;
-        padding: 8px 25px 5px;
+        padding: 6px 40px 0px;
     }
 
     .stats-attribute__item {
@@ -115,7 +120,15 @@ export const getSummaryStatsTemplate = (playersMarkup) =>
         font-size: 60px;
         font-weight: 400;
         min-width: 167px;
-        margin-top: 1px;
+        margin-top: 2px;
+    }
+
+    .percent::after {
+        content: '%';
+        font-size: 0.5em;
+        margin-left: 5px;
+        position: absolute;
+        color: white;
     }
 
     .red {
