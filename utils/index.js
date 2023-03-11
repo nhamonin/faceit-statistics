@@ -13,6 +13,8 @@ import {
   localizeDate,
   wait,
 } from './basic.js';
+// express
+import { startExpressServer } from './express/startExpressServer.js';
 // telegram
 import { getTelegramBot } from './telegram/telegram.js';
 import { getBasicTelegramOptions } from './telegram/telegram.js';
@@ -59,6 +61,7 @@ export {
   getDaysBetweenDates,
   localizeDate,
   wait,
+  startExpressServer,
   getPlayerInfo,
   getPlayerMatches,
   getPlayerLifeTimeStats,
