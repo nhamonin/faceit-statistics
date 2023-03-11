@@ -9,7 +9,7 @@ import {
 import {
   isProduction,
   puppeteerArgs,
-  ERROR_BOT_BLOCKED_BY_THE_USER,
+  ERROR_TELEGRAM_FORBIDDEN,
   chatToGetNotifications,
 } from '#config';
 
@@ -65,7 +65,7 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
           message_id ? getBasicTelegramOptions(message_id) : {}
         );
       } catch (e) {
-        if (e.message === ERROR_BOT_BLOCKED_BY_THE_USER) {
+        if (e.message.startsWith(ERROR_TELEGRAM_FORBIDDEN)) {
           await handleBotWasBlockedByTheUser(chat_id);
         } else {
           console.log(e.message);

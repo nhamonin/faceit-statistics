@@ -85,8 +85,7 @@ const loggedInCookie = {
   name: COOKIES_LOGGED_IN_NAME,
   value: COOKIES_LOGGED_IN_VALUE,
 };
-const ERROR_BOT_BLOCKED_BY_THE_USER =
-  'ETELEGRAM: 403 Forbidden: bot was blocked by the user';
+const ERROR_TELEGRAM_FORBIDDEN = 'ETELEGRAM: 403 Forbidden:';
 const statsNumberArray = [10, 20, 50];
 const chatToGetNotifications = -886965844;
 
@@ -115,7 +114,7 @@ export {
   bots,
   puppeteerArgs,
   caches,
-  ERROR_BOT_BLOCKED_BY_THE_USER,
+  ERROR_TELEGRAM_FORBIDDEN,
   statsNumberArray,
   chatToGetNotifications,
 };

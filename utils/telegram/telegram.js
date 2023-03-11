@@ -6,7 +6,7 @@ import {
   isProduction,
   bots,
   TELEGRAM_BOT_API_TOKEN,
-  ERROR_BOT_BLOCKED_BY_THE_USER,
+  ERROR_TELEGRAM_FORBIDDEN,
 } from '#config';
 
 const tBot = getTelegramBot();
@@ -73,7 +73,7 @@ export async function telegramSendMessage(chat_id, text, opts) {
   try {
     res = await tBot.sendMessage(chat_id, text, opts);
   } catch (e) {
-    if (e.message === ERROR_BOT_BLOCKED_BY_THE_USER) {
+    if (e.message.startsWith(ERROR_TELEGRAM_FORBIDDEN)) {
       handleBotWasBlockedByTheUser(opts.chat_id);
     } else {
       console.log(e.message);
