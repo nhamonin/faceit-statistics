@@ -13,6 +13,12 @@ export const mainMenuMarkup = {
       ],
       [
         {
+          text: 'Support the project',
+          url: 'https://www.buymeacoffee.com/faceithelper',
+        },
+      ],
+      [
+        {
           text: 'Settings',
           callback_data: 'settingsMenu',
         },

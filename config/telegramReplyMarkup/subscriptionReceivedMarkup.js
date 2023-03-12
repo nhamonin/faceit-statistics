@@ -6,6 +6,10 @@ export const subscriptionReceivedMarkup = (
     inline_keyboard: [
       [
         {
+          text: 'Support the project',
+          url: 'https://www.buymeacoffee.com/faceithelper',
+        },
+        {
           text: 'Unsubscribe',
           callback_data: `subscription?unsubscribe-${subscriptionType}-${subscriptionName}`,
         },
