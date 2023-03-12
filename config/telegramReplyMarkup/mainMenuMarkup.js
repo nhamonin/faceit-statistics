@@ -13,7 +13,7 @@ export const mainMenuMarkup = {
       ],
       [
         {
-          text: 'Support the project',
+          text: 'Donate',
           url: 'https://www.buymeacoffee.com/faceithelper',
         },
       ],
