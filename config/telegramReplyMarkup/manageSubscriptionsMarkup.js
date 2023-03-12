@@ -7,7 +7,7 @@ export const manageSubscriptionsMarkup = ({
       [
         {
           text: `Best maps: ${
-            isCalculateBestMapsSubscribed ? 'Unsubscribe ❌' : 'Subscribe ✅'
+            isCalculateBestMapsSubscribed ? 'Subscribed ✅' : 'Unsubscribed ❌'
           }`,
           callback_data: `subscription?${
             isCalculateBestMapsSubscribed ? 'un' : ''
@@ -17,7 +17,7 @@ export const manageSubscriptionsMarkup = ({
       [
         {
           text: `Summary statistics: ${
-            isSummaryStatsSubscribed ? 'Unsubscribe ❌' : 'Subscribe ✅'
+            isSummaryStatsSubscribed ? 'Subscribed ✅' : 'Unsubscribed ❌'
           }`,
           callback_data: `subscription?${
             isSummaryStatsSubscribed ? 'un' : ''
