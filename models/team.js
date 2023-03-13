@@ -29,6 +29,9 @@ const teamSchema = new Schema(
       required: true,
     },
     settings: {
+      lang: {
+        type: String,
+      },
       lastMatches: {
         type: Number,
       },

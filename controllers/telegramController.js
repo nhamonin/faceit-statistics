@@ -151,11 +151,14 @@ function initTelegramBotListener() {
   tBot.on('callback_query', async (callbackQuery) => {
     const action = callbackQuery.data.split('?')[0];
     const msg = callbackQuery.message;
+    const defaultOpts = {
+      parse_mode: 'html',
+      reply_markup: { force_reply: true },
+    };
     const opts = {
       chat_id: msg.chat.id,
       message_id: msg.message_id,
-      parse_mode: 'html',
-      reply_markup: { force_reply: true },
+      ...defaultOpts,
     };
     const team = await Team.findOne({ chat_id: opts.chat_id }).populate(
       'players'
@@ -182,7 +185,7 @@ function initTelegramBotListener() {
         break;
       case 'addPlayer':
         telegramSendMessage(opts.chat_id, strings.addPlayer.sendNickname, {
-          reply_markup: { force_reply: true },
+          ...defaultOpts,
         }).then(({ message_id: bot_message_id, chat }) => {
           tBot.onReplyToMessage(
             opts.chat_id,
@@ -268,7 +271,7 @@ function initTelegramBotListener() {
         }
         break;
       case 'getTeamKDMenu':
-        telegramEditMessage(strings.selectOnOfTheOptions(false), {
+        telegramEditMessage(strings.getTeamKD.chooseLastMatchesAmount, {
           ...opts,
           ...getTeamKDMenu,
         });
@@ -282,7 +285,7 @@ function initTelegramBotListener() {
             logEvent(msg.chat, `Get team KD last ${amount}`);
           } else {
             telegramSendMessage(opts.chat_id, strings.sendLastMatchesCount, {
-              reply_markup: { force_reply: true },
+              ...defaultOpts,
             }).then(({ message_id: bot_message_id }) => {
               tBot.onReplyToMessage(
                 opts.chat_id,
@@ -321,7 +324,7 @@ function initTelegramBotListener() {
         }
         break;
       case 'getPlayerLastMatchesMenu':
-        telegramEditMessage(strings.selectOnOfTheOptions(false), {
+        telegramEditMessage(strings.choosePlayer, {
           ...opts,
           ...lastPlayerMatchesMarkup(teamNicknames),
         });
@@ -332,7 +335,6 @@ function initTelegramBotListener() {
 
           if (nickname !== 'custom') {
             await getPlayerLastMatchesWrapper(
-              tBot,
               nickname,
               msg.chat,
               opts,
@@ -340,14 +342,13 @@ function initTelegramBotListener() {
             );
           } else {
             telegramSendMessage(opts.chat_id, strings.sendPlayerNickname, {
-              reply_markup: { force_reply: true },
+              ...defaultOpts,
             }).then(async ({ message_id: bot_message_id }) => {
               await tBot.onReplyToMessage(
                 opts.chat_id,
                 bot_message_id,
                 async ({ text: nickname, message_id }) => {
                   await getPlayerLastMatchesWrapper(
-                    tBot,
                     nickname,
                     msg.chat,
                     opts,
@@ -362,7 +363,7 @@ function initTelegramBotListener() {
         }
         break;
       case 'getHighestEloMenu':
-        telegramEditMessage(strings.selectOnOfTheOptions(false), {
+        telegramEditMessage(strings.choosePlayer, {
           ...opts,
           ...getHighestEloMenu(teamNicknames),
         });
@@ -372,16 +373,10 @@ function initTelegramBotListener() {
           const nickname = callbackQuery.data.split('?')[1];
 
           if (nickname !== 'custom') {
-            await getHighestEloWrapper(
-              tBot,
-              nickname,
-              teamNicknames,
-              opts,
-              msg.chat
-            );
+            await getHighestEloWrapper(nickname, teamNicknames, opts, msg.chat);
           } else {
             telegramSendMessage(opts.chat_id, strings.sendPlayerNickname, {
-              reply_markup: { force_reply: true },
+              ...defaultOpts,
             }).then(async ({ message_id: bot_message_id }) => {
               await tBot.onReplyToMessage(
                 opts.chat_id,
@@ -391,7 +386,6 @@ function initTelegramBotListener() {
                   await telegramDeleteMessage(opts.chat_id, message_id);
                   await telegramDeleteMessage(opts.chat_id, bot_message_id);
                   await getHighestEloWrapper(
-                    tBot,
                     nickname,
                     teamNicknames,
                     opts,

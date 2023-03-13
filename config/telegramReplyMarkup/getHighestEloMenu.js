@@ -13,7 +13,7 @@ export const getHighestEloMenu = (teamNicknames) => ({
           })),
           ...[
             {
-              text: 'Custom Player',
+              text: 'Custom',
               callback_data: 'getHighestElo?custom',
             },
           ],

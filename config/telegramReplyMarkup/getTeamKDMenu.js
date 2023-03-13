@@ -3,21 +3,19 @@ export const getTeamKDMenu = {
     inline_keyboard: [
       [
         {
-          text: 'Last 10',
+          text: '10',
           callback_data: 'getTeamKD?10',
         },
         {
-          text: 'Last 20',
+          text: '20',
           callback_data: 'getTeamKD?20',
         },
         {
-          text: 'Last 50',
+          text: '50',
           callback_data: 'getTeamKD?50',
         },
-      ],
-      [
         {
-          text: 'Custom Amount',
+          text: 'Custom',
           callback_data: 'getTeamKD?custom',
         },
       ],

@@ -19,12 +19,14 @@ You can check stats or modify your team.`
     )}</b>.\nChoose one of the options below:`,
   selectOnOfTheOptions: (isDone) =>
     `${isDone ? 'Done! ' : ''}Select one of the options below:`,
-  sendLastMatchesCount: 'Send the number of matches you want to see.',
-  sendPlayerNickname: 'Send player nickname:',
+  sendLastMatchesCount:
+    'Send the <b>number of last matches</b> you want to see.',
+  sendPlayerNickname: 'Send <b>player</b> nickname you want to check:',
+  choosePlayer: 'Choose a <b>player nickname</b> you want to check:',
   addPlayer: {
     success: (nickname, teamNicknames) =>
       `Player <b>${nickname}</b> was added.\nYour team: <b>${teamNicknames}</b>.`,
-    sendNickname: 'Send nickname of the player you want to add.',
+    sendNickname: 'Send <b>nickname</b> of the player you want to add.',
     exists: (nickname, teamNicknames) =>
       `Sorry, but player <b>${nickname}</b> already exists in your team. Try to add another player.\nYour team: <b>${teamNicknames}</b>.`,
     notFound: (nickname, teamNicknames) =>
@@ -62,6 +64,8 @@ You can check stats or modify your team.`
       `Sorry, but player with nickname <b>${nickname}</b> doesn't exists. Try to check another player.`,
   },
   getTeamKD: {
+    chooseLastMatchesAmount:
+      'Choose the <b>number of last matches</b> you want to see:',
     validationError:
       'Bad value error: Your input must be an integer number greater than 0.',
   },

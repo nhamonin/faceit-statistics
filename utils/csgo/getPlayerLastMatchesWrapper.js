@@ -1,9 +1,9 @@
 import { getPlayerLastMatchesStats } from '#services';
 import { logEvent, telegramSendMessage, telegramDeleteMessage } from '#utils';
 import { lastPlayerMatchesMarkup } from '#telegramReplyMarkup';
+import strings from '#strings';
 
 export async function getPlayerLastMatchesWrapper(
-  tBot,
   nickname,
   chat,
   opts,
@@ -18,7 +18,7 @@ export async function getPlayerLastMatchesWrapper(
     });
     await telegramSendMessage(
       opts.chat_id,
-      'Done! Select one of the options below:',
+      strings.selectOnOfTheOptions(true),
       {
         ...opts,
         ...lastPlayerMatchesMarkup(teamNicknames),
