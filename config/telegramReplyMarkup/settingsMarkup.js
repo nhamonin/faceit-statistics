@@ -3,11 +3,11 @@ export const settingsMarkup = {
     inline_keyboard: [
       [
         {
-          text: 'Manage subscriptions',
+          text: 'Subscriptions',
           callback_data: 'manageSubscriptions',
         },
         {
-          text: 'Choose language',
+          text: 'Language',
           callback_data: 'chooseLanguage',
         },
       ],
