@@ -15,6 +15,7 @@ export const initTeam = async ({ id, first_name, username, title, type }) => {
         title,
         players: [],
         settings: {
+          lang: 'en',
           lastMatches: 20,
           subscriptions: {
             match_object_created: {
@@ -22,8 +23,8 @@ export const initTeam = async ({ id, first_name, username, title, type }) => {
             },
             match_status_finished: {
               summaryStats: true,
-            }
-          }
+            },
+          },
         },
       });
       logEvent({ username, title, id }, 'Init team');
