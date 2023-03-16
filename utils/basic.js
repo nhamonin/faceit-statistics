@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer-extra';
 
 import {
   getBasicTelegramOptions,
-  handleBotWasBlockedByTheUser,
+  handleBlockedToSendMessage,
   telegramSendMessage,
   getTelegramBot,
 } from '#utils';
@@ -66,7 +66,7 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
         );
       } catch (e) {
         if (e.message.startsWith(ERROR_TELEGRAM_FORBIDDEN)) {
-          await handleBotWasBlockedByTheUser(chat_id);
+          await handleBlockedToSendMessage(chat_id);
         } else {
           console.log(e.message);
         }

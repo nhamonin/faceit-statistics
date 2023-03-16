@@ -22,7 +22,7 @@ import { getCallbackTelegramOptions } from './telegram/telegram.js';
 import { telegramSendMessage } from './telegram/telegram.js';
 import { telegramEditMessage } from './telegram/telegram.js';
 import { telegramDeleteMessage } from './telegram/telegram.js';
-import { handleBotWasBlockedByTheUser } from './telegram/telegram.js';
+import { handleBlockedToSendMessage } from './telegram/telegram.js';
 // webhook
 import { webhookMgr } from './webhook/webhookMgr.js';
 import { getCurrentBearerToken } from './webhook/getCurrentBearerToken.js';
@@ -79,7 +79,7 @@ export {
   telegramSendMessage,
   telegramEditMessage,
   telegramDeleteMessage,
-  handleBotWasBlockedByTheUser,
+  handleBlockedToSendMessage,
   webhookMgr,
   getCurrentBearerToken,
   connectDB,
