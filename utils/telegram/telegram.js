@@ -74,7 +74,7 @@ export async function telegramSendMessage(chat_id, text, opts) {
     res = await tBot.sendMessage(chat_id, text, opts);
   } catch (e) {
     if (e.message.startsWith(ERROR_TELEGRAM_FORBIDDEN)) {
-      handleBotWasBlockedByTheUser(opts.chat_id);
+      handleBlockedToSendMessage(opts.chat_id);
     } else {
       console.log(e.message);
     }
@@ -83,7 +83,7 @@ export async function telegramSendMessage(chat_id, text, opts) {
   return res;
 }
 
-export async function handleBotWasBlockedByTheUser(chat_id) {
+export async function handleBlockedToSendMessage(chat_id) {
   const team = await Team.findOne({ chat_id }).populate('players');
   if (!team) return;
   const { players } = team;
