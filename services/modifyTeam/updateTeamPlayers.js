@@ -46,7 +46,7 @@ export const updateTeamPlayers = async (chat_id) => {
 
     return strings.updateTeamPlayers.success;
   } catch (e) {
-    console.log(e.message);
+    console.log(e);
     return strings.updateTeamPlayers.error;
   }
 };

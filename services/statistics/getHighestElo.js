@@ -79,7 +79,7 @@ export const getHighestElo = async (playerNickname) => {
       ),
     };
   } catch (e) {
-    console.log(e.message);
+    console.log(e);
     return strings.serverError;
   }
 };

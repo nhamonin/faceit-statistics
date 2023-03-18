@@ -31,7 +31,7 @@ export default async function connectDB() {
         socketTimeoutMS: 45000,
       })
       .then(() => console.log('Connected to DB', new Date().toLocaleString()))
-      .catch((e) => console.log(e.message));
+      .catch((e) => console.log(e));
   }
 
   mongoose.connection.on('error', (e) => {

@@ -17,7 +17,7 @@ export const resetTeam = async (chat_id) => {
 
     return { message: strings.resetTeam.success };
   } catch (e) {
-    console.log(e.message);
+    console.log(e);
     return { error: strings.serverError };
   }
 };

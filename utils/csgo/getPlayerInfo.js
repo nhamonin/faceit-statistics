@@ -27,7 +27,7 @@ export async function getPlayerInfo({
       hs,
     };
   } catch (e) {
-    console.log(e.message);
+    console.log(e);
     return {
       error: true,
       errorMessage: strings.addPlayer.notFound(

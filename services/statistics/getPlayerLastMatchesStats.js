@@ -11,7 +11,7 @@ export const getPlayerLastMatchesStats = async (playerNickname) => {
 
     return { message };
   } catch (e) {
-    console.log(e.message);
+    console.log(e);
     return { error: strings.serverError };
   }
 };

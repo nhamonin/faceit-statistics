@@ -74,7 +74,7 @@ export const addPlayer = async (playerNickname, chat_id) => {
         )
       );
   } catch (e) {
-    console.log(e.message);
+    console.log(e);
     return strings.serverError;
   }
 };

@@ -76,7 +76,7 @@ export async function telegramSendMessage(chat_id, text, opts) {
     if (e.message.startsWith(ERROR_TELEGRAM_FORBIDDEN)) {
       handleBlockedToSendMessage(opts.chat_id);
     } else {
-      console.log(e.message);
+      console.log(e);
     }
   }
 

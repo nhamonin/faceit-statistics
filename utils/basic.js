@@ -46,7 +46,7 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
     });
     page.close();
   } catch (e) {
-    console.log(e.message);
+    console.log(e);
   }
 
   const chatsToSend =
@@ -68,7 +68,7 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
         if (e.message.startsWith(ERROR_TELEGRAM_FORBIDDEN)) {
           await handleBlockedToSendMessage(chat_id);
         } else {
-          console.log(e.message);
+          console.log(e);
         }
       }
     })

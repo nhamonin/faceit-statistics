@@ -21,6 +21,6 @@ export async function syncWebhookStaticListWithDB() {
       }
     }
   } catch (e) {
-    console.log(e.message);
+    console.log(e);
   }
 }

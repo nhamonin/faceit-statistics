@@ -35,7 +35,7 @@ export const initTeam = async ({ id, first_name, username, title, type }) => {
 
     return players.map(({ nickname }) => nickname);
   } catch (e) {
-    console.log(e.message);
+    console.log(e);
     return strings.serverError;
   }
 };
