@@ -2,13 +2,7 @@ import { Players } from 'faceit-node-api';
 
 import { Player } from '#models';
 import { game_id, MAX_MATCHES_PER_REQUEST } from '#config';
-import {
-  getPlayerInfo,
-  getDaysBetweenDates,
-  getHighestEloMatch,
-  getHighestEloMessage,
-} from '#utils';
-import strings from '#strings';
+import { getPlayerInfo, getDaysBetweenDates, getHighestEloMatch } from '#utils';
 
 export const getHighestElo = async (playerNickname) => {
   try {
@@ -30,20 +24,24 @@ export const getHighestElo = async (playerNickname) => {
     }
 
     if (!player_id)
-      return { error: strings.getPlayerLastMatches.notExists(playerNickname) };
+      return {
+        text: 'playerNotExistsError',
+        options: { nickname: playerNickname },
+      };
 
     let diffElo = currentElo - highestElo;
     let diffDays = getDaysBetweenDates(highestEloDate, new Date());
 
     if (highestElo && highestEloDate) {
       return {
-        message: getHighestEloMessage(
-          playerNickname,
+        text: `highestElo.${diffElo < 0 ? 'default' : 'peakElo'}`,
+        options: {
+          nickname: playerNickname,
           highestElo,
           highestEloDate,
           diffElo,
-          diffDays
-        ),
+          count: +diffDays,
+        },
       };
     }
 
@@ -70,16 +68,17 @@ export const getHighestElo = async (playerNickname) => {
     }
 
     return {
-      message: getHighestEloMessage(
-        playerNickname,
+      text: `highestElo.${diffElo < 0 ? 'default' : 'peakElo'}`,
+      options: {
+        nickname: playerNickname,
         highestElo,
         highestEloDate,
         diffElo,
-        diffDays
-      ),
+        count: +diffDays,
+      },
     };
   } catch (e) {
     console.log(e);
-    return strings.serverError;
+    return { text: 'serverError' };
   }
 };

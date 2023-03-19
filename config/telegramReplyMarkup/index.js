@@ -1,4 +1,3 @@
-import { startActionMarkup } from './startActionMarkup.js';
 import { mainMenuMarkup } from './mainMenuMarkup.js';
 import { addPlayerOnlyMarkup } from './addPlayerOnlyMarkup.js';
 import { deletePlayerMarkup } from './deletePlayerMarkup.js';
@@ -10,9 +9,9 @@ import { getHighestEloMenu } from './getHighestEloMenu.js';
 import { settingsMarkup } from './settingsMarkup.js';
 import { subscriptionReceivedMarkup } from './subscriptionReceivedMarkup.js';
 import { manageSubscriptionsMarkup } from './manageSubscriptionsMarkup.js';
+import { chooseLanguageMarkup } from './chooseLanguageMarkup.js';
 
 export {
-  startActionMarkup,
   mainMenuMarkup,
   addPlayerOnlyMarkup,
   deletePlayerMarkup,
@@ -24,4 +23,5 @@ export {
   settingsMarkup,
   subscriptionReceivedMarkup,
   manageSubscriptionsMarkup,
+  chooseLanguageMarkup,
 };

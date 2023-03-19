@@ -4,7 +4,7 @@
     "baseUrl": "./",
     "paths": {
       "#config": ["./config/config.js"],
-      "#strings": ["./config/strings.js"],
+      "#locales": ["./locales/index.js"],
       "#telegramReplyMarkup": ["./config/telegramReplyMarkup/index.js"],
       "#controllers": ["./controllers/index.js"],
       "#jobs": ["./jobs/index.js"],

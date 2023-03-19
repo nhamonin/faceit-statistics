@@ -3,7 +3,7 @@ export const addPlayerOnlyMarkup = {
     inline_keyboard: [
       [
         {
-          text: 'Add player',
+          text: 'buttons.modifyTeam.addPlayer',
           callback_data: 'addPlayer',
         },
       ],

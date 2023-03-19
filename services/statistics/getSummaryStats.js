@@ -2,11 +2,10 @@ import { readFileSync } from 'node:fs';
 
 import { Team } from '#models';
 import { getClass } from '#utils';
-import strings from '#strings';
 
 export const getSummaryStats = async (chat_id) => {
   const team = await Team.findOne({ chat_id });
-  if (!team) return { error: true, message: strings.teamNotExistError };
+  if (!team) return { text: 'teamNotExistError', error: true };
   const { players } = await team.populate('players');
   const isTeamEmpty = !players || players?.length === 0;
   const statAttribute = 'summary statistics';
@@ -16,23 +15,16 @@ export const getSummaryStats = async (chat_id) => {
     : prepareProperResult(team, players);
 };
 
-function prepareEmptyTeamResult(statAttribute) {
-  return {
-    error: true,
-    message: strings.emptyTeamError(statAttribute),
-  };
-}
-
 function prepareProperResult(team, players) {
-  const playerSummaryStatsMarkup = formatMessage(team, players);
+  const playerSummaryStatsMarkup = formatText(team, players);
 
   return {
     error: false,
-    message: playerSummaryStatsMarkup,
+    text: playerSummaryStatsMarkup,
   };
 }
 
-function formatMessage(team, players) {
+function formatText(team, players) {
   const lastMatchesSetting = team?.settings?.lastMatches || 20;
 
   return players

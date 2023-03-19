@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer-extra';
 
+import { Team } from '#models';
 import {
   getBasicTelegramOptions,
   handleBlockedToSendMessage,
@@ -143,6 +144,12 @@ async function wait(ms) {
   return await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+async function getLangByChatID(chat_id) {
+  const { settings } = await Team.findOne({ chat_id });
+
+  return settings.lang;
+}
+
 export {
   adjustConsoleLog,
   logEvent,
@@ -156,4 +163,5 @@ export {
   getDaysBetweenDates,
   localizeDate,
   wait,
+  getLangByChatID,
 };

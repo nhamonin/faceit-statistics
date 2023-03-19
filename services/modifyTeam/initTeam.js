@@ -1,6 +1,5 @@
 import { Team } from '#models';
 import { logEvent } from '#utils';
-import strings from '#strings';
 
 export const initTeam = async ({ id, first_name, username, title, type }) => {
   try {
@@ -31,11 +30,9 @@ export const initTeam = async ({ id, first_name, username, title, type }) => {
       await team.save();
     }
 
-    const { players } = await team.populate('players');
-
-    return players.map(({ nickname }) => nickname);
+    return team;
   } catch (e) {
     console.log(e);
-    return strings.serverError;
+    return { text: 'serverError' };
   }
 };

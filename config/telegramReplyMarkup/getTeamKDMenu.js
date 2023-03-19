@@ -15,17 +15,17 @@ export const getTeamKDMenu = {
           callback_data: 'getTeamKD?50',
         },
         {
-          text: 'Custom',
+          text: 'buttons.basic.custom',
           callback_data: 'getTeamKD?custom',
         },
       ],
       [
         {
-          text: '« Back',
+          text: 'buttons.basic.back',
           callback_data: 'getStats',
         },
         {
-          text: '« Menu',
+          text: 'buttons.basic.menu',
           callback_data: 'mainMenu',
         },
       ],

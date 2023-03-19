@@ -1,7 +1,6 @@
 import { getHighestElo } from '#services';
 import { logEvent, telegramSendMessage, telegramDeleteMessage } from '#utils';
 import { getHighestEloMenu } from '#telegramReplyMarkup';
-import strings from '#strings';
 
 export async function getHighestEloWrapper(
   nickname,
@@ -9,15 +8,23 @@ export async function getHighestEloWrapper(
   opts,
   chat
 ) {
-  const { message, error } = await getHighestElo(nickname);
+  const { text, options } = await getHighestElo(nickname);
   logEvent(chat, `Get Highest Elo: ${nickname}`);
 
   await telegramDeleteMessage(opts.chat_id, opts.message_id);
-  await telegramSendMessage(opts.chat_id, message || error, {
-    parse_mode: 'html',
-  });
-  await telegramSendMessage(opts.chat_id, strings.selectOnOfTheOptions(true), {
-    ...opts,
-    ...getHighestEloMenu(teamNicknames),
-  });
+  await telegramSendMessage(
+    opts.chat_id,
+    { text, options },
+    {
+      parse_mode: 'html',
+    }
+  );
+  await telegramSendMessage(
+    opts.chat_id,
+    { text: 'doneSelectOneOfTheOptions' },
+    {
+      ...opts,
+      ...getHighestEloMenu(teamNicknames),
+    }
+  );
 }

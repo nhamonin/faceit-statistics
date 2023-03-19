@@ -3,23 +3,23 @@ export const mainMenuMarkup = {
     inline_keyboard: [
       [
         {
-          text: 'Statistics',
+          text: 'buttons.menu.statistics',
           callback_data: 'getStats',
         },
         {
-          text: 'Modify team',
+          text: 'buttons.menu.modifyTeam',
           callback_data: 'modifyTeamMarkup',
         },
       ],
       [
         {
-          text: 'Donate',
+          text: 'buttons.menu.donate',
           url: 'https://www.buymeacoffee.com/faceithelper',
         },
       ],
       [
         {
-          text: 'Settings',
+          text: 'buttons.menu.settings',
           callback_data: 'settingsMenu',
         },
       ],

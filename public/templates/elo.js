@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
 
-export const getEloTemplate = (msg) =>
+import i18next from 'i18next';
+
+export const getEloTemplate = (teamStats) =>
   `<html lang="en">
         <head>
           <style>
@@ -94,5 +96,5 @@ export const getEloTemplate = (msg) =>
             }
           </style>
         </head>
-    <body> ${msg} </body>
+    <body>${i18next.t(teamStats.text, teamStats.options)}</body>
 </html>`;

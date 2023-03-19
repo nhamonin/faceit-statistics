@@ -13,7 +13,7 @@ export const getHighestEloMenu = (teamNicknames) => ({
           })),
           ...[
             {
-              text: 'Custom',
+              text: 'buttons.basic.custom',
               callback_data: 'getHighestElo?custom',
             },
           ],
@@ -22,11 +22,11 @@ export const getHighestEloMenu = (teamNicknames) => ({
       ),
       [
         {
-          text: '« Back',
+          text: 'buttons.basic.back',
           callback_data: 'getStats',
         },
         {
-          text: '« Menu',
+          text: 'buttons.basic.menu',
           callback_data: 'mainMenu',
         },
       ],

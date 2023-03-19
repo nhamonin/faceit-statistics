@@ -3,17 +3,17 @@ export const settingsMarkup = {
     inline_keyboard: [
       [
         {
-          text: 'Subscriptions',
+          text: 'buttons.settings.subscriptions',
           callback_data: 'manageSubscriptions',
         },
         {
-          text: 'Language',
+          text: 'buttons.settings.language',
           callback_data: 'chooseLanguage',
         },
       ],
       [
         {
-          text: '« Back',
+          text: 'buttons.basic.menu',
           callback_data: 'mainMenu',
         },
       ],

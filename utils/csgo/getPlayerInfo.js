@@ -1,7 +1,6 @@
 import { Players } from 'faceit-node-api';
 
 import { getPlayerLastStats } from '../index.js';
-import strings from '#strings';
 
 export async function getPlayerInfo({
   playerNickname,
@@ -30,10 +29,10 @@ export async function getPlayerInfo({
     console.log(e);
     return {
       error: true,
-      errorMessage: strings.addPlayer.notFound(
-        playerNickname,
-        playersNicknames
-      ),
+      errorMessage: {
+        text: 'addPlayer.notExists',
+        options: { nickname: playerNickname, teamNicknames: playersNicknames },
+      },
     };
   }
 }

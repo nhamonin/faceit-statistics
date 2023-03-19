@@ -12,7 +12,6 @@ import {
 import { currentMapPool, caches } from '#config';
 import { getBestMapsTemplate } from '#templates';
 import { subscriptionReceivedMarkup } from '#telegramReplyMarkup';
-import strings from '#strings';
 
 export async function calculateBestMaps(matchData) {
   if (caches.bestMapsMatchIDs.has(matchData?.payload?.id)) return;
@@ -300,11 +299,14 @@ async function sendMapPickerResult(
 
       telegramSendMessage(
         chat_id,
-        strings.subscriptions.calculateBestMaps.message(
-          teammatesString,
-          neededVariables,
-          opponentTeamName
-        ),
+        {
+          text: 'subscriptions.calculateBestMaps.message',
+          options: {
+            yourTeamName: neededVariables[2],
+            opponentTeamName,
+            teamNicknames: teammatesString,
+          },
+        },
         {
           parse_mode: 'html',
           ...subscriptionReceivedMarkup(

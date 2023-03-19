@@ -6,21 +6,26 @@ import {
 } from '#utils';
 import { Player, Team } from '#models';
 import { MAX_PLAYERS_AMOUNT } from '#config';
-import strings from '#strings';
 import { getHighestElo } from '#services';
 
 export const addPlayer = async (playerNickname, chat_id) => {
   try {
-    const team = await Team.findOne({ chat_id });
-    if (!team) return strings.teamNotExistError;
+    let team = await Team.findOne({ chat_id });
+    if (!team) return { text: 'teamNotExistError' };
     const { players } = await team.populate('players');
     const playerInDB = await Player.findOne({ nickname: playerNickname });
     const playersNicknames = getTeamNicknames(team).join(', ');
     if (players?.length + 1 > MAX_PLAYERS_AMOUNT)
-      return strings.addPlayer.tooMany(playersNicknames);
+      return {
+        text: 'addPlayer.maxPlayersAmount',
+        options: { playersNicknames },
+      };
 
     if (isPlayerTeamMember(players, playerNickname)) {
-      return strings.addPlayer.exists(playerNickname, playersNicknames);
+      return {
+        text: 'addPlayer.exists',
+        options: { playerNickname, playersNicknames },
+      };
     } else if (playerInDB) {
       team.players.push(playerInDB);
       console.log(
@@ -65,16 +70,20 @@ export const addPlayer = async (playerNickname, chat_id) => {
       });
       team.players.push(player);
     }
-    return team
-      .save()
-      .then((team) =>
-        strings.addPlayer.success(
-          playerNickname,
-          getTeamNicknames(team).join(', ')
-        )
-      );
+
+    team = await team.save();
+
+    return {
+      text: 'addPlayer.success',
+      options: {
+        nickname: playerNickname,
+        teamNicknames: getTeamNicknames(team).join(', '),
+      },
+    };
   } catch (e) {
     console.log(e);
-    return strings.serverError;
+    return {
+      text: 'serverError',
+    };
   }
 };

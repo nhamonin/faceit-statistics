@@ -1,4 +1,6 @@
-export const getKDTemplate = (limit, msg) =>
+import i18next from 'i18next';
+
+export const getKDTemplate = (lastNMatches, teamStats) =>
   `<html lang="en">
         <head>
           <style>
@@ -42,5 +44,8 @@ export const getKDTemplate = (limit, msg) =>
             }
           </style>
         </head>
-    <body>Last ${limit} matches:<br><br>${msg}</body>
+    <body>${i18next.t(
+      lastNMatches.text,
+      lastNMatches.options
+    )}<br><br>${i18next.t(teamStats.text, teamStats.options)}</body>
 </html>`;

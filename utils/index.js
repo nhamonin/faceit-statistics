@@ -12,6 +12,7 @@ import {
   getDaysBetweenDates,
   localizeDate,
   wait,
+  getLangByChatID,
 } from './basic.js';
 // express
 import { startExpressServer } from './express/startExpressServer.js';
@@ -42,11 +43,12 @@ import { getHighestEloWrapper } from './csgo/getHighestEloWrapper.js';
 import { performMapPickerAnalytics } from './csgo/performMapPickerAnalytics.js';
 import { getMatchData } from './csgo/getMatchData.js';
 import { getHighestEloMatch } from './csgo/getHighestEloMatch.js';
-import { getHighestEloMessage } from './csgo/getHighestEloMessage.js';
 import { getClass } from './csgo/getStatsClasses.js';
 import { handleSummaryStatsAutoSend } from './csgo/handleSummaryStatsAutoSend.js';
 // faceit
 import addNewPlayersToWebhookList from './faceit/addNewPlayersToWebhookList.js';
+// i18next
+import { initI18next } from './i18next/i18next.js';
 
 export {
   adjustConsoleLog,
@@ -61,6 +63,7 @@ export {
   getDaysBetweenDates,
   localizeDate,
   wait,
+  getLangByChatID,
   startExpressServer,
   getPlayerInfo,
   getPlayerMatches,
@@ -85,8 +88,8 @@ export {
   connectDB,
   getMatchData,
   getHighestEloMatch,
-  getHighestEloMessage,
   getClass,
   handleSummaryStatsAutoSend,
   addNewPlayersToWebhookList,
+  initI18next,
 };

@@ -3,21 +3,21 @@ export const modifyTeamMarkup = {
     inline_keyboard: [
       [
         {
-          text: 'Add player',
+          text: 'buttons.modifyTeam.addPlayer',
           callback_data: 'addPlayer',
         },
         {
-          text: 'Delete player',
+          text: 'buttons.modifyTeam.deletePlayer',
           callback_data: 'deletePlayerMenu',
         },
       ],
       [
         {
-          text: 'Reset team',
+          text: 'buttons.modifyTeam.resetTeam',
           callback_data: 'resetTeam',
         },
         {
-          text: '« Back',
+          text: 'buttons.basic.back',
           callback_data: 'mainMenu',
         },
       ],

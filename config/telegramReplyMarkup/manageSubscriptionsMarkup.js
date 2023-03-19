@@ -6,8 +6,8 @@ export const manageSubscriptionsMarkup = ({
     inline_keyboard: [
       [
         {
-          text: `Best maps: ${
-            isCalculateBestMapsSubscribed ? 'Subscribed ✅' : 'Unsubscribed ❌'
+          text: `buttons.subscriptions.bestMaps${
+            isCalculateBestMapsSubscribed ? 'Subscribed' : 'Unsubscribed'
           }`,
           callback_data: `subscription?${
             isCalculateBestMapsSubscribed ? 'un' : ''
@@ -16,8 +16,8 @@ export const manageSubscriptionsMarkup = ({
       ],
       [
         {
-          text: `Summary statistics: ${
-            isSummaryStatsSubscribed ? 'Subscribed ✅' : 'Unsubscribed ❌'
+          text: `buttons.subscriptions.summaryStats${
+            isSummaryStatsSubscribed ? 'Subscribed' : 'Unsubscribed'
           }`,
           callback_data: `subscription?${
             isSummaryStatsSubscribed ? 'un' : ''
@@ -26,7 +26,7 @@ export const manageSubscriptionsMarkup = ({
       ],
       [
         {
-          text: '« Back',
+          text: 'buttons.basic.menu',
           callback_data: 'mainMenu',
         },
       ],

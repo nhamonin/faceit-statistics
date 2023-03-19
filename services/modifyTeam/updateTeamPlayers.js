@@ -2,7 +2,6 @@ import { Player, Team } from '#models';
 import { getPlayerInfo } from '#utils';
 import { getHighestElo } from '#services';
 import { caches } from '#config';
-import strings from '#strings';
 
 export const updateTeamPlayers = async (chat_id) => {
   if (caches.updateTeamPlayers.has(chat_id)) return;
@@ -12,7 +11,7 @@ export const updateTeamPlayers = async (chat_id) => {
   }, 1000 * 60);
   try {
     const team = await Team.findOne({ chat_id });
-    if (!team) return strings.teamNotExistError;
+    if (!team) return { text: 'teamNotExistError' };
     const teamPlayerIDs = await team
       .populate('players')
       .then(({ players }) => players.map(({ player_id }) => player_id));
@@ -44,9 +43,9 @@ export const updateTeamPlayers = async (chat_id) => {
       });
     }
 
-    return strings.updateTeamPlayers.success;
+    return { text: 'updateTeamPlayers.success' };
   } catch (e) {
     console.log(e);
-    return strings.updateTeamPlayers.error;
+    return { text: 'updateTeamPlayers.error' };
   }
 };

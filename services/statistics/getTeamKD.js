@@ -1,33 +1,22 @@
 import { calculateAverage, getPlayerLastStats, getClass } from '#utils';
 import { DEFAULT_MATCH_GET_LIMIT } from '#config';
 import { Team } from '#models';
-import strings from '#strings';
 
 export const getTeamKDMessage = async (matchLimit, chat_id) => {
   const limit = matchLimit || DEFAULT_MATCH_GET_LIMIT;
   if (matchLimit && (!Number.isInteger(+matchLimit) || +matchLimit === 0)) {
     return {
       error: true,
-      message: strings.getTeamKD.validationError,
+      text: 'getTeamKD.validationError',
     };
   }
   const team = await Team.findOne({ chat_id });
-  if (!team) return { error: true, message: strings.teamNotExistError };
+  if (!team) return { error: true, text: 'teamNotExistError' };
   const { players } = await team.populate('players');
-  const isTeamEmpty = players.length === 0;
   const statAttribute = 'K/D';
 
-  return isTeamEmpty
-    ? prepareEmptyTeamResult(statAttribute)
-    : prepareProperResult(players, limit, statAttribute);
+  return prepareProperResult(players, limit, statAttribute);
 };
-
-function prepareEmptyTeamResult(statAttribute) {
-  return {
-    error: true,
-    message: strings.emptyTeamError(statAttribute),
-  };
-}
 
 async function prepareProperResult(players, limit, statAttribute) {
   const avgPlayersKD = await getAvgPlayersKD(players, limit);
@@ -41,7 +30,12 @@ async function prepareProperResult(players, limit, statAttribute) {
 
   return {
     error: false,
-    message: strings.getTeamStats(playersKDMessage, statAttribute, avgTeamKD),
+    text: avgTeamKD ? 'images.getTeamStatsWithAvg' : 'images.getTeamStats',
+    options: {
+      playersStatText: playersKDMessage,
+      statAttribute,
+      avgTeamStat: avgTeamKD,
+    },
   };
 }
 

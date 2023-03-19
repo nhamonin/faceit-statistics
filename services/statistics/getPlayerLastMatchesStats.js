@@ -1,26 +1,31 @@
-import { getPlayerMatches, getPlayerInfo } from '#utils';
-import strings from '#strings';
+import i18next from 'i18next';
 
-export const getPlayerLastMatchesStats = async (playerNickname) => {
+import { getPlayerMatches, getPlayerInfo, getLangByChatID } from '#utils';
+
+export const getPlayerLastMatchesStats = async (playerNickname, chat_id) => {
   try {
     const { player_id } = await getPlayerInfo({ playerNickname });
     if (!player_id)
-      return { error: strings.getPlayerLastMatches.notExists(playerNickname) };
+      return {
+        text: 'playerNotExistsError',
+        options: { nickname: playerNickname },
+        error: true,
+      };
     const playerMatches = await getPlayerMatches(player_id);
-    const message = formatMessage(playerMatches, playerNickname);
+    const lang = await getLangByChatID(chat_id);
 
-    return { message };
+    return { text: formatMessage(playerMatches, playerNickname, lang) };
   } catch (e) {
     console.log(e);
-    return { error: strings.serverError };
+    return { text: 'serverError' };
   }
 };
 
-function formatMessage(playerMatches, playerNickname) {
+function formatMessage(playerMatches, nickname, lang) {
   return playerMatches.length
     ? [
-        `The last 20 matches played by <b>${playerNickname}</b>:\n`,
-        '<code>Result Score PlayerK/D   Map',
+        i18next.t('playerLastMatches', { nickname, lng: lang }),
+        '<code>',
         ...playerMatches.map((match) => {
           const result = match.i10 === '1' ? ' W 🟢' : ' L 🔴';
           const score = match.i18

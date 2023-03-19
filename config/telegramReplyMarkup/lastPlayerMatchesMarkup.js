@@ -12,7 +12,7 @@ export const lastPlayerMatchesMarkup = (teamNicknames) => ({
             callback_data: `getPlayerLastMatches?${nickname}`,
           })),
           {
-            text: 'Custom',
+            text: 'buttons.basic.custom',
             callback_data: 'getPlayerLastMatches?custom',
           },
         ],
@@ -20,11 +20,11 @@ export const lastPlayerMatchesMarkup = (teamNicknames) => ({
       ),
       [
         {
-          text: '« Back',
+          text: 'buttons.basic.back',
           callback_data: 'getStats',
         },
         {
-          text: '« Menu',
+          text: 'buttons.basic.menu',
           callback_data: 'mainMenu',
         },
       ],
