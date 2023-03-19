@@ -1,16 +1,16 @@
 import {
   calculateAverage,
-  getPlayerMatches,
+  getHighAmountOfPlayerLastMatches,
   getPlayerLifeTimeStats,
 } from '#utils';
 import { statsNumberArray } from '#config';
 
 export async function getPlayerLastStats(player_id, limit) {
   const maxNumber = limit || Math.max(...statsNumberArray);
-  const LIMIT = 2000;
+  const LIMIT = maxNumber + 50;
 
   const [matches, stats] = await Promise.all([
-    getPlayerMatches(player_id, LIMIT),
+    getHighAmountOfPlayerLastMatches(player_id, LIMIT),
     getPlayerLifeTimeStats(player_id),
   ]);
 
@@ -40,7 +40,9 @@ export async function getPlayerLastStats(player_id, limit) {
     Object.keys(res).forEach((attr) => {
       res[attr][`last${limit ? '' : number}`] = +(
         calculateAverage(
-          statsArr.map((attrsObj) => attrsObj[attr]).slice(0, number) || 0
+          statsArr
+            .map((attrsObj) => attrsObj[attr])
+            .slice(0, limit || number) || 0
         ) * (attr === 'winrate' ? 100 : 1) || 0
       ).toFixed(2);
     });

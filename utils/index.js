@@ -31,6 +31,7 @@ import { getCurrentBearerToken } from './webhook/getCurrentBearerToken.js';
 import connectDB from './db/mongo.js';
 // csgo
 import { getPlayerMatches } from './csgo/getPlayerMatches.js';
+import { getHighAmountOfPlayerLastMatches } from './csgo/getHighAmountOfPlayerLastMatches.js';
 import { getPlayerLifeTimeStats } from './csgo/getPlayerLifeTimeStats.js';
 import { getPlayerLastStats } from './csgo/getPlayerLastStats.js';
 import { getPlayerInfo } from './csgo/getPlayerInfo.js';
@@ -67,6 +68,7 @@ export {
   startExpressServer,
   getPlayerInfo,
   getPlayerMatches,
+  getHighAmountOfPlayerLastMatches,
   getPlayerLifeTimeStats,
   getPlayerLastStats,
   getTeamNicknames,
