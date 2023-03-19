@@ -1,0 +1,121 @@
+{
+  "translation": {
+    "start": "Welcome to the faceit stats bot! You are now able to add players to your list.",
+    "welcomeBack": "Welcome back! Your team: <b>{{ players }}</b>. You can check stats or modify your team.",
+    "resetTeam": {
+      "success": "Team has been successfully reset. Now you don't have any players. You can add some via the button .",
+      "notExists": "You don't have a team to reset. Init it first via the command '/start.'"
+    },
+    "basicMenu": "Your team: <b>{{ teamNicknames }}</b>.\nChoose one of the options:",
+    "doneSelectOneOfTheOptions": "Done! Select one of the options:",
+    "selectOneOfTheOptions": "Select one of the options:",
+    "sendLastMatchesCount": "Send the <b>number of last matches</b> you want to see.",
+    "sendPlayerNickname": "Send <b>player</b> nickname you want to check:",
+    "choosePlayer": "Choose a <b>player nickname</b> you want to check:",
+    "addPlayer": {
+      "success": "Player <b>{{ nickname }}</b> was added.\nYour team: <b>{{ teamNicknames }}</b>.",
+      "sendNickname": "Send <b>nickname</b> of the player you want to add.",
+      "exists": "Sorry, but player <b>{{ nickname }}</b> already exists in your team. Try to add another player.\nYour team: <b>{{ teamNicknames }}</b>.",
+      "notExists": "Sorry, but player <b>{{ nickname }}</b> doesn't exist. Try to add another player.\nYour team: <b>{{ teamNicknames }}</b>.",
+      "maxPlayersAmount": "Sorry, but you can't add more players. Try to delete the existing one to add a new one.\nYour team: <b>{{ teamNicknames }}</b>."
+    },
+    "deletePlayer": {
+      "success": "Player <b>{{ nickname }}</b> was deleted.\nYour team: <b>{{ teamNicknames }}</b>.",
+      "notExists": "Sorry, but <b>{{ nickname }}</b> doesn't exists in your team.",
+      "select": "Your team: <b>{{ teamNicknames }}</b>.\nChoose a player you want to delete:",
+      "lastWasDeleted": "You just deleted the last player in your team. Please add at least one player via the button below."
+    },
+    "updateTeamPlayers": {
+      "success": "Team players was successfully updated. Check out Elo rating via the /get_team_elo or K/D via /get_team_kd commands.",
+      "error": "Unfortunately, dut to the technical reasons it is impossible to update players right now. Please wait and try again later."
+    },
+    "emptyMatchesError": "Your teammates have no matches in CS:GO.",
+    "statAttributes": {
+      "elo": "Elo",
+      "kd": "K/D"
+    },
+    "getTeamKD": {
+      "chooseLastMatchesAmount": "Choose the <b>number of last matches</b> you want to see:",
+      "validationError": "Bad value error: Your input must be an integer number greater than 0."
+    },
+    "highestElo": {
+      "default_one": "<b>{{ nickname }}</b>'s highest elo rating was <b>{{ highestElo }}</b> ({{ diffElo }} from now).\nDate when the highest elo rating was reached: <b>{{ highestEloDate }}</b> ({{ count }} day ago).",
+      "default_other": "<b>{{ nickname }}</b>'s highest elo rating was <b>{{ highestElo }}</b> ({{ diffElo }} from now).\nDate when the highest elo rating was reached: <b>{{ highestEloDate }}</b> ({{ count }} days ago).",
+      "peakElo_one": "<b>{{ nickname }}</b> is at its peak now! Current elo rating: <b>{{ highestElo }}</b>.\nDate when the highest elo rating was reached: <b>{{ highestEloDate }}</b> ({{ count }} day ago).",
+      "peakElo_other": "<b>{{ nickname }}</b> is at its peak now! Current elo rating: <b>{{ highestElo }}</b>.\nDate when the highest elo rating was reached: <b>{{ highestEloDate }}</b> ({{ count }} days ago)."
+    },
+    "playerLastMatches": "Last 20 matches by player <b>{{ nickname }}</b>:",
+    "subscriptions": {
+      "summaryStats": {
+        "message": "You or someone from your team just finished a match. Here is updated statistics of your team: <b>upper half</b> shows the <b>lifetime stats</b>, <b>lower half</b> shows the stats for the <b>last 20 matches</b>.",
+        "unsubscribed": "You have been successfully unsubscribed from the summary stats.",
+        "subscribed": "You have been successfully subscribed to the summary stats."
+      },
+      "calculateBestMaps": {
+        "message": "Match <b>{{ yourTeamName }}</b> vs <b>{{ opponentTeamName }}</b> just created! Above, you can find the best maps for <b>{{ yourTeamName }}</b> ({{ teamNicknames }} from your team).",
+        "unsubscribed": "You have been successfully unsubscribed from the best maps calculation.",
+        "subscribed": "You have been successfully subscribed to the best maps calculation."
+      },
+      "manage": "Manage subscriptions:"
+    },
+    "settings": "Settings of your team:",
+    "comingSoon": "Coming soon...",
+    "chooseLanguage": "Choose language:",
+    "teamNotExistError": "You don't have a team. Init it first via the command '/start.'",
+    "playerNotExistsError": "Sorry, but player with nickname <b>{{ nickname }}</b> doesn't exists. Try to check another player.",
+    "serverError": "Oops, something went wrong. Try again later.",
+    "buttons": {
+      "basic": {
+        "menu": "« Menu",
+        "back": "« Back",
+        "custom": "Custom"
+      },
+      "menu": {
+        "statistics": "Statistics",
+        "modifyTeam": "Modify team",
+        "donate": "Donate",
+        "settings": "Settings"
+      },
+      "stats": {
+        "summary": "Summary",
+        "kd": "K/D ratio",
+        "elo": "Elo",
+        "highestElo": "Highest Elo",
+        "matches": "Matches"
+      },
+      "modifyTeam": {
+        "addPlayer": "Add player",
+        "deletePlayer": "Delete player",
+        "resetTeam": "Reset team"
+      },
+      "settings": {
+        "subscriptions": "Subscriptions",
+        "language": "Language"
+      },
+      "chooseLanguage": {
+        "en": {
+          "current": "🇺🇸 English ✅",
+          "notCurrent": "🇺🇸 English",
+          "changedTo": "Language was successfully changed to English."
+        },
+        "uk": {
+          "current": "🇺🇦 Українська ✅",
+          "notCurrent": "🇺🇦 Українська"
+        }
+      },
+      "subscriptions": {
+        "unsubscribe": "Unsubscribe",
+        "bestMapsSubscribed": "Best maps: subscribed ✅",
+        "bestMapsUnsubscribed": "Best maps: unsubscribed ❌",
+        "summaryStatsSubscribed": "Summary stats: subscribed ✅",
+        "summaryStatsUnsubscribed": "Summary stats: unsubscribed ❌"
+      }
+    },
+    "images": {
+      "lastNMatches_one": "Last {{ count }} match:",
+      "lastNMatches_other": "Last {{ count }} matches:",
+      "getTeamStats": "{{ playersStatText }}",
+      "getTeamStatsWithAvg": "{{ playersStatText }}<br><div>Avg Team {{ statAttribute }}: {{ avgTeamStat }}</div>"
+    }
+  }
+}
