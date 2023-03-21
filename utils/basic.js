@@ -1,3 +1,5 @@
+import { EventEmitter } from 'node:events';
+
 import puppeteer from 'puppeteer-extra';
 
 import { Team } from '#models';
@@ -12,6 +14,7 @@ import {
   puppeteerArgs,
   ERROR_TELEGRAM_FORBIDDEN,
   chatToGetNotifications,
+  eventEmitter,
 } from '#config';
 
 const browser = await getBrowser();
@@ -150,6 +153,13 @@ async function getLangByChatID(chat_id) {
   return settings.lang;
 }
 
+function getEventEmitter() {
+  if (eventEmitter.main) return eventEmitter.main;
+  eventEmitter.main = new EventEmitter();
+
+  return eventEmitter.main;
+}
+
 export {
   adjustConsoleLog,
   logEvent,
@@ -164,4 +174,5 @@ export {
   localizeDate,
   wait,
   getLangByChatID,
+  getEventEmitter,
 };

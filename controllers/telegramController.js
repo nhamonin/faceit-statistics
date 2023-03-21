@@ -36,8 +36,11 @@ import {
   telegramDeleteMessage,
   telegramEditMessage,
   webhookMgr,
+  getEventEmitter,
 } from '#utils';
 import { syncWebhookStaticListWithDB } from '#jobs';
+
+const eventEmitter = getEventEmitter();
 
 function initTelegramBotListener() {
   process.env.NTBA_FIX_350 = 1;
@@ -229,11 +232,35 @@ function initTelegramBotListener() {
             opts.chat_id,
             bot_message_id,
             async ({ text: nickname, message_id }) => {
+              const listenerName = `addingPlayerProcess-${opts.chat_id}-${nickname}`;
+              telegramDeleteMessage(opts.chat_id, message_id);
+              telegramDeleteMessage(opts.chat_id, bot_message_id);
+              await telegramEditMessage(
+                {
+                  text: 'addPlayer.inProgress',
+                  options: { nickname },
+                },
+                {
+                  ...opts,
+                  ...modifyTeamMarkup,
+                }
+              );
+              eventEmitter.on(listenerName, async (text, options) => {
+                await telegramEditMessage(
+                  { text, options },
+                  {
+                    ...opts,
+                    ...modifyTeamMarkup,
+                  }
+                );
+              });
               const { text, options } = await addPlayer(
                 nickname,
                 opts.chat_id,
                 message_id
               );
+
+              eventEmitter.removeAllListeners([listenerName]);
               logEvent(chat, `Add player: ${nickname}`);
               await telegramEditMessage(
                 { text, options },
@@ -242,8 +269,6 @@ function initTelegramBotListener() {
                   ...modifyTeamMarkup,
                 }
               );
-              await telegramDeleteMessage(opts.chat_id, message_id);
-              await telegramDeleteMessage(opts.chat_id, bot_message_id);
             }
           );
         });

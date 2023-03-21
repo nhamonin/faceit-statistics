@@ -1,13 +1,13 @@
 import { Players } from 'faceit-node-api';
 
 import { Player } from '#models';
-import { game_id, MAX_MATCHES_PER_REQUEST } from '#config';
+import { game_id } from '#config';
 import { getPlayerInfo, getDaysBetweenDates, getHighestEloMatch } from '#utils';
 
-export const getHighestElo = async (playerNickname) => {
+export const getHighestElo = async (nickname, chat_id) => {
   try {
     const players = new Players();
-    const playerInDB = await Player.findOne({ nickname: playerNickname });
+    const playerInDB = await Player.findOne({ nickname });
     let player_id, currentElo, highestElo, highestEloDate;
 
     if (playerInDB) {
@@ -17,7 +17,7 @@ export const getHighestElo = async (playerNickname) => {
       highestEloDate = playerInDB.highestEloDate;
     } else {
       const playerInfo = await getPlayerInfo({
-        playerNickname,
+        playerNickname: nickname,
       });
       player_id = playerInfo.player_id;
       currentElo = playerInfo.elo;
@@ -26,7 +26,7 @@ export const getHighestElo = async (playerNickname) => {
     if (!player_id)
       return {
         text: 'playerNotExistsError',
-        options: { nickname: playerNickname },
+        options: { nickname },
       };
 
     let diffElo = currentElo - highestElo;
@@ -36,7 +36,7 @@ export const getHighestElo = async (playerNickname) => {
       return {
         text: `highestElo.${diffElo < 0 ? 'default' : 'peakElo'}`,
         options: {
-          nickname: playerNickname,
+          nickname,
           highestElo,
           highestEloDate,
           diffElo,
@@ -52,7 +52,9 @@ export const getHighestElo = async (playerNickname) => {
     const playerMatchesAmount = +playerStatistics?.lifetime?.Matches || 0;
     const highestEloMatch = await getHighestEloMatch(
       player_id,
-      playerMatchesAmount
+      playerMatchesAmount,
+      nickname,
+      chat_id
     );
     highestElo = highestEloMatch?.elo || currentElo;
     highestEloDate = highestEloMatch?.date
@@ -70,7 +72,7 @@ export const getHighestElo = async (playerNickname) => {
     return {
       text: `highestElo.${diffElo < 0 ? 'default' : 'peakElo'}`,
       options: {
-        nickname: playerNickname,
+        nickname,
         highestElo,
         highestEloDate,
         diffElo,

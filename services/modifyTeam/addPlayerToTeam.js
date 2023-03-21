@@ -24,7 +24,7 @@ export const addPlayer = async (playerNickname, chat_id) => {
     if (isPlayerTeamMember(players, playerNickname)) {
       return {
         text: 'addPlayer.exists',
-        options: { playerNickname, playersNicknames },
+        options: { nickname: playerNickname, teamNicknames: playersNicknames },
       };
     } else if (playerInDB) {
       team.players.push(playerInDB);
@@ -49,7 +49,7 @@ export const addPlayer = async (playerNickname, chat_id) => {
         playersNicknames,
       });
       if (error) return errorMessage;
-      const { options } = await getHighestElo(nickname);
+      const { options } = await getHighestElo(nickname, chat_id);
       const player = new Player({
         _id: player_id,
         player_id,

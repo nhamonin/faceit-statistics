@@ -13,6 +13,7 @@ import {
   localizeDate,
   wait,
   getLangByChatID,
+  getEventEmitter,
 } from './basic.js';
 // express
 import { startExpressServer } from './express/startExpressServer.js';
@@ -65,6 +66,7 @@ export {
   localizeDate,
   wait,
   getLangByChatID,
+  getEventEmitter,
   startExpressServer,
   getPlayerInfo,
   getPlayerMatches,

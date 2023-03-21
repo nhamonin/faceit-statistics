@@ -1,7 +1,17 @@
 import { getHighAmountOfPlayerLastMatches } from '#utils';
 
-export async function getHighestEloMatch(player_id, matches) {
-  const allMatches = await getHighAmountOfPlayerLastMatches(player_id, matches);
+export async function getHighestEloMatch(
+  player_id,
+  matches,
+  nickname,
+  chat_id
+) {
+  const allMatches = await getHighAmountOfPlayerLastMatches(
+    player_id,
+    matches,
+    nickname,
+    chat_id
+  );
 
   const highestEloMatch = allMatches
     .filter(({ elo }) => elo)

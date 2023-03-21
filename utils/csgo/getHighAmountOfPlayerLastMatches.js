@@ -1,7 +1,14 @@
 import { MAX_MATCHES_PER_REQUEST } from '#config';
-import { getPlayerMatches } from '#utils';
+import { getPlayerMatches, getEventEmitter } from '#utils';
 
-export async function getHighAmountOfPlayerLastMatches(player_id, amount = 20) {
+const eventEmitter = getEventEmitter();
+
+export async function getHighAmountOfPlayerLastMatches(
+  player_id,
+  amount = 20,
+  nickname,
+  chat_id
+) {
   try {
     const pages = [
       ...Array(Math.ceil(amount / MAX_MATCHES_PER_REQUEST)).keys(),
@@ -18,6 +25,15 @@ export async function getHighAmountOfPlayerLastMatches(player_id, amount = 20) {
       if (!matches?.length) break;
 
       res.push(...matches);
+
+      eventEmitter.emit(
+        `addingPlayerProcess-${chat_id}-${nickname}`,
+        'addPlayer.progressLevel',
+        {
+          nickname,
+          percentage: ((page / pages.length) * 100).toFixed(1),
+        }
+      );
     }
     return res;
   } catch (e) {

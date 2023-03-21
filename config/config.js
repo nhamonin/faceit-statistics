@@ -88,6 +88,9 @@ const loggedInCookie = {
 const ERROR_TELEGRAM_FORBIDDEN = 'ETELEGRAM: 403 Forbidden:';
 const statsNumberArray = [10, 20, 50];
 const chatToGetNotifications = -886965844;
+const eventEmitter = {
+  main: null,
+};
 
 export {
   isProduction,
@@ -117,4 +120,5 @@ export {
   ERROR_TELEGRAM_FORBIDDEN,
   statsNumberArray,
   chatToGetNotifications,
+  eventEmitter,
 };
