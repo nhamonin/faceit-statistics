@@ -85,6 +85,9 @@ export const playerSchema = new Schema(
     highestEloDate: {
       type: Date,
     },
+    matches: {
+      type: Array,
+    },
   },
   { timestamp: true }
 );

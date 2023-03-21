@@ -454,33 +454,7 @@ function initTelegramBotListener() {
         {
           const nickname = callbackQuery.data.split('?')[1];
 
-          if (nickname !== 'custom') {
-            await getHighestEloWrapper(nickname, teamNicknames, opts, msg.chat);
-          } else {
-            telegramSendMessage(
-              opts.chat_id,
-              { text: 'sendPlayerNickname' },
-              {
-                ...defaultOpts,
-              }
-            ).then(async ({ message_id: bot_message_id }) => {
-              await tBot.onReplyToMessage(
-                opts.chat_id,
-                bot_message_id,
-                async ({ text: nickname, message_id }) => {
-                  logEvent(msg.chat, `Get Highest Elo: ${nickname}`);
-                  await telegramDeleteMessage(opts.chat_id, message_id);
-                  await telegramDeleteMessage(opts.chat_id, bot_message_id);
-                  await getHighestEloWrapper(
-                    nickname,
-                    teamNicknames,
-                    opts,
-                    msg.chat
-                  );
-                }
-              );
-            });
-          }
+          await getHighestEloWrapper(nickname, teamNicknames, opts, msg.chat);
         }
         break;
       case 'settingsMenu':

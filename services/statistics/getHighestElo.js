@@ -50,10 +50,10 @@ export const getHighestElo = async (playerNickname) => {
       game_id
     );
     const playerMatchesAmount = +playerStatistics?.lifetime?.Matches || 0;
-    const requestsAmount =
-      Math.floor(playerMatchesAmount / MAX_MATCHES_PER_REQUEST) + 1;
-    const pages = [...Array(requestsAmount).keys()];
-    const highestEloMatch = await getHighestEloMatch(player_id, pages);
+    const highestEloMatch = await getHighestEloMatch(
+      player_id,
+      playerMatchesAmount
+    );
     highestElo = highestEloMatch?.elo || currentElo;
     highestEloDate = highestEloMatch?.date
       ? new Date(highestEloMatch?.date)

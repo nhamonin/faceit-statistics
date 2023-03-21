@@ -11,12 +11,6 @@ export const getHighestEloMenu = (teamNicknames) => ({
             text: nickname,
             callback_data: `getHighestElo?${nickname}`,
           })),
-          ...[
-            {
-              text: 'buttons.basic.custom',
-              callback_data: 'getHighestElo?custom',
-            },
-          ],
         ],
         numberOfButtonsInRows
       ),

@@ -3,13 +3,16 @@ import { getPlayerMatches } from '#utils';
 
 export async function getHighAmountOfPlayerLastMatches(player_id, amount = 20) {
   try {
-    const pages = Math.ceil(amount / MAX_MATCHES_PER_REQUEST);
+    const pages = [
+      ...Array(Math.ceil(amount / MAX_MATCHES_PER_REQUEST)).keys(),
+    ];
     const res = [];
-    for (let i = 0; i < pages; i++) {
+
+    for await (const page of pages) {
       const matches = await getPlayerMatches(
         player_id,
         MAX_MATCHES_PER_REQUEST,
-        i
+        page
       );
 
       if (!matches?.length) break;

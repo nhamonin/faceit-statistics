@@ -49,6 +49,7 @@ export const addPlayer = async (playerNickname, chat_id) => {
         playersNicknames,
       });
       if (error) return errorMessage;
+      const { options } = await getHighestElo(nickname);
       const player = new Player({
         _id: player_id,
         player_id,
@@ -59,10 +60,11 @@ export const addPlayer = async (playerNickname, chat_id) => {
         avg,
         hs,
         winrate,
+        highestElo: options?.highestElo,
+        highestEloDate: options?.highestEloDate,
       });
       player.save().then(async () => {
         webhookMgr.addPlayersToList([player.player_id]);
-        await getHighestElo(nickname);
         console.log(
           `Player ${player.nickname} was added to the team from the Faceit API.`,
           new Date().toLocaleString()
