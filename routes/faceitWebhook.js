@@ -46,9 +46,11 @@ router.post('/webhook', async (req, res) => {
               try {
                 await db('temp_prediction').insert({
                   match_id,
-                  predictions,
+                  predictions: JSON.stringify(predictions),
                 });
-              } catch (e) {}
+              } catch (e) {
+                console.log(e);
+              }
             }
           }
         }
