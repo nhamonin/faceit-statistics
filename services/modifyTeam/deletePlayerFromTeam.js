@@ -1,11 +1,16 @@
-import { Player, Team } from '#models';
-import { isPlayerTeamMember, webhookMgr, getTeamNicknames } from '#utils';
+import {
+  db,
+  isPlayerTeamMember,
+  webhookMgr,
+  getTeamNicknames,
+  getPlayersByChatId,
+} from '#utils';
 
 export const deletePlayer = async (playerNickname, chat_id) => {
   try {
-    const team = await Team.findOne({ chat_id });
+    const team = await db('team').where({ chat_id }).first();
     if (!team) return { text: 'teamNotExistsError' };
-    const { players } = await team.populate('players');
+    const players = await getPlayersByChatId(chat_id);
 
     if (!isPlayerTeamMember(players, playerNickname)) {
       return {
@@ -15,29 +20,22 @@ export const deletePlayer = async (playerNickname, chat_id) => {
     }
 
     const noPlayersInTeamAfterDeletion = players.length === 1;
-    const playerInDB = await Player.findOne({ nickname: playerNickname });
+    const playerInDB = await db('player')
+      .where({ nickname: playerNickname })
+      .first();
 
-    return await Team.findOneAndUpdate(
-      { chat_id },
-      {
-        $pullAll: {
-          players: [{ _id: playerInDB._id }],
-        },
-      }
-    )
+    return await db('team_player')
+      .where({ chat_id, player_id: playerInDB.player_id })
+      .del()
       .then(async () => {
-        const teams = await Team.find({
-          players: playerInDB._id,
+        const teamsWithPlayer = await db('team_player').where({
+          player_id: playerInDB.player_id,
         });
-        if (teams.length) return;
-        Player.findByIdAndRemove({ _id: playerInDB._id }, () => {
-          webhookMgr.removePlayersFromList([playerInDB.player_id]);
-        });
+        if (teamsWithPlayer.length) return;
+        webhookMgr.removePlayersFromList([playerInDB.player_id]);
       })
       .then(async () => {
-        const updatedTeam = await Team.findOne({ chat_id });
-
-        await updatedTeam.populate('players');
+        const players = await getPlayersByChatId(chat_id);
 
         return noPlayersInTeamAfterDeletion
           ? { text: 'deletePlayer.lastWasDeleted' }
@@ -45,7 +43,7 @@ export const deletePlayer = async (playerNickname, chat_id) => {
               text: 'deletePlayer.success',
               options: {
                 nickname: playerNickname,
-                teamNicknames: getTeamNicknames(updatedTeam).join(', '),
+                teamNicknames: getTeamNicknames(players).join(', '),
               },
             };
       });

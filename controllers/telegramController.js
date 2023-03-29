@@ -1,4 +1,3 @@
-import { Team, MatchPrediction, TempPrediction } from '#models';
 import { getEloTemplate, getSummaryStatsTemplate } from '#templates';
 import {
   initTeam,
@@ -23,6 +22,7 @@ import {
   chooseLanguageMarkup,
 } from '#telegramReplyMarkup';
 import {
+  db,
   sendPhoto,
   getBasicTelegramOptions,
   getTeamKDWrapper,
@@ -37,6 +37,7 @@ import {
   telegramEditMessage,
   webhookMgr,
   getEventEmitter,
+  getPlayersByChatId,
 } from '#utils';
 import { syncWebhookStaticListWithDB } from '#jobs';
 
@@ -49,9 +50,9 @@ function initTelegramBotListener() {
   const tBot = getTelegramBot();
 
   tBot.onText(/\/start/, async ({ chat }) => {
-    const team = await initTeam(chat);
-    const { players } = await team.populate('players');
-    const text = players.length ? 'welcomeBack' : 'start';
+    await initTeam(chat);
+    const players = await getPlayersByChatId(chat.id);
+    const text = players?.length ? 'welcomeBack' : 'start';
     const options = {
       players: players.map(({ nickname }) => nickname).join(', '),
     };
@@ -67,8 +68,9 @@ function initTelegramBotListener() {
   });
 
   tBot.onText(/\/get_analytics/, async ({ chat, message_id }) => {
-    const matchPrediction = await MatchPrediction.findOne().lean();
-    const tempMatchesCount = await TempPrediction.countDocuments();
+    const matchPrediction = await db('match_prediction').first();
+    const result = await db('temp_prediction').count('* as count');
+    const tempMatchesCount = result.length > 0 ? result[0].count : 0;
     const totalMatches = matchPrediction?.totalMatches || 0;
     const avgPredictions = matchPrediction?.avgPredictions || 0;
     const winratePrediction = matchPrediction?.winratePredictions || 0;
@@ -99,8 +101,8 @@ function initTelegramBotListener() {
 
   tBot.onText(/\/delete_analytics/, async ({ chat, message_id }) => {
     await Promise.allSettled([
-      MatchPrediction.deleteMany(),
-      TempPrediction.deleteMany(),
+      db('match_prediction').delete(),
+      db('temp_prediction').delete(),
     ]);
 
     await telegramSendMessage(
@@ -153,9 +155,7 @@ function initTelegramBotListener() {
   );
 
   tBot.onText(/\/update_players/, async ({ chat, message_id }) => {
-    const teams = (await Team.find().select('chat_id').lean()).map(
-      ({ chat_id }) => chat_id
-    );
+    const teams = await db('team').pluck('chat_id');
 
     for await (const team of teams) {
       await updateTeamPlayers(team);
@@ -182,10 +182,9 @@ function initTelegramBotListener() {
       message_id: msg.message_id,
       ...defaultOpts,
     };
-    const team = await Team.findOne({ chat_id: opts.chat_id }).populate(
-      'players'
-    );
-    const teamNicknames = getTeamNicknames(team);
+    const team = await db('team').where({ chat_id: opts.chat_id }).first();
+    const players = await getPlayersByChatId(opts.chat_id);
+    const teamNicknames = getTeamNicknames(players);
     const subscriptions = team.settings.subscriptions;
     const lang = team.settings.lang;
     const isCalculateBestMapsSubscribed =
@@ -500,7 +499,14 @@ function initTelegramBotListener() {
 
           subscriptions[type][name] = action === 'subscribe';
           logEvent(msg.chat, `${action}d ${name} subscription`);
-          await team.save();
+          await db('team')
+            .where({ chat_id: team.chat_id })
+            .update({
+              settings: JSON.stringify({
+                ...team.settings,
+                subscriptions: subscriptions,
+              }),
+            });
           await telegramEditMessage(
             { text: `subscriptions.${name}.${action}d` },
             {
@@ -543,7 +549,11 @@ function initTelegramBotListener() {
 
         logEvent(msg.chat, `Changed language to ${newLanguage}`);
         team.settings.lang = newLanguage;
-        await team.save();
+        await db('team')
+          .where({ chat_id: team.chat_id })
+          .update({
+            settings: JSON.stringify(team.settings),
+          });
         await telegramEditMessage(
           {
             text: `buttons.chooseLanguage.${newLanguage}.changedTo`,

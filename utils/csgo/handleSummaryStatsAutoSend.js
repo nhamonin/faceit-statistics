@@ -1,6 +1,5 @@
-import { Team } from '#models';
 import { getSummaryStats } from '#services';
-import { telegramSendMessage, sendPhoto } from '#utils';
+import { db, telegramSendMessage, sendPhoto } from '#utils';
 import { getSummaryStatsTemplate } from '#templates';
 import { subscriptionReceivedMarkup } from '#telegramReplyMarkup';
 import { caches } from '#config';
@@ -13,7 +12,7 @@ export async function handleSummaryStatsAutoSend(matchID, chatIDs) {
   }, 1000 * 10);
 
   chatIDs.map(async (chat_id) => {
-    const team = await Team.findOne({ chat_id });
+    const team = await db('team').where({ chat_id }).first();
     const statusFinishedSubscriptions =
       team.settings.subscriptions.match_status_finished;
     if (!statusFinishedSubscriptions.summaryStats) return;

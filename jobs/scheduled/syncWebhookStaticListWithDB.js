@@ -1,11 +1,8 @@
-import { Player } from '#models';
-import { webhookMgr, chunk } from '#utils';
+import { db, webhookMgr, chunk } from '#utils';
 
 export async function syncWebhookStaticListWithDB() {
   try {
-    const playersIDs = (
-      await Player.find().select('player_id -_id').lean()
-    ).map(({ player_id }) => player_id);
+    const playersIDs = await db('player').pluck('player_id');
     const { restrictions } = await webhookMgr.getWebhookDataPayload();
 
     const playersIDsNotInWebHook = playersIDs.filter((player_id) => {

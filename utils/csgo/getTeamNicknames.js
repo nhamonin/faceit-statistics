@@ -1,3 +1,3 @@
-export function getTeamNicknames(team) {
-  return team?.players?.map(({ nickname }) => nickname) || [];
+export function getTeamNicknames(players) {
+  return players?.map(({ nickname }) => nickname) || [];
 }

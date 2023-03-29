@@ -1,8 +1,13 @@
 import TelegramBot from 'node-telegram-bot-api';
 import i18next from 'i18next';
 
-import { Team, Player } from '#models';
-import { webhookMgr, getLangByChatID } from '#utils';
+import {
+  db,
+  getPlayersByChatId,
+  getTeamsByPlayerId,
+  webhookMgr,
+  getLangByChatID,
+} from '#utils';
 import {
   isProduction,
   bots,
@@ -100,26 +105,25 @@ export async function telegramSendMessage(chat_id, i18opts, opts) {
 }
 
 export async function handleBlockedToSendMessage(chat_id) {
-  const team = await Team.findOne({ chat_id }).populate('players');
+  const team = await db('team').where({ chat_id }).first();
   if (!team) return;
-  const { players } = team;
+  const players = await getPlayersByChatId(chat_id);
 
-  team.delete().then(async () => {
-    players.forEach(async (player) => {
-      const teams = await Team.find({
-        players: player._id,
-      });
-      if (teams.length) return;
-      Player.findByIdAndRemove({ _id: player._id }, () => {
+  await team.del();
+
+  players.forEach(async (player) => {
+    const teams = await getTeamsByPlayerId(player.player_id);
+    if (teams.length) return;
+    await db('player')
+      .where({ player_id: player.player_id })
+      .del()
+      .then(() => {
         webhookMgr.removePlayersFromList([player.player_id]);
       });
 
-      console.log(
-        `Successfully deleted team ${
-          team.username || team.title || team.chat_id
-        }`
-      );
-    });
+    console.log(
+      `Successfully deleted team ${team.username || team.title || team.chat_id}`
+    );
   });
 }
 

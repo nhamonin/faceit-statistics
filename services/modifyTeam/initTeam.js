@@ -1,18 +1,17 @@
-import { Team } from '#models';
+import { db } from '#utils';
 import { logEvent } from '#utils';
 
 export const initTeam = async ({ id, first_name, username, title, type }) => {
   try {
-    let team = await Team.findOne({ chat_id: id });
+    let team = await db('team').where({ chat_id: id }).first();
 
     if (!team) {
-      team = new Team({
+      team = {
         chat_id: id,
         type,
         username,
         first_name,
         title,
-        players: [],
         settings: {
           lang: 'en',
           lastMatches: 20,
@@ -25,9 +24,10 @@ export const initTeam = async ({ id, first_name, username, title, type }) => {
             },
           },
         },
-      });
+      };
+
+      await db('team').insert(team);
       logEvent({ username, title, id }, 'Init team');
-      await team.save();
     }
 
     return team;

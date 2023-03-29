@@ -1,12 +1,11 @@
-import { Team } from '#models';
 import { deletePlayer } from '#services';
-import { webhookMgr } from '#utils';
+import { db, getPlayersByChatId, webhookMgr } from '#utils';
 
 export const resetTeam = async (chat_id) => {
   try {
-    const team = await Team.findOne({ chat_id });
+    const team = await db('team').where({ chat_id }).first();
     if (!team) return { text: 'resetTeam.notExists' };
-    const { players } = await team.populate('players');
+    const players = await getPlayersByChatId(chat_id);
     const playersIDs = players.map(({ player_id }) => player_id);
 
     players.forEach((player) => {

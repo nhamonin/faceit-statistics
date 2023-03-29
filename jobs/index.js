@@ -1,3 +1,6 @@
-import { syncWebhookStaticListWithDB } from './syncWebhookStaticListWithDB.js';
+import { syncWebhookStaticListWithDB } from './scheduled/syncWebhookStaticListWithDB.js';
+import { deleteOldTempPredictions } from './scheduled/deleteOldTempPredictions.js';
 
-export { syncWebhookStaticListWithDB };
+import { runCrons } from './runCrons.js';
+
+export { syncWebhookStaticListWithDB, deleteOldTempPredictions, runCrons };

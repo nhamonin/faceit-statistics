@@ -29,7 +29,10 @@ import { handleBlockedToSendMessage } from './telegram/telegram.js';
 import { webhookMgr } from './webhook/webhookMgr.js';
 import { getCurrentBearerToken } from './webhook/getCurrentBearerToken.js';
 // db
+import db from './db/postgres.js';
 import connectDB from './db/mongo.js';
+import { getPlayersByChatId } from './db/getPlayersByChatId.js';
+import { getTeamsByPlayerId } from './db/getTeamsByPlayerId.js';
 // csgo
 import { getPlayerMatches } from './csgo/getPlayerMatches.js';
 import { getHighAmountOfPlayerLastMatches } from './csgo/getHighAmountOfPlayerLastMatches.js';
@@ -89,7 +92,10 @@ export {
   handleBlockedToSendMessage,
   webhookMgr,
   getCurrentBearerToken,
+  db,
   connectDB,
+  getPlayersByChatId,
+  getTeamsByPlayerId,
   getMatchData,
   getHighestEloMatch,
   getClass,

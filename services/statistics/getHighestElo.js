@@ -1,13 +1,17 @@
 import { Players } from 'faceit-node-api';
 
-import { Player } from '#models';
 import { game_id } from '#config';
-import { getPlayerInfo, getDaysBetweenDates, getHighestEloMatch } from '#utils';
+import {
+  db,
+  getPlayerInfo,
+  getDaysBetweenDates,
+  getHighestEloMatch,
+} from '#utils';
 
 export const getHighestElo = async (nickname, chat_id) => {
   try {
     const players = new Players();
-    const playerInDB = await Player.findOne({ nickname });
+    const playerInDB = await db('player').where({ nickname }).first();
     let player_id, currentElo, highestElo, highestEloDate;
 
     if (playerInDB) {
@@ -66,7 +70,7 @@ export const getHighestElo = async (nickname, chat_id) => {
     if (playerInDB) {
       playerInDB.highestElo = highestElo;
       playerInDB.highestEloDate = highestEloDate;
-      playerInDB.save();
+      await db('player').where({ player_id }).update(playerInDB);
     }
 
     return {

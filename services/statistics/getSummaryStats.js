@@ -1,12 +1,11 @@
 import { readFileSync } from 'node:fs';
 
-import { Team } from '#models';
-import { getClass } from '#utils';
+import { db, getPlayersByChatId, getClass } from '#utils';
 
 export const getSummaryStats = async (chat_id) => {
-  const team = await Team.findOne({ chat_id });
+  const team = await db('team').where({ chat_id }).first();
   if (!team) return { text: 'teamNotExistError', error: true };
-  const { players } = await team.populate('players');
+  const players = await getPlayersByChatId(chat_id);
   const isTeamEmpty = !players || players?.length === 0;
   const statAttribute = 'summary statistics';
 

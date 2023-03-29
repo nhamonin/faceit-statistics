@@ -2,8 +2,8 @@ import { EventEmitter } from 'node:events';
 
 import puppeteer from 'puppeteer-extra';
 
-import { Team } from '#models';
 import {
+  db,
   getBasicTelegramOptions,
   handleBlockedToSendMessage,
   telegramSendMessage,
@@ -132,7 +132,7 @@ function regulateAvg(value) {
 
 function getDaysBetweenDates(date1, date2) {
   const diffTime = Math.abs(date2 - date1);
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return Math.floor(diffTime / (1000 * 60 * 60 * 24));
 }
 
 function localizeDate(date, locale) {
@@ -148,7 +148,7 @@ async function wait(ms) {
 }
 
 async function getLangByChatID(chat_id) {
-  const { settings } = await Team.findOne({ chat_id });
+  const { settings } = await db('team').where({ chat_id }).first();
 
   return settings.lang;
 }

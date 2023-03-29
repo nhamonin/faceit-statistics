@@ -1,5 +1,4 @@
-import { Player, Team } from '#models';
-import { getPlayerInfo } from '#utils';
+import { db, getPlayersByChatId, getPlayerInfo } from '#utils';
 import { getHighestElo } from '#services';
 import { caches } from '#config';
 
@@ -10,11 +9,11 @@ export const updateTeamPlayers = async (chat_id) => {
     caches.updateTeamPlayers.delete(chat_id);
   }, 1000 * 60);
   try {
-    const team = await Team.findOne({ chat_id });
+    const team = await db('team').where({ chat_id }).first();
     if (!team) return { text: 'teamNotExistError' };
-    const teamPlayerIDs = await team
-      .populate('players')
-      .then(({ players }) => players.map(({ player_id }) => player_id));
+    const teamPlayerIDs = (await getPlayersByChatId(chat_id)).map(
+      ({ player_id }) => player_id
+    );
     const playersStats = await Promise.all(
       teamPlayerIDs.map((player_id) => getPlayerInfo({ playerID: player_id }))
     );
@@ -29,18 +28,24 @@ export const updateTeamPlayers = async (chat_id) => {
       hs,
       winrate,
     } of playersStats) {
-      await Player.findOneAndUpdate(
-        { player_id },
-        { nickname, elo, lvl, kd, avg, hs, winrate }
-      ).then(async ({ elo, highestElo, highestEloDate }) => {
-        await getHighestElo(nickname);
-        if (highestElo && highestEloDate && elo >= highestElo) {
-          Player.findOneAndUpdate(
-            { player_id },
-            { highestElo: elo, highestEloDate: new Date() }
-          ).then(() => {});
-        }
-      });
+      db('player')
+        .where({ player_id })
+        .update({ nickname, elo, lvl, kd, avg, hs, winrate })
+        .then(async () => {
+          const {
+            elo: updatedElo,
+            highestElo,
+            highestEloDate,
+          } = await db('player').where({ player_id }).first();
+
+          await getHighestElo(nickname);
+
+          if (highestElo && highestEloDate && updatedElo >= highestElo) {
+            await db('player')
+              .where({ player_id })
+              .update({ highestElo: updatedElo, highestEloDate: new Date() });
+          }
+        });
     }
 
     return { text: 'updateTeamPlayers.success' };

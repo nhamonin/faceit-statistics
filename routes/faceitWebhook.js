@@ -2,9 +2,10 @@ import { clearInterval } from 'node:timers';
 
 import express from 'express';
 
-import { TempPrediction, Team } from '#models';
 import { updateTeamPlayers } from '#services';
 import {
+  db,
+  getTeamsByPlayerId,
   calculateBestMaps,
   performMapPickerAnalytics,
   getMatchData,
@@ -37,15 +38,16 @@ router.post('/webhook', async (req, res) => {
           clearInterval(interval);
           const predictions = await calculateBestMaps(matchData);
           if (predictions?.length) {
-            const prediction = await TempPrediction.findOne({ match_id });
+            const prediction = await db('temp_prediction')
+              .where({ match_id })
+              .first();
 
             if (!prediction) {
               try {
-                const newPrediction = new TempPrediction({
+                await db('temp_prediction').insert({
                   match_id,
                   predictions,
                 });
-                await newPrediction.save();
               } catch (e) {}
             }
           }
@@ -71,9 +73,7 @@ router.post('/webhook', async (req, res) => {
       const updatedTeams = new Map();
 
       for await (const player_id of playersIDs) {
-        const teams = await Team.find({
-          players: player_id,
-        });
+        const teams = await getTeamsByPlayerId(player_id);
 
         if (teams.length) {
           for await (const team of teams) {
