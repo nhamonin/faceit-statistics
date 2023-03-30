@@ -55,7 +55,7 @@ function formatText(team, players) {
               )}">${player.highestElo}</div>
               <div class="stats-value__item ${getClass.winrate(
                 player.winrate.lifetime
-              )} percent">${player.winrate.lifetime}
+              )} percent">${(+player.winrate.lifetime).toFixed(2)}
             </div>
           </div>
         </div>
@@ -69,13 +69,15 @@ function formatText(team, players) {
             <div class="stats-value-wrapper">
               <div class="stats-value__item ${getClass.kd(
                 player.kd[`last${lastMatchesSetting}`]
-              )}">${player.kd[`last${lastMatchesSetting}`]}</div>
+              )}">${player.kd[`last${lastMatchesSetting}`].toFixed(2)}</div>
               <div class="stats-value__item ${getClass.avg(
                 player.avg[`last${lastMatchesSetting}`]
-              )}">${player.avg[`last${lastMatchesSetting}`]}</div>
+              )}">${player.avg[`last${lastMatchesSetting}`].toFixed(2)}</div>
               <div class="stats-value__item ${getClass.hs(
                 player.hs[`last${lastMatchesSetting}`]
-              )} percent">${player.hs[`last${lastMatchesSetting}`]}</div>
+              )} percent">${player.hs[`last${lastMatchesSetting}`].toFixed(
+          2
+        )}</div>
             </div>
           </div>
         </div>
