@@ -23,7 +23,6 @@ db.schema
     table.string('nickname').notNullable();
     table.integer('elo').notNullable();
     table.integer('lvl').notNullable();
-    table.boolean('premium').notNullable();
     table.json('kd').notNullable();
     table.json('avg').notNullable();
     table.json('winrate').notNullable();
