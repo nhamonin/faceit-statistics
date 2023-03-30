@@ -148,9 +148,9 @@ async function wait(ms) {
 }
 
 async function getLangByChatID(chat_id) {
-  const { settings } = await db('team').where({ chat_id }).first();
+  const team = await db('team').where({ chat_id }).first();
 
-  return settings.lang;
+  return team?.settings?.lang || 'en';
 }
 
 function getEventEmitter() {
