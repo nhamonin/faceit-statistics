@@ -30,7 +30,6 @@ import { webhookMgr } from './webhook/webhookMgr.js';
 import { getCurrentBearerToken } from './webhook/getCurrentBearerToken.js';
 // db
 import db from './db/postgres.js';
-import connectDB from './db/mongo.js';
 import { getPlayersByChatId } from './db/getPlayersByChatId.js';
 import { getTeamsByPlayerId } from './db/getTeamsByPlayerId.js';
 // csgo
