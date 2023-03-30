@@ -74,8 +74,8 @@ function initTelegramBotListener() {
     const totalMatches = matchPrediction?.totalMatches || 0;
     const avgPredictions = matchPrediction?.avgPredictions || 0;
     const winratePrediction = matchPrediction?.winratePredictions || 0;
-    const restrictions = (await webhookMgr.getWebhookDataPayload())
-      .restrictions;
+    const dataPayload = await webhookMgr.getWebhookDataPayload();
+    const restrictions = dataPayload?.restrictions;
     const webhookListLength = restrictions?.length || 0;
     const text = [
       `winrate predictions: ${(
