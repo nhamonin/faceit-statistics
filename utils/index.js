@@ -92,7 +92,6 @@ export {
   webhookMgr,
   getCurrentBearerToken,
   db,
-  connectDB,
   getPlayersByChatId,
   getTeamsByPlayerId,
   getMatchData,
