@@ -72,7 +72,7 @@ function formatText(team, players) {
               )}">${player.kd[`last${lastMatchesSetting}`].toFixed(2)}</div>
               <div class="stats-value__item ${getClass.avg(
                 player.avg[`last${lastMatchesSetting}`]
-              )}">${player.avg[`last${lastMatchesSetting}`].toFixed(2)}</div>
+              )}">${player.avg[`last${lastMatchesSetting}`].toFixed(1)}</div>
               <div class="stats-value__item ${getClass.hs(
                 player.hs[`last${lastMatchesSetting}`]
               )} percent">${player.hs[`last${lastMatchesSetting}`].toFixed(
