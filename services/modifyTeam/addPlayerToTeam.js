@@ -50,6 +50,7 @@ export const addPlayer = async (playerNickname, chat_id) => {
         winrate,
         error,
         errorMessage,
+        errorOptions,
       } = await getPlayerInfo({
         playerNickname,
         playersNicknames,
@@ -57,6 +58,7 @@ export const addPlayer = async (playerNickname, chat_id) => {
       if (error)
         return {
           text: errorMessage,
+          options: errorOptions,
         };
       const { options } = await getHighestElo(nickname, chat_id);
       const player = {

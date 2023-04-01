@@ -29,9 +29,9 @@ export async function getPlayerInfo({
     console.log(e);
     return {
       error: true,
-      errorMessage: {
-        text: 'addPlayer.notExists',
-        options: { nickname: playerNickname, teamNicknames: playersNicknames },
+      errorMessage: 'addPlayer.notExists',
+      errorOptions: {
+        nickname: playerNickname,
       },
     };
   }

@@ -18,7 +18,7 @@
       "success": "Player <b>{{ nickname }}</b> was added.\nYour team: <b>{{ teamNicknames }}</b>.",
       "sendNickname": "Send <b>nickname</b> of the player you want to add.",
       "exists": "Sorry, but player <b>{{ nickname }}</b> already exists in your team. Try to add another player.\nYour team: <b>{{ teamNicknames }}</b>.",
-      "notExists": "Sorry, but player <b>{{ nickname }}</b> doesn't exist. Try to add another player.\nYour team: <b>{{ teamNicknames }}</b>.",
+      "notExists": "Sorry, but player <b>{{ nickname }}</b> doesn't exist. Try to add another player.",
       "maxPlayersAmount": "Sorry, but you can't add more players. Try to delete the existing one to add a new one.\nYour team: <b>{{ teamNicknames }}</b>."
     },
     "deletePlayer": {
