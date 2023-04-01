@@ -4,11 +4,11 @@ export const mainMenuMarkup = {
       [
         {
           text: 'buttons.menu.statistics',
-          callback_data: 'getStats',
+          callback_data: 'getStatsMenu',
         },
         {
           text: 'buttons.menu.modifyTeam',
-          callback_data: 'modifyTeamMarkup',
+          callback_data: 'modifyTeamMenu',
         },
       ],
       [

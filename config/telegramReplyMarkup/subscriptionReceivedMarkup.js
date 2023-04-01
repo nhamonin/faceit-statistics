@@ -11,7 +11,7 @@ export const subscriptionReceivedMarkup = (
         },
         {
           text: 'buttons.subscriptions.unsubscribe',
-          callback_data: `subscription?unsubscribe-${subscriptionType}-${subscriptionName}`,
+          callback_data: `manageSubscriptions?unsubscribe-${subscriptionType}-${subscriptionName}`,
         },
       ],
       [

@@ -17,7 +17,7 @@ export const deletePlayerMarkup = (teamNicknames) => ({
       [
         {
           text: 'buttons.basic.back',
-          callback_data: 'modifyTeamMarkup',
+          callback_data: 'modifyTeamMenu',
         },
         {
           text: 'buttons.basic.menu',

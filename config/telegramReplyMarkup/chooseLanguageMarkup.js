@@ -18,7 +18,7 @@ export const chooseLanguageMarkup = (currentLang) => ({
       [
         {
           text: 'buttons.basic.back',
-          callback_data: 'modifyTeamMarkup',
+          callback_data: 'modifyTeamMenu',
         },
         {
           text: 'buttons.basic.menu',

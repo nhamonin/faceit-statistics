@@ -4,11 +4,11 @@ export const settingsMarkup = {
       [
         {
           text: 'buttons.settings.subscriptions',
-          callback_data: 'manageSubscriptions',
+          callback_data: 'manageSubscriptionsMenu',
         },
         {
           text: 'buttons.settings.language',
-          callback_data: 'chooseLanguage',
+          callback_data: 'chooseLanguageMenu',
         },
       ],
       [

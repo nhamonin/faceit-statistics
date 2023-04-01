@@ -4,7 +4,7 @@ export const getStatsMarkup = {
       [
         {
           text: 'buttons.stats.summary',
-          callback_data: 'getSummaryStatsMenu',
+          callback_data: 'getSummaryStats',
         },
         {
           text: 'buttons.stats.kd',

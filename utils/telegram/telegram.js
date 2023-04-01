@@ -25,10 +25,11 @@ export function getBasicTelegramOptions(message_id) {
   };
 }
 
-export function getCallbackTelegramOptions() {
+export function getDefaultTelegramCallbackOptions() {
   return {
     disable_notification: true,
     parse_mode: 'html',
+    reply_markup: { force_reply: true },
   };
 }
 

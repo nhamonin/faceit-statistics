@@ -20,7 +20,7 @@ import { startExpressServer } from './express/startExpressServer.js';
 // telegram
 import { getTelegramBot } from './telegram/telegram.js';
 import { getBasicTelegramOptions } from './telegram/telegram.js';
-import { getCallbackTelegramOptions } from './telegram/telegram.js';
+import { getDefaultTelegramCallbackOptions } from './telegram/telegram.js';
 import { telegramSendMessage } from './telegram/telegram.js';
 import { telegramEditMessage } from './telegram/telegram.js';
 import { telegramDeleteMessage } from './telegram/telegram.js';
@@ -84,7 +84,7 @@ export {
   prettifyMapPickerData,
   getTelegramBot,
   getBasicTelegramOptions,
-  getCallbackTelegramOptions,
+  getDefaultTelegramCallbackOptions,
   telegramSendMessage,
   telegramEditMessage,
   telegramDeleteMessage,
