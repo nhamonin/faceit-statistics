@@ -110,7 +110,7 @@ export async function handleBlockedToSendMessage(chat_id) {
   if (!team) return;
   const players = await getPlayersByChatId(chat_id);
 
-  await team.del();
+  await db('team').where({ chat_id }).del();
 
   players.forEach(async (player) => {
     const teams = await getTeamsByPlayerId(player.player_id);
