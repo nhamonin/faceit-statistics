@@ -42,10 +42,10 @@
     },
     "highestElo": {
       "default_one": "<b>Найвище ело {{ nickname }}</b>'а: <b>{{ highestElo }}</b> ({{ diffElo }} від теперішнього).\nДата коли найвище ело було апнуте: <b>{{ highestEloDate }}</b> ({{ count }} день тому).",
-      "default_few": "<b>Найвище ело {{ nickname }}</b>'а: <b>{{ highestElo }}</b> ({{ diffElo }} від теперішнього).\nДата коли найвище ело було апнуте: <b>{{ highestEloDate }}</b> ({{ count }} дня тому).",
+      "default_few": "<b>Найвище ело {{ nickname }}</b>'а: <b>{{ highestElo }}</b> ({{ diffElo }} від теперішнього).\nДата коли найвище ело було апнуте: <b>{{ highestEloDate }}</b> ({{ count }} дні тому).",
       "default_many": "<b>Найвище ело {{ nickname }}</b>'а: <b>{{ highestElo }}</b> ({{ diffElo }} від теперішнього).\nДата коли найвище ело було апнуте: <b>{{ highestEloDate }}</b> ({{ count }} днів тому).",
       "peakElo_one": "<b>{{ nickname }}</b> зараз на піку! Поточний рейтинг ело: <b>{{ highestElo }}</b>.\nДата коли найвище ело було апнуте: <b>{{ highestEloDate }}</b> ({{ count }} день тому).",
-      "peakElo_few": "<b>{{ nickname }}</b> зараз на піку! Поточний рейтинг ело: <b>{{ highestElo }}</b>.\nДата коли найвище ело було апнуте: <b>{{ highestEloDate }}</b> ({{ count }} дня тому).",
+      "peakElo_few": "<b>{{ nickname }}</b> зараз на піку! Поточний рейтинг ело: <b>{{ highestElo }}</b>.\nДата коли найвище ело було апнуте: <b>{{ highestEloDate }}</b> ({{ count }} дні тому).",
       "peakElo_many": "<b>{{ nickname }}</b> зараз на піку! Поточний рейтинг ело: <b>{{ highestElo }}</b>.\nДата коли найвище ело було апнуте: <b>{{ highestEloDate }}</b> ({{ count }} днів тому)."
     },
     "playerLastMatches": "Останні 20 матчів гравця <b>{{ nickname }}</b>:",
