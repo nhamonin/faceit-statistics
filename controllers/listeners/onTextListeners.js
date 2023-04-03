@@ -34,8 +34,11 @@ export function initOnTextListeners() {
 
   tBot.onText(/\/get_analytics/, async ({ chat, message_id }) => {
     const matchPrediction = await db('match_prediction').first();
-    const result = await db('temp_prediction').count('* as count');
-    const tempMatchesCount = result.length > 0 ? result[0].count : 0;
+    const totalTempPredictions = await db('temp_prediction').count(
+      '* as count'
+    );
+    const totalTeams = await db('team').count('* as count');
+    const totalPlayers = await db('player').count('* as count');
     const totalMatches = matchPrediction?.totalMatches || 0;
     const avgPredictions = matchPrediction?.avgPredictions || 0;
     const winratePrediction = matchPrediction?.winratePredictions || 0;
@@ -51,8 +54,10 @@ export function initOnTextListeners() {
       )} %`,
       '',
       `Total matches: ${totalMatches}`,
-      `Pending matches: ${tempMatchesCount}`,
+      `Pending matches: ${getCount(totalTempPredictions)}`,
       '',
+      `Total teams: ${getCount(totalTeams)}`,
+      `Total players: ${getCount(totalPlayers)}`,
       `Webhook static list length: ${webhookListLength}`,
     ].join('\n');
 
@@ -135,4 +140,8 @@ export function initOnTextListeners() {
       }
     );
   });
+}
+
+function getCount(dbCount) {
+  return dbCount.length > 0 ? dbCount[0].count : 0;
 }
