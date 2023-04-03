@@ -8,8 +8,10 @@ import {
   telegramSendMessage,
   webhookMgr,
   getPlayersByChatId,
+  getCountByTableName,
 } from '#utils';
 import { syncWebhookStaticListWithDB } from '#jobs';
+import { TELEGRAM_ADMIN_CHAT_ID } from '#config';
 
 export function initOnTextListeners() {
   const tBot = getTelegramBot();
@@ -33,12 +35,11 @@ export function initOnTextListeners() {
   });
 
   tBot.onText(/\/get_analytics/, async ({ chat, message_id }) => {
+    if (chat.id !== +TELEGRAM_ADMIN_CHAT_ID) return;
     const matchPrediction = await db('match_prediction').first();
-    const totalTempPredictions = await db('temp_prediction').count(
-      '* as count'
-    );
-    const totalTeams = await db('team').count('* as count');
-    const totalPlayers = await db('player').count('* as count');
+    const totalTempPredictions = await getCountByTableName('temp_prediction');
+    const totalTeams = await getCountByTableName('team');
+    const totalPlayers = await getCountByTableName('player');
     const totalMatches = matchPrediction?.totalMatches || 0;
     const avgPredictions = matchPrediction?.avgPredictions || 0;
     const winratePrediction = matchPrediction?.winratePredictions || 0;
@@ -54,10 +55,10 @@ export function initOnTextListeners() {
       )} %`,
       '',
       `Total matches: ${totalMatches}`,
-      `Pending matches: ${getCount(totalTempPredictions)}`,
+      `Pending matches: ${totalTempPredictions}`,
       '',
-      `Total teams: ${getCount(totalTeams)}`,
-      `Total players: ${getCount(totalPlayers)}`,
+      `Total teams: ${totalTeams}`,
+      `Total players: ${totalPlayers}`,
       `Webhook static list length: ${webhookListLength}`,
     ].join('\n');
 
@@ -71,6 +72,7 @@ export function initOnTextListeners() {
   });
 
   tBot.onText(/\/delete_analytics/, async ({ chat, message_id }) => {
+    if (chat.id !== +TELEGRAM_ADMIN_CHAT_ID) return;
     await Promise.allSettled([
       db('match_prediction').delete(),
       db('temp_prediction').delete(),
@@ -88,6 +90,7 @@ export function initOnTextListeners() {
   tBot.onText(
     /\/add_new_wh_players.* (\S*)/,
     async ({ chat, message_id }, match) => {
+      if (chat.id !== +TELEGRAM_ADMIN_CHAT_ID) return;
       const text = await addNewPlayersToWebhookList(match[1]);
 
       await telegramSendMessage(
@@ -101,6 +104,7 @@ export function initOnTextListeners() {
   );
 
   tBot.onText(/\/sync_db_with_static_list/, async ({ chat, message_id }) => {
+    if (chat.id !== +TELEGRAM_ADMIN_CHAT_ID) return;
     await syncWebhookStaticListWithDB();
     await telegramSendMessage(
       chat.id,
@@ -114,6 +118,7 @@ export function initOnTextListeners() {
   tBot.onText(
     /\/limit_restrictions.* (\S*)/,
     async ({ chat, message_id }, match) => {
+      if (chat.id !== +TELEGRAM_ADMIN_CHAT_ID) return;
       await webhookMgr.limitRestrictions(+match[1]);
       await telegramSendMessage(
         chat.id,
@@ -126,6 +131,7 @@ export function initOnTextListeners() {
   );
 
   tBot.onText(/\/update_players/, async ({ chat, message_id }) => {
+    if (chat.id !== +TELEGRAM_ADMIN_CHAT_ID) return;
     const teams = await db('team').pluck('chat_id');
 
     for await (const team of teams) {
@@ -140,8 +146,4 @@ export function initOnTextListeners() {
       }
     );
   });
-}
-
-function getCount(dbCount) {
-  return dbCount.length > 0 ? dbCount[0].count : 0;
 }

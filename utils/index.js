@@ -32,6 +32,7 @@ import { getCurrentBearerToken } from './webhook/getCurrentBearerToken.js';
 import db from './db/postgres.js';
 import { getPlayersByChatId } from './db/getPlayersByChatId.js';
 import { getTeamsByPlayerId } from './db/getTeamsByPlayerId.js';
+import { getCountByTableName } from './db/getCountByTableName.js';
 // csgo
 import { getPlayerMatches } from './csgo/getPlayerMatches.js';
 import { getHighAmountOfPlayerLastMatches } from './csgo/getHighAmountOfPlayerLastMatches.js';
@@ -94,6 +95,7 @@ export {
   db,
   getPlayersByChatId,
   getTeamsByPlayerId,
+  getCountByTableName,
   getMatchData,
   getHighestEloMatch,
   getClass,
