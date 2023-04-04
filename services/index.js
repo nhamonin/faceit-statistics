@@ -10,6 +10,10 @@ import { getTeamKDMessage } from './statistics/getTeamKD.js';
 import { getPlayerLastMatchesStats } from './statistics/getPlayerLastMatchesStats.js';
 import { getHighestElo } from './statistics/getHighestElo.js';
 
+import { addNewPlayersToWebhookList } from './commands/addNewPlayersToWebhookList.js';
+import { getAnalytics } from './commands/getAnalytics.js';
+import { deleteAnalytics } from './commands/deleteAnalytics.js';
+
 export {
   initTeam,
   resetTeam,
@@ -21,4 +25,7 @@ export {
   getTeamKDMessage,
   getPlayerLastMatchesStats,
   getHighestElo,
+  addNewPlayersToWebhookList,
+  getAnalytics,
+  deleteAnalytics,
 };

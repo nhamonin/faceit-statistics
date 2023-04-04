@@ -25,6 +25,7 @@ import { telegramSendMessage } from './telegram/telegram.js';
 import { telegramEditMessage } from './telegram/telegram.js';
 import { telegramDeleteMessage } from './telegram/telegram.js';
 import { handleBlockedToSendMessage } from './telegram/telegram.js';
+import { isAdminChat } from './telegram/telegram.js';
 // webhook
 import { webhookMgr } from './webhook/webhookMgr.js';
 import { getCurrentBearerToken } from './webhook/getCurrentBearerToken.js';
@@ -50,8 +51,6 @@ import { getMatchData } from './csgo/getMatchData.js';
 import { getHighestEloMatch } from './csgo/getHighestEloMatch.js';
 import { getClass } from './csgo/getStatsClasses.js';
 import { handleSummaryStatsAutoSend } from './csgo/handleSummaryStatsAutoSend.js';
-// faceit
-import addNewPlayersToWebhookList from './faceit/addNewPlayersToWebhookList.js';
 // i18next
 import { initI18next } from './i18next/i18next.js';
 
@@ -90,6 +89,7 @@ export {
   telegramEditMessage,
   telegramDeleteMessage,
   handleBlockedToSendMessage,
+  isAdminChat,
   webhookMgr,
   getCurrentBearerToken,
   db,
@@ -100,6 +100,5 @@ export {
   getHighestEloMatch,
   getClass,
   handleSummaryStatsAutoSend,
-  addNewPlayersToWebhookList,
   initI18next,
 };

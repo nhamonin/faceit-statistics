@@ -13,6 +13,7 @@ import {
   bots,
   TELEGRAM_BOT_API_TOKEN,
   ERROR_TELEGRAM_FORBIDDEN,
+  TELEGRAM_ADMIN_CHAT_ID,
 } from '#config';
 
 const tBot = getTelegramBot();
@@ -66,37 +67,38 @@ export async function telegramDeleteMessage(chat_id, message_id) {
   }
 }
 
-export async function telegramEditMessage(i18opts, opts) {
+export async function telegramEditMessage(i18opts, messageOpts) {
   const { text, options } = i18opts;
-  const lang = await getLangByChatID(opts.chat_id);
+  const lang = await getLangByChatID(messageOpts.chat_id);
 
   processI18Options(options, lang);
 
   try {
     await tBot.editMessageText(
       text ? i18next.t(text, { ...options, lng: lang }) : i18opts,
-      translateInlineKeyboard(opts, lang)
+      translateInlineKeyboard(messageOpts, lang)
     );
   } catch (e) {
     console.log(e);
   }
 }
 
-export async function telegramSendMessage(chat_id, i18opts, opts) {
+export async function telegramSendMessage(chat_id, i18opts, messageOpts) {
   const { text, options } = i18opts;
   const lang = await getLangByChatID(chat_id);
-  processI18Options(options, lang);
   let res = null;
+
+  processI18Options(options, lang);
 
   try {
     res = await tBot.sendMessage(
       chat_id,
       text ? i18next.t(text, { ...options, lng: lang }) : i18opts,
-      translateInlineKeyboard(opts, lang)
+      translateInlineKeyboard(messageOpts, lang)
     );
   } catch (e) {
     if (e.message.startsWith(ERROR_TELEGRAM_FORBIDDEN)) {
-      handleBlockedToSendMessage(opts.chat_id);
+      handleBlockedToSendMessage(chat_id);
     } else {
       console.log(e);
     }
@@ -126,6 +128,10 @@ export async function handleBlockedToSendMessage(chat_id) {
       `Successfully deleted team ${team.username || team.title || team.chat_id}`
     );
   });
+}
+
+export async function isAdminChat(chat_id) {
+  return chat_id === +TELEGRAM_ADMIN_CHAT_ID;
 }
 
 function translateInlineKeyboard(opts, lng) {
