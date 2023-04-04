@@ -25,7 +25,7 @@ import { telegramSendMessage } from './telegram/telegram.js';
 import { telegramEditMessage } from './telegram/telegram.js';
 import { telegramDeleteMessage } from './telegram/telegram.js';
 import { handleBlockedToSendMessage } from './telegram/telegram.js';
-import { isAdminChat } from './telegram/telegram.js';
+import { withAdminChat } from './telegram/telegram.js';
 // webhook
 import { webhookMgr } from './webhook/webhookMgr.js';
 import { getCurrentBearerToken } from './webhook/getCurrentBearerToken.js';
@@ -89,7 +89,7 @@ export {
   telegramEditMessage,
   telegramDeleteMessage,
   handleBlockedToSendMessage,
-  isAdminChat,
+  withAdminChat,
   webhookMgr,
   getCurrentBearerToken,
   db,

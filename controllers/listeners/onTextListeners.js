@@ -12,21 +12,53 @@ import {
   getTelegramBot,
   telegramSendMessage,
   getPlayersByChatId,
-  isAdminChat,
+  withAdminChat,
   webhookMgr,
 } from '#utils';
 import { syncWebhookStaticListWithDB } from '#jobs';
 
-export function initOnTextListeners() {
-  const tBot = getTelegramBot();
+const COMMAND_PATTERNS = {
+  start: /\/start/,
+  getAnalytics: /\/get_analytics/,
+  deleteAnalytics: /\/delete_analytics/,
+  addNewWhPlayers: /\/add_new_wh_players.* (\S*)/,
+  syncDbWithStaticList: /\/sync_db_with_static_list/,
+  limitRestrictions: /\/limit_restrictions.* (\S*)/,
+  updatePlayers: /\/update_players/,
+};
 
-  tBot.onText(/\/start/, handleStartCommand);
-  tBot.onText(/\/get_analytics/, handleGetAnalyticsCommand);
-  tBot.onText(/\/delete_analytics/, handleDeleteAnalyticsCommand);
-  tBot.onText(/\/add_new_wh_players.* (\S*)/, handleAddNewWhPlayersCommand);
-  tBot.onText(/\/sync_db_with_static_list/, handleSyncDbWithStaticListCommand);
-  tBot.onText(/\/limit_restrictions.* (\S*)/, handleLimitRestrictionsCommand);
-  tBot.onText(/\/update_players/, handleUpdatePlayersCommand);
+export function initOnTextListeners() {
+  registerCommand(COMMAND_PATTERNS.start, handleStartCommand);
+  registerCommand(
+    COMMAND_PATTERNS.getAnalytics,
+    handleGetAnalyticsCommand,
+    true
+  );
+  registerCommand(
+    COMMAND_PATTERNS.deleteAnalytics,
+    handleDeleteAnalyticsCommand,
+    true
+  );
+  registerCommand(
+    COMMAND_PATTERNS.addNewWhPlayers,
+    handleAddNewWhPlayersCommand,
+    true
+  );
+  registerCommand(
+    COMMAND_PATTERNS.syncDbWithStaticList,
+    handleSyncDbWithStaticListCommand,
+    true
+  );
+  registerCommand(
+    COMMAND_PATTERNS.limitRestrictions,
+    handleLimitRestrictionsCommand,
+    true
+  );
+  registerCommand(
+    COMMAND_PATTERNS.updatePlayers,
+    handleUpdatePlayersCommand,
+    true
+  );
 }
 
 async function handleStartCommand({ chat }) {
@@ -36,82 +68,95 @@ async function handleStartCommand({ chat }) {
   const options = {
     players: players.map(({ nickname }) => nickname).join(', '),
   };
-  const markup = players.length ? mainMenuMarkup : addPlayerOnlyMarkup;
+  const replyMarkup = players.length ? mainMenuMarkup : addPlayerOnlyMarkup;
 
-  await sendTelegramMessage(chat.id, text, options, markup);
+  await sendTelegramMessage({
+    chatId: chat.id,
+    text,
+    options,
+    replyMarkup,
+  });
 }
 
 async function handleGetAnalyticsCommand({ chat, message_id }) {
-  if (!isAdminChat(chat.id)) return;
   const text = await getAnalytics();
-  await sendTelegramMessage(chat.id, text, {}, message_id);
+
+  await sendTelegramMessage({
+    chatId: chat.id,
+    text,
+    messageId: message_id,
+  });
 }
 
 async function handleDeleteAnalyticsCommand({ chat, message_id }) {
-  if (!isAdminChat(chat.id)) return;
   await deleteAnalytics();
-  await sendTelegramMessage(
-    chat.id,
-    'Deletion of analytics done! Now try /get_analytics command.',
-    {},
-    message_id
-  );
+  await sendTelegramMessage({
+    chatId: chat.id,
+    text: 'Deletion of analytics done! Now try /get_analytics command.',
+    messageId: message_id,
+  });
 }
 
 async function handleAddNewWhPlayersCommand({ chat, message_id }, match) {
-  if (!isAdminChat(chat.id)) return;
   const text = await addNewPlayersToWebhookList(match[1]);
-  await sendTelegramMessage(chat.id, text, {}, message_id);
+  await sendTelegramMessage({
+    chatId: chat.id,
+    text,
+    messageId: message_id,
+  });
 }
 
 async function handleSyncDbWithStaticListCommand({ chat, message_id }) {
-  if (!isAdminChat(chat.id)) return;
   await syncWebhookStaticListWithDB();
-  await sendTelegramMessage(
-    chat.id,
-    'Sync DB with static list done! Now try /get_analytics command.',
-    {},
-    message_id
-  );
+  await sendTelegramMessage({
+    chatId: chat.id,
+    text: 'Sync DB with static list done! Now try /get_analytics command.',
+    messageId: message_id,
+  });
 }
 
 async function handleLimitRestrictionsCommand({ chat, message_id }, match) {
-  if (!isAdminChat(chat.id)) return;
   await webhookMgr.limitRestrictions(+match[1]);
-  await sendTelegramMessage(
-    chat.id,
-    'Limit restrictions done! Now try /get_analytics command.',
-    {},
-    message_id
-  );
+  await sendTelegramMessage({
+    chatId: chat.id,
+    text: 'Limit restrictions done! Now try /get_analytics command.',
+    messageId: message_id,
+  });
 }
 
 async function handleUpdatePlayersCommand({ chat, message_id }) {
-  if (!isAdminChat(chat.id)) return;
   const teams = await db('team').pluck('chat_id');
 
   for await (const team of teams) {
     await updateTeamPlayers(team);
   }
 
-  await sendTelegramMessage(
-    chat.id,
-    'Update players done! Now try /get_analytics command.',
-    {},
-    message_id
-  );
+  await sendTelegramMessage({
+    chatId: chat.id,
+    text: 'Update players done! Now try /get_analytics command.',
+    messageId: message_id,
+  });
 }
 
-async function sendTelegramMessage(
+async function sendTelegramMessage({
   chatId,
   text,
   options = {},
   replyMarkup = {},
-  messageId = undefined
-) {
+  messageId = undefined,
+}) {
   const sendMessageOptions = {
     ...getBasicTelegramOptions(messageId),
     ...replyMarkup,
   };
   await telegramSendMessage(chatId, { text, options }, sendMessageOptions);
+}
+
+function registerCommand(pattern, handler, adminOnly = false) {
+  const tBot = getTelegramBot();
+  if (adminOnly) {
+    tBot.onText(pattern, withAdminChat(handler));
+  } else {
+    tBot.onText(pattern, handler);
+  }
 }
