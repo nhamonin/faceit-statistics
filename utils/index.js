@@ -14,6 +14,7 @@ import {
   wait,
   getLangByChatID,
   getEventEmitter,
+  setEnvValue,
 } from './basic.js';
 // express
 import { startExpressServer } from './express/startExpressServer.js';
@@ -69,6 +70,7 @@ export {
   wait,
   getLangByChatID,
   getEventEmitter,
+  setEnvValue,
   startExpressServer,
   getPlayerInfo,
   getPlayerMatches,

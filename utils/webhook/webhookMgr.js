@@ -1,7 +1,7 @@
 import { fetch } from 'undici';
 
-import { FACEIT_WEBHOOK_ID, FACEIT_WEBHOOK_API_KEY } from '#config';
-import { getCurrentBearerToken } from '#utils';
+import { FACEIT_WEBHOOK_ID, dynamicValues } from '#config';
+import { getCurrentBearerToken, setEnvValue } from '#utils';
 import { syncWebhookStaticListWithDB } from '#jobs';
 
 const url = `https://api.faceit.com/webhooks/v1/subscriptions/${FACEIT_WEBHOOK_ID}`;
@@ -34,7 +34,9 @@ async function getWebhookDataPayload() {
 
   if (!webhookData.payload) {
     const token = await getCurrentBearerToken();
-    process.env.DYNAMIC_WEBHOOK_API_KEY = token;
+
+    setEnvValue('FACEIT_WEBHOOK_API_KEY', token);
+    dynamicValues.FACEIT_WEBHOOK_API_KEY = token;
     webhookData = await getWebhookData();
   }
 
@@ -84,9 +86,7 @@ function createBodyFromWebhookData(playersIDs, action, webhookData) {
 
 function getAuthorizationHeader() {
   return {
-    Authorization: `Bearer ${
-      process.env.DYNAMIC_WEBHOOK_API_KEY || FACEIT_WEBHOOK_API_KEY
-    }`,
+    Authorization: `Bearer ${dynamicValues.FACEIT_WEBHOOK_API_KEY}`,
   };
 }
 

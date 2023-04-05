@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import os from 'node:os';
 import { EventEmitter } from 'node:events';
 
 import puppeteer from 'puppeteer-extra';
@@ -160,6 +162,16 @@ function getEventEmitter() {
   return eventEmitter.main;
 }
 
+function setEnvValue(key, value) {
+  const ENV_VARS = fs.readFileSync('./.env', 'utf8').split(os.EOL);
+  const target = ENV_VARS.indexOf(
+    ENV_VARS.find((line) => line.match(new RegExp(key)))
+  );
+
+  ENV_VARS.splice(target, 1, `${key}=${value}`);
+  fs.writeFileSync('./.env', ENV_VARS.join(os.EOL));
+}
+
 export {
   adjustConsoleLog,
   logEvent,
@@ -175,4 +187,5 @@ export {
   wait,
   getLangByChatID,
   getEventEmitter,
+  setEnvValue,
 };

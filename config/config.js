@@ -99,6 +99,9 @@ const COMMAND_PATTERNS = {
   limitRestrictions: /\/limit_restrictions.* (\S*)/,
   updatePlayers: /\/update_players/,
 };
+const dynamicValues = {
+  FACEIT_WEBHOOK_API_KEY,
+};
 
 export {
   isProduction,
@@ -110,8 +113,8 @@ export {
   FACEIT_API_KEY,
   FACEIT_APP_ID,
   FACEIT_WEBHOOK_ID,
-  FACEIT_WEBHOOK_API_KEY,
   PG_CONNECTION_STRING,
+  dynamicValues,
   loggedInCookie,
   game_id,
   currentMapPool,
