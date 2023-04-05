@@ -90,6 +90,15 @@ const chatToGetNotifications = -886965844;
 const eventEmitter = {
   main: null,
 };
+const COMMAND_PATTERNS = {
+  start: /\/start/,
+  getAnalytics: /\/get_analytics/,
+  deleteAnalytics: /\/delete_analytics/,
+  addNewWhPlayers: /\/add_new_wh_players.* (\S*)/,
+  syncDbWithStaticList: /\/sync_db_with_static_list/,
+  limitRestrictions: /\/limit_restrictions.* (\S*)/,
+  updatePlayers: /\/update_players/,
+};
 
 export {
   isProduction,
@@ -119,4 +128,5 @@ export {
   statsNumberArray,
   chatToGetNotifications,
   eventEmitter,
+  COMMAND_PATTERNS,
 };

@@ -16,16 +16,7 @@ import {
   webhookMgr,
 } from '#utils';
 import { syncWebhookStaticListWithDB } from '#jobs';
-
-const COMMAND_PATTERNS = {
-  start: /\/start/,
-  getAnalytics: /\/get_analytics/,
-  deleteAnalytics: /\/delete_analytics/,
-  addNewWhPlayers: /\/add_new_wh_players.* (\S*)/,
-  syncDbWithStaticList: /\/sync_db_with_static_list/,
-  limitRestrictions: /\/limit_restrictions.* (\S*)/,
-  updatePlayers: /\/update_players/,
-};
+import { COMMAND_PATTERNS } from '#config';
 
 export function initOnTextListeners() {
   registerCommand(COMMAND_PATTERNS.start, handleStartCommand);
@@ -154,10 +145,7 @@ async function sendTelegramMessage({
 
 function registerCommand(pattern, handler, adminOnly = false) {
   const tBot = getTelegramBot();
-  console.log(`Registering command: ${pattern}`);
-
   const commandHandler = (msg, match) => {
-    console.log(`Command matched: ${pattern}`);
     handler(msg, match);
   };
 
