@@ -162,9 +162,7 @@ function registerCommand(pattern, handler, adminOnly = false) {
   };
 
   if (adminOnly) {
-    tBot.onText(pattern, (msg, match) => {
-      withAdminChat(commandHandler)(msg, match);
-    });
+    tBot.onText(pattern, withAdminChat(commandHandler));
   } else {
     tBot.onText(pattern, commandHandler);
   }

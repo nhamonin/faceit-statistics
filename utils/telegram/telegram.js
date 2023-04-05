@@ -130,10 +130,10 @@ export async function handleBlockedToSendMessage(chat_id) {
   });
 }
 
-export async function withAdminChat(handler) {
+export function withAdminChat(handler) {
   return async function (args, ...rest) {
     if (args.chat.id !== +TELEGRAM_ADMIN_CHAT_ID) return;
-    await handler(args, ...rest);
+    return await handler(args, ...rest);
   };
 }
 
