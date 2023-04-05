@@ -154,11 +154,18 @@ async function sendTelegramMessage({
 
 function registerCommand(pattern, handler, adminOnly = false) {
   const tBot = getTelegramBot();
+  console.log(`Registering command: ${pattern}`);
+
+  const commandHandler = (msg, match) => {
+    console.log(`Command matched: ${pattern}`);
+    handler(msg, match);
+  };
+
   if (adminOnly) {
     tBot.onText(pattern, (msg, match) => {
-      withAdminChat(handler)(msg, match);
+      withAdminChat(commandHandler)(msg, match);
     });
   } else {
-    tBot.onText(pattern, handler);
+    tBot.onText(pattern, commandHandler);
   }
 }
