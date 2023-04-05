@@ -155,7 +155,9 @@ async function sendTelegramMessage({
 function registerCommand(pattern, handler, adminOnly = false) {
   const tBot = getTelegramBot();
   if (adminOnly) {
-    tBot.onText(pattern, withAdminChat(handler));
+    tBot.onText(pattern, (msg, match) => {
+      withAdminChat(handler)(msg, match);
+    });
   } else {
     tBot.onText(pattern, handler);
   }

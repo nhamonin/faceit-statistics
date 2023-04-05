@@ -6,7 +6,7 @@ import { PG_CONNECTION_STRING } from '#config';
 const { Client } = pg;
 knex.Client = Client;
 
-const connectionOptions = {
+const db = knex({
   client: 'pg',
   connection: PG_CONNECTION_STRING,
   searchPath: ['knex', 'public'],
@@ -14,8 +14,6 @@ const connectionOptions = {
     min: 1,
     max: 100,
   },
-};
-
-const db = knex(connectionOptions);
+});
 
 export default db;
