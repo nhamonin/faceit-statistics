@@ -7,10 +7,9 @@ import { runCrons } from '#jobs';
 
 Faceit.setApiKeys([FACEIT_API_KEY]);
 
-initTelegramBotListener();
 adjustConsoleLog();
-
 startServer();
-runCrons();
+initTelegramBotListener();
 await initI18next();
 await webhookMgr.getWebhookDataPayload();
+runCrons();
