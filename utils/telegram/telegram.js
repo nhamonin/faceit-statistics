@@ -1,3 +1,5 @@
+process.env.NTBA_FIX_350 = 1;
+
 import TelegramBot from 'node-telegram-bot-api';
 import i18next from 'i18next';
 

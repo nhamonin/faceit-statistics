@@ -33,6 +33,8 @@ export function startServer() {
         console.log(`Server listens https://${host}:${port}`);
       });
   } else {
-    http.createServer(requestHandler).listen(port);
+    http.createServer(requestHandler).listen(port, host, () => {
+      console.log(`Server listens http://${host}:${port}`);
+    });
   }
 }
