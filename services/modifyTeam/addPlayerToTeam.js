@@ -1,6 +1,5 @@
+import database from '#db';
 import {
-  db,
-  getPlayersByChatId,
   isPlayerTeamMember,
   getPlayerInfo,
   getTeamNicknames,
@@ -11,12 +10,12 @@ import { getHighestElo } from '#services';
 
 export const addPlayer = async (playerNickname, chat_id) => {
   try {
-    let team = await db('team').where({ chat_id }).first();
+    let team = await database.teams.readBy({ chat_id });
     if (!team) return { text: 'teamNotExistError' };
-    const players = await getPlayersByChatId(chat_id);
-    const playerInDB = await db('player')
-      .where({ nickname: playerNickname })
-      .first();
+    const players = await database.players.readAllByChatId(chat_id);
+    const playerInDB = await database.players.readBy({
+      nickname: playerNickname,
+    });
     const playersNicknames = getTeamNicknames(players).join(', ');
     if (players?.length + 1 > MAX_PLAYERS_AMOUNT)
       return {
@@ -30,7 +29,7 @@ export const addPlayer = async (playerNickname, chat_id) => {
         options: { nickname: playerNickname, teamNicknames: playersNicknames },
       };
     } else if (playerInDB) {
-      await db('team_player').insert({
+      await database.teamsPlayers.create({
         chat_id,
         player_id: playerInDB.player_id,
       });
@@ -74,7 +73,7 @@ export const addPlayer = async (playerNickname, chat_id) => {
         highestEloDate: options?.highestEloDate,
       };
 
-      await db('player').insert(player);
+      await database.players.create(player);
 
       webhookMgr.addPlayersToList([player.player_id]);
       console.log(
@@ -82,9 +81,12 @@ export const addPlayer = async (playerNickname, chat_id) => {
         new Date().toLocaleString()
       );
 
-      await db('team_player').insert({ chat_id, player_id: player.player_id });
+      await database.teamsPlayers.create({
+        chat_id,
+        player_id: player.player_id,
+      });
     }
-    const updatedPlayers = await getPlayersByChatId(chat_id);
+    const updatedPlayers = await database.players.readAllByChatId(chat_id);
 
     return {
       text: 'addPlayer.success',

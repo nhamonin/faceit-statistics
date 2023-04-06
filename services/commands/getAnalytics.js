@@ -1,10 +1,11 @@
-import { db, getCountByTableName, webhookMgr } from '#utils';
+import database from '#db';
+import { webhookMgr } from '#utils';
 
 export async function getAnalytics() {
-  const matchPrediction = await db('match_prediction').first();
-  const totalTempPredictions = await getCountByTableName('temp_prediction');
-  const totalTeams = await getCountByTableName('team');
-  const totalPlayers = await getCountByTableName('player');
+  const matchPrediction = await database.matchPredictions.readBy({});
+  const totalTempPredictions = await database.tempPredictions.getCount();
+  const totalTeams = await database.teams.getCount();
+  const totalPlayers = await database.players.getCount();
   const totalMatches = matchPrediction?.totalMatches || 0;
   const avgPredictions = matchPrediction?.avgPredictions || 0;
   const winratePrediction = matchPrediction?.winratePredictions || 0;

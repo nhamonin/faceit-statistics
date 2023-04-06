@@ -1,9 +1,9 @@
-import { db } from '#utils';
+import database from '#db';
 import { logEvent } from '#utils';
 
 export const initTeam = async ({ id, first_name, username, title, type }) => {
   try {
-    let team = await db('team').where({ chat_id: id }).first();
+    let team = await database.teams.readBy({ chat_id: id });
 
     if (!team) {
       team = {
@@ -26,7 +26,7 @@ export const initTeam = async ({ id, first_name, username, title, type }) => {
         },
       };
 
-      await db('team').insert(team);
+      await database.teams.create(team);
       logEvent({ username, title, id }, 'Init team');
     }
 

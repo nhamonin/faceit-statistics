@@ -1,5 +1,5 @@
+import database from '#db';
 import {
-  db,
   regulateWinrate,
   regulateAvg,
   prettifyMapPickerData,
@@ -8,7 +8,6 @@ import {
   telegramSendMessage,
   sendPhoto,
   getPlayerLifeTimeStats,
-  getTeamsByPlayerId,
 } from '#utils';
 import { currentMapPool, caches } from '#config';
 import { getBestMapsTemplate } from '#templates';
@@ -115,7 +114,7 @@ async function fillInTeamVariablesWithPlayersStats(
   try {
     await Promise.all(
       playerIDs.map(async (player_id) => {
-        const player = await db('player').where({ player_id }).first();
+        const player = await database.players.readBy({ player_id });
         if (player)
           dbPlayers.push({
             nickname: player.nickname,
@@ -279,7 +278,9 @@ async function sendMapPickerResult(
       neededVariables[2] === team1Name ? team2Name : team1Name;
 
     for await (const player of neededVariables[0]) {
-      const teams = (await getTeamsByPlayerId(player.player_id)).filter(
+      const teams = (
+        await database.teams.readAllByPlayerId(player.player_id)
+      ).filter(
         (team) =>
           team.settings.subscriptions.match_object_created.calculateBestMaps
       );

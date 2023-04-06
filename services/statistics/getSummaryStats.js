@@ -1,11 +1,12 @@
 import { readFileSync } from 'node:fs';
 
-import { db, getPlayersByChatId, getClass } from '#utils';
+import database from '#db';
+import { getClass } from '#utils';
 
 export const getSummaryStats = async (chat_id) => {
-  const team = await db('team').where({ chat_id }).first();
+  const team = await database.teams.readBy({ chat_id });
   if (!team) return { text: 'teamNotExistError', error: true };
-  const players = await getPlayersByChatId(chat_id);
+  const players = await database.players.readAllByChatId(chat_id);
   const isTeamEmpty = !players || players?.length === 0;
   const statAttribute = 'summary statistics';
 

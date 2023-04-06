@@ -1,8 +1,7 @@
+import database from '#db';
 import {
-  db,
   getTeamNicknames,
   getTelegramBot,
-  getPlayersByChatId,
   getDefaultTelegramCallbackOptions,
 } from '#utils';
 import {
@@ -34,8 +33,8 @@ function initTelegramBotListener() {
       message_id: msg.message_id,
       ...getDefaultTelegramCallbackOptions(),
     };
-    const team = await db('team').where({ chat_id: opts.chat_id }).first();
-    const players = await getPlayersByChatId(opts.chat_id);
+    const team = await database.teams.readBy({ chat_id: opts.chat_id });
+    const players = await database.players.readAllByChatId(opts.chat_id);
     const teamNicknames = getTeamNicknames(players);
     const subscriptions = team.settings.subscriptions;
     const lang = team.settings.lang;

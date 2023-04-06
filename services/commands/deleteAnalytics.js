@@ -1,8 +1,8 @@
-import { db } from '#utils';
+import database from '#db';
 
 export async function deleteAnalytics() {
   await Promise.allSettled([
-    db('match_prediction').delete(),
-    db('temp_prediction').delete(),
+    database.matchPredictions.deleteAllBy({}),
+    database.tempPredictions.deleteAllBy({}),
   ]);
 }

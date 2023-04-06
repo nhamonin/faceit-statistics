@@ -1,11 +1,10 @@
 import { currentMapPool } from '#config';
-import { db, getMatchData } from '#utils';
+import { getMatchData } from '#utils';
+import database from '#db';
 
 export async function performMapPickerAnalytics(match_id) {
   try {
-    const tempPrediction = await db('temp_prediction')
-      .where({ match_id })
-      .first();
+    const tempPrediction = await database.tempPredictions.readBy({ match_id });
     if (!tempPrediction) return;
     const { predictions } = tempPrediction;
     if (!predictions) return;
@@ -21,10 +20,10 @@ export async function performMapPickerAnalytics(match_id) {
     if (!predictedDataMap) return;
     const winratePredictedValue = predictedDataMap.totalWinrate > 0;
     const avgPredictedValue = predictedDataMap.totalPoints > 0;
-    let matchPrediction = await db('match_prediction').first();
+    let matchPrediction = await database.matchPredictions.readBy({});
 
     if (!matchPrediction) {
-      await db('match_prediction').insert({
+      await database.matchPredictions.create({
         totalMatches: 1,
         winratePredictions: +winratePredictedValue,
         avgPredictions: +avgPredictedValue,
@@ -34,10 +33,13 @@ export async function performMapPickerAnalytics(match_id) {
       if (winratePredictedValue) matchPrediction.winratePredictions++;
       if (avgPredictedValue) matchPrediction.avgPredictions++;
 
-      await db('match_prediction').update(matchPrediction);
+      await database.matchPredictions.updateAllBy(
+        { id: matchPrediction.id },
+        matchPrediction
+      );
     }
 
-    await db('temp_prediction').where({ match_id }).del();
+    await database.tempPredictions.deleteAllBy({ match_id });
   } catch (e) {
     console.log(e);
   }

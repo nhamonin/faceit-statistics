@@ -1,10 +1,5 @@
-import {
-  db,
-  getPlayersByChatId,
-  calculateAverage,
-  getPlayerLastStats,
-  getClass,
-} from '#utils';
+import database from '#db';
+import { calculateAverage, getPlayerLastStats, getClass } from '#utils';
 import { DEFAULT_MATCH_GET_LIMIT } from '#config';
 
 export const getTeamKDMessage = async (matchLimit, chat_id) => {
@@ -15,9 +10,9 @@ export const getTeamKDMessage = async (matchLimit, chat_id) => {
       text: 'getTeamKD.validationError',
     };
   }
-  const team = await db('team').where({ chat_id }).first();
+  const team = await database.teams.readBy({ chat_id });
   if (!team) return { error: true, text: 'teamNotExistError' };
-  const players = await getPlayersByChatId(chat_id);
+  const players = await database.players.readAllByChatId(chat_id);
   const statAttribute = 'K/D';
 
   return prepareProperResult(players, limit, statAttribute);

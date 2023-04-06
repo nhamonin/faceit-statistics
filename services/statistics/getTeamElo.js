@@ -1,15 +1,11 @@
-import {
-  db,
-  getPlayersByChatId,
-  calculateAverage,
-  getLangByChatID,
-} from '#utils';
+import database from '#db';
+import { calculateAverage, getLangByChatID } from '#utils';
 import { lvlClasses } from '#config';
 
 export const getTeamEloMessage = async (chat_id) => {
-  const team = await db('team').where({ chat_id }).first();
+  const team = await database.teams.readBy({ chat_id });
   if (!team) return { error: true, text: 'teamNotExistError' };
-  const players = await getPlayersByChatId(chat_id);
+  const players = await database.players.readAllByChatId(chat_id);
   const lang = await getLangByChatID(chat_id);
   const statAttribute = 'ELO';
 

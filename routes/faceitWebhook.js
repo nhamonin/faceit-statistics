@@ -1,9 +1,8 @@
 import { clearInterval } from 'node:timers';
 
+import database from '#db';
 import { updateTeamPlayers } from '#services';
 import {
-  db,
-  getTeamsByPlayerId,
   calculateBestMaps,
   performMapPickerAnalytics,
   getMatchData,
@@ -37,15 +36,13 @@ export default {
               clearInterval(interval);
               const predictions = await calculateBestMaps(matchData);
               if (predictions?.length) {
-                const prediction = await db('temp_prediction')
-                  .where({ match_id })
-                  .first();
+                const prediction = await database.tempPredictions.readBy({});
 
                 if (!prediction) {
                   try {
-                    await db('temp_prediction').insert({
+                    await database.tempPredictions.create({
                       match_id,
-                      predictions: JSON.stringify(predictions),
+                      predictions,
                     });
                   } catch (e) {
                     console.log(e);
@@ -62,7 +59,8 @@ export default {
             !data.payload.teams[0]?.roster?.length ||
             !data.payload.teams[1]?.roster?.length
           ) {
-            res.sendStatus(404);
+            res.statusCode = 404;
+            res.end('ERROR');
             return;
           }
           const playersRoster = [
@@ -74,7 +72,7 @@ export default {
           const updatedTeams = new Map();
 
           for await (const player_id of playersIDs) {
-            const teams = await getTeamsByPlayerId(player_id);
+            const teams = await database.teams.readAllByPlayerId(player_id);
 
             if (teams.length) {
               for await (const team of teams) {

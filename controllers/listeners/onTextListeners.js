@@ -1,3 +1,4 @@
+import database from '#db';
 import {
   initTeam,
   updateTeamPlayers,
@@ -7,11 +8,9 @@ import {
 } from '#services';
 import { mainMenuMarkup, addPlayerOnlyMarkup } from '#telegramReplyMarkup';
 import {
-  db,
   getBasicTelegramOptions,
   getTelegramBot,
   telegramSendMessage,
-  getPlayersByChatId,
   withAdminChat,
   webhookMgr,
 } from '#utils';
@@ -54,7 +53,7 @@ export function initOnTextListeners() {
 
 async function handleStartCommand({ chat }) {
   await initTeam(chat);
-  const players = await getPlayersByChatId(chat.id);
+  const players = await database.players.readAllByChatId(chat.id);
   const text = players?.length ? 'welcomeBack' : 'start';
   const options = {
     players: players.map(({ nickname }) => nickname).join(', '),
@@ -116,9 +115,9 @@ async function handleLimitRestrictionsCommand({ chat, message_id }, match) {
 }
 
 async function handleUpdatePlayersCommand({ chat, message_id }) {
-  const teams = await db('team').pluck('chat_id');
+  const teamIDs = await database.teams.readAllChatIds();
 
-  for await (const team of teams) {
+  for await (const team of teamIDs) {
     await updateTeamPlayers(team);
   }
 

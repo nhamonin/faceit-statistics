@@ -1,16 +1,11 @@
-import {
-  db,
-  isPlayerTeamMember,
-  webhookMgr,
-  getTeamNicknames,
-  getPlayersByChatId,
-} from '#utils';
+import database from '#db';
+import { isPlayerTeamMember, webhookMgr, getTeamNicknames } from '#utils';
 
 export const deletePlayer = async (playerNickname, chat_id) => {
   try {
-    const team = await db('team').where({ chat_id }).first();
+    const team = await database.teams.readBy({ chat_id });
     if (!team) return { text: 'teamNotExistsError' };
-    const players = await getPlayersByChatId(chat_id);
+    const players = await database.players.readAllByChatId(chat_id);
 
     if (!isPlayerTeamMember(players, playerNickname)) {
       return {
@@ -20,22 +15,21 @@ export const deletePlayer = async (playerNickname, chat_id) => {
     }
 
     const noPlayersInTeamAfterDeletion = players.length === 1;
-    const playerInDB = await db('player')
-      .where({ nickname: playerNickname })
-      .first();
+    const playerInDB = await database.players.readBy({
+      nickname: playerNickname,
+    });
 
-    return await db('team_player')
-      .where({ chat_id, player_id: playerInDB.player_id })
-      .del()
+    return database.teamsPlayers
+      .deleteAllBy({ chat_id, player_id: playerInDB.player_id })
       .then(async () => {
-        const teamsWithPlayer = await db('team_player').where({
+        const teamsWithPlayer = await database.teamsPlayers.readAllBy({
           player_id: playerInDB.player_id,
         });
         if (teamsWithPlayer.length) return;
         webhookMgr.removePlayersFromList([playerInDB.player_id]);
       })
       .then(async () => {
-        const players = await getPlayersByChatId(chat_id);
+        const updatedPlayers = await database.players.readAllByChatId(chat_id);
 
         return noPlayersInTeamAfterDeletion
           ? { text: 'deletePlayer.lastWasDeleted' }
@@ -43,7 +37,7 @@ export const deletePlayer = async (playerNickname, chat_id) => {
               text: 'deletePlayer.success',
               options: {
                 nickname: playerNickname,
-                teamNicknames: getTeamNicknames(players).join(', '),
+                teamNicknames: getTeamNicknames(updatedPlayers).join(', '),
               },
             };
       });

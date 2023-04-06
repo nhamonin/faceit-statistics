@@ -1,4 +1,5 @@
-import { db, telegramEditMessage, logEvent } from '#utils';
+import database from '#db';
+import { telegramEditMessage, logEvent } from '#utils';
 import {
   manageSubscriptionsMarkup,
   chooseLanguageMarkup,
@@ -16,14 +17,10 @@ async function handleManageSubscription(
 
   subscriptions[type][name] = action === 'subscribe';
   logEvent(msg.chat, `${action}d ${name} subscription`);
-  await db('team')
-    .where({ chat_id: team.chat_id })
-    .update({
-      settings: JSON.stringify({
-        ...team.settings,
-        subscriptions: subscriptions,
-      }),
-    });
+  await database.teams.updateSettings(team.chat_id, {
+    ...team.settings,
+    subscriptions: subscriptions,
+  });
   await telegramEditMessage(
     { text: `subscriptions.${name}.${action}d` },
     {
@@ -45,11 +42,7 @@ async function handleChangeLanguage(opts, lang, team, callbackQuery) {
 
   logEvent(msg.chat, `Changed language to ${newLanguage}`);
   team.settings.lang = newLanguage;
-  await db('team')
-    .where({ chat_id: team.chat_id })
-    .update({
-      settings: JSON.stringify(team.settings),
-    });
+  await database.teams.updateSettings(team.chat_id, team.settings);
   await telegramEditMessage(
     {
       text: `buttons.chooseLanguage.${newLanguage}.changedTo`,

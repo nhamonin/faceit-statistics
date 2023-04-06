@@ -31,11 +31,6 @@ import { withAdminChat } from './telegram/telegram.js';
 // webhook
 import { webhookMgr } from './webhook/webhookMgr.js';
 import { getCurrentBearerToken } from './webhook/getCurrentBearerToken.js';
-// db
-import db from './db/postgres.js';
-import { getPlayersByChatId } from './db/getPlayersByChatId.js';
-import { getTeamsByPlayerId } from './db/getTeamsByPlayerId.js';
-import { getCountByTableName } from './db/getCountByTableName.js';
 // csgo
 import { getPlayerMatches } from './csgo/getPlayerMatches.js';
 import { getHighAmountOfPlayerLastMatches } from './csgo/getHighAmountOfPlayerLastMatches.js';
@@ -96,10 +91,6 @@ export {
   withAdminChat,
   webhookMgr,
   getCurrentBearerToken,
-  db,
-  getPlayersByChatId,
-  getTeamsByPlayerId,
-  getCountByTableName,
   getMatchData,
   getHighestEloMatch,
   getClass,

@@ -1,6 +1,6 @@
-import { db } from '#utils';
+import database from '#db';
 
 export async function deleteOldTempPredictions() {
   const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000);
-  await db('temp_prediction').where('created_at', '<', sixHoursAgo).delete();
+  await database.tempPredictions.deleteOlderThan(sixHoursAgo);
 }

@@ -4,6 +4,7 @@
     "baseUrl": "./",
     "paths": {
       "#config": ["./config/config.js"],
+      "#db": ["./database/database.js"],
       "#locales": ["./locales/index.js"],
       "#telegramReplyMarkup": ["./config/telegramReplyMarkup/index.js"],
       "#controllers": ["./controllers/index.js"],

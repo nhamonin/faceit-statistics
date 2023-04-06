@@ -4,8 +4,8 @@ import { EventEmitter } from 'node:events';
 
 import puppeteer from 'puppeteer-extra';
 
+import database from '#db';
 import {
-  db,
   getBasicTelegramOptions,
   handleBlockedToSendMessage,
   telegramSendMessage,
@@ -150,7 +150,7 @@ async function wait(ms) {
 }
 
 async function getLangByChatID(chat_id) {
-  const team = await db('team').where({ chat_id }).first();
+  const team = await database.teams.readBy({ chat_id });
 
   return team?.settings?.lang || 'en';
 }
