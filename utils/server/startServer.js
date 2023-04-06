@@ -29,7 +29,7 @@ export function startServer() {
         },
         requestHandler
       )
-      .listen(port, host, function () {
+      .listen(port, host, () => {
         console.log(`Server listens https://${host}:${port}`);
       });
   } else {
