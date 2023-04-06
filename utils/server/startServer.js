@@ -1,18 +1,21 @@
 import https from 'node:https';
+import http from 'node:http';
 import fs from 'node:fs';
 
-import express from 'express';
-
 import { isProduction, host, port } from '#config';
-import { main, faceitWebhook, telegramWebhook } from '#routes';
+import routes from '#routes';
 
-export function startExpressServer() {
-  const app = express();
-  app.use(express.json());
-  app.use(main);
-  app.use(faceitWebhook);
-  app.use(telegramWebhook);
+function requestHandler(req, res) {
+  const { method, url } = req;
 
+  const handler = routes[url];
+  if (!handler) return res.end('Not found');
+  const handlerMethod = handler[method.toLowerCase()];
+  if (!handlerMethod) return res.end('Not found');
+  return handlerMethod(req, res);
+}
+
+export function startServer() {
   if (isProduction) {
     https
       .createServer(
@@ -24,14 +27,12 @@ export function startExpressServer() {
             fs.readFileSync('./certs/faceit-helper_pro-bundle.crt'),
           ],
         },
-        app
+        requestHandler
       )
       .listen(port, host, function () {
         console.log(`Server listens https://${host}:${port}`);
       });
   } else {
-    app.listen(port, host, function () {
-      console.log(`Server listens http://${host}:${port}`);
-    });
+    http.createServer(requestHandler).listen(port);
   }
 }

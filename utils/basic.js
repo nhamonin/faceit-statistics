@@ -172,6 +172,13 @@ function setEnvValue(key, value) {
   fs.writeFileSync('./.env', ENV_VARS.join(os.EOL));
 }
 
+async function receiveArgs(req) {
+  const buffers = [];
+  for await (const chunk of req) buffers.push(chunk);
+  const data = Buffer.concat(buffers).toString();
+  return JSON.parse(data);
+}
+
 export {
   adjustConsoleLog,
   logEvent,
@@ -188,4 +195,5 @@ export {
   getLangByChatID,
   getEventEmitter,
   setEnvValue,
+  receiveArgs,
 };

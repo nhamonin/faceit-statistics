@@ -1,13 +1,14 @@
-import express from 'express';
-
+import { receiveArgs } from '#utils';
 import { TELEGRAM_BOT_API_TOKEN, bots } from '#config';
 
-const router = express.Router();
+export default {
+  [`/telegram-webhook-${TELEGRAM_BOT_API_TOKEN}`]: {
+    post: (req, res) => {
+      const body = receiveArgs(req);
+      bots.telegram.processUpdate(body);
 
-router.post(`/telegram-webhook-${TELEGRAM_BOT_API_TOKEN}`, async (req, res) => {
-  bots.telegram.processUpdate(req.body);
-
-  res.sendStatus(200);
-});
-
-export default router;
+      res.statusCode = 200;
+      res.end('OK');
+    },
+  },
+};

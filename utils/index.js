@@ -15,9 +15,10 @@ import {
   getLangByChatID,
   getEventEmitter,
   setEnvValue,
+  receiveArgs,
 } from './basic.js';
-// express
-import { startExpressServer } from './express/startExpressServer.js';
+// server
+import { startServer } from './server/startServer.js';
 // telegram
 import { getTelegramBot } from './telegram/telegram.js';
 import { getBasicTelegramOptions } from './telegram/telegram.js';
@@ -71,7 +72,8 @@ export {
   getLangByChatID,
   getEventEmitter,
   setEnvValue,
-  startExpressServer,
+  receiveArgs,
+  startServer,
   getPlayerInfo,
   getPlayerMatches,
   getHighAmountOfPlayerLastMatches,
