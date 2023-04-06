@@ -19,6 +19,7 @@ import {
   handleChangeLanguage,
 } from './handlers/index.js';
 import { initOnTextListeners } from './listeners/onTextListeners.js';
+import { isProduction } from '#config';
 
 function initTelegramBotListener() {
   const tBot = getTelegramBot();
@@ -82,7 +83,7 @@ function initTelegramBotListener() {
     }
   });
 
-  tBot.on('polling_error', (e) => {
+  tBot.on(`${isProduction ? 'webhook' : 'polling'}_error`, (e) => {
     console.log(e);
   });
 }
