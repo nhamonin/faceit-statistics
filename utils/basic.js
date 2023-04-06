@@ -179,6 +179,17 @@ async function receiveArgs(req) {
   return JSON.parse(data);
 }
 
+function cacheWithExpiry(cache, key, timeout) {
+  if (cache.has(key)) return false;
+
+  cache.add(key);
+  setTimeout(() => {
+    cache.delete(key);
+  }, timeout);
+
+  return true;
+}
+
 export {
   adjustConsoleLog,
   logEvent,
@@ -196,4 +207,5 @@ export {
   getEventEmitter,
   setEnvValue,
   receiveArgs,
+  cacheWithExpiry,
 };

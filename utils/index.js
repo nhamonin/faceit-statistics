@@ -16,6 +16,7 @@ import {
   getEventEmitter,
   setEnvValue,
   receiveArgs,
+  cacheWithExpiry,
 } from './basic.js';
 // server
 import { startServer } from './server/startServer.js';
@@ -68,6 +69,7 @@ export {
   getEventEmitter,
   setEnvValue,
   receiveArgs,
+  cacheWithExpiry,
   startServer,
   getPlayerInfo,
   getPlayerMatches,

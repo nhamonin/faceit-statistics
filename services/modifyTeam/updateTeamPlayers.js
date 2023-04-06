@@ -1,14 +1,15 @@
 import database from '#db';
-import { getPlayerInfo } from '#utils';
+import { getPlayerInfo, cacheWithExpiry } from '#utils';
 import { getHighestElo } from '#services';
 import { caches } from '#config';
 
 export const updateTeamPlayers = async (chat_id) => {
-  if (caches.updateTeamPlayers.has(chat_id)) return;
-  caches.updateTeamPlayers.add(chat_id);
-  setTimeout(() => {
-    caches.updateTeamPlayers.delete(chat_id);
-  }, 1000 * 60);
+  const addedToCache = cacheWithExpiry(
+    caches.updateTeamPlayers,
+    chat_id,
+    1000 * 60
+  );
+  if (!addedToCache) return;
   try {
     const team = await database.teams.readBy({ chat_id });
     if (!team) return { text: 'teamNotExistError' };

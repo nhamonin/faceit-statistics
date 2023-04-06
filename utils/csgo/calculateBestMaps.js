@@ -8,17 +8,19 @@ import {
   telegramSendMessage,
   sendPhoto,
   getPlayerLifeTimeStats,
+  cacheWithExpiry,
 } from '#utils';
 import { currentMapPool, caches } from '#config';
 import { getBestMapsTemplate } from '#templates';
 import { subscriptionReceivedMarkup } from '#telegramReplyMarkup';
 
 export async function calculateBestMaps(matchData) {
-  if (caches.bestMapsMatchIDs.has(matchData?.payload?.id)) return;
-  caches.bestMapsMatchIDs.add(matchData?.payload?.id);
-  setTimeout(() => {
-    caches.bestMapsMatchIDs.delete(matchData?.payload?.id);
-  }, 1000 * 10);
+  const addedToCache = cacheWithExpiry(
+    caches.bestMapsMatchIDs,
+    matchData?.payload?.id,
+    1000 * 10
+  );
+  if (!addedToCache) return;
 
   try {
     const { team1, team2 } = await processTeams(matchData);

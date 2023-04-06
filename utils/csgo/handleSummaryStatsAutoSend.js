@@ -1,16 +1,17 @@
 import database from '#db';
 import { getSummaryStats } from '#services';
-import { telegramSendMessage, sendPhoto } from '#utils';
+import { telegramSendMessage, sendPhoto, cacheWithExpiry } from '#utils';
 import { getSummaryStatsTemplate } from '#templates';
 import { subscriptionReceivedMarkup } from '#telegramReplyMarkup';
 import { caches } from '#config';
 
 export async function handleSummaryStatsAutoSend(matchID, chatIDs) {
-  if (caches.summaryStatsMatchIDs.has(matchID)) return;
-  caches.summaryStatsMatchIDs.add(matchID);
-  setTimeout(() => {
-    caches.summaryStatsMatchIDs.delete(matchID);
-  }, 1000 * 10);
+  const addedToCache = cacheWithExpiry(
+    caches.summaryStatsMatchIDs,
+    matchID,
+    1000 * 10
+  );
+  if (!addedToCache) return;
 
   chatIDs.map(async (chat_id) => {
     const team = await database.teams.readBy({ chat_id });
