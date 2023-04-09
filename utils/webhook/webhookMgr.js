@@ -93,11 +93,6 @@ function getAuthorizationHeader() {
 async function fetchWebhookData() {
   return await fetch(url, {
     headers: getAuthorizationHeader(),
-    retry: 3,
-
-    callback: (retry) => {
-      console.log(`Trying: ${retry}`);
-    },
   });
 }
 
