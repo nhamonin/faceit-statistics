@@ -36,9 +36,9 @@ export default {
               clearInterval(interval);
               const predictions = await calculateBestMaps(matchData);
               if (predictions?.length) {
-                const prediction = await database.tempPredictions.readBy(
-                  match_id
-                );
+                const prediction = await database.tempPredictions.readBy({
+                  match_id,
+                });
 
                 if (!prediction) {
                   try {
