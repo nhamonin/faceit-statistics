@@ -1,4 +1,5 @@
 import database from '#db';
+import { getHighestElo } from '#services';
 import {
   isPlayerTeamMember,
   getPlayerInfo,
@@ -7,7 +8,6 @@ import {
   withErrorHandling,
 } from '#utils';
 import { MAX_PLAYERS_AMOUNT } from '#config';
-import { getHighestElo } from '#services';
 
 export const addPlayer = async (playerNickname, chat_id) =>
   withErrorHandling(

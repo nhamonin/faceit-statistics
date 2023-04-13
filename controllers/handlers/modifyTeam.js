@@ -42,6 +42,7 @@ async function handleAddPlayer(opts) {
             ...modifyTeamMarkup,
           }
         );
+
         eventEmitter.on(listenerName, async (text, options) => {
           await telegramEditMessage(
             { text, options },
@@ -51,7 +52,8 @@ async function handleAddPlayer(opts) {
             }
           );
         });
-        const { text, options } = await addPlayer(
+
+        const { text: addedText, options: addedOptions } = await addPlayer(
           nickname,
           opts.chat_id,
           message_id
@@ -60,7 +62,7 @@ async function handleAddPlayer(opts) {
         eventEmitter.removeAllListeners([listenerName]);
         logEvent(chat, `Add player: ${nickname}`);
         await telegramEditMessage(
-          { text, options },
+          { text: addedText, options: addedOptions },
           {
             ...opts,
             ...modifyTeamMarkup,

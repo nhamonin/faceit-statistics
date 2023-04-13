@@ -10,7 +10,7 @@ export const getHighAmountOfPlayerLastMatches = withErrorHandling(
     ];
     const res = [];
 
-    for await (const page of pages) {
+    for await (const [index, page] of pages.entries()) {
       const matches = await getPlayerMatches(
         player_id,
         MAX_MATCHES_PER_REQUEST,
@@ -21,15 +21,21 @@ export const getHighAmountOfPlayerLastMatches = withErrorHandling(
 
       res.push(...matches);
 
+      const percentage =
+        index === pages.length - 1
+          ? 100
+          : ((index / pages.length) * 100).toFixed(1);
+
       eventEmitter.emit(
         `addingPlayerProcess-${chat_id}-${nickname}`,
         'addPlayer.progressLevel',
         {
           nickname,
-          percentage: ((page / pages.length) * 100).toFixed(1),
+          percentage,
         }
       );
     }
+
     return res;
   }
 );

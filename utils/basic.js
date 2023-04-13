@@ -198,9 +198,9 @@ function withErrorHandling(fn, errorObj) {
     } catch (e) {
       console.log(e);
       return {
-        error: errorObj.error,
-        text: errorObj.errorMessage,
-        options: errorObj.errorOptions,
+        error: errorObj?.error,
+        text: errorObj?.errorMessage,
+        options: errorObj?.errorOptions,
       };
     }
   };
