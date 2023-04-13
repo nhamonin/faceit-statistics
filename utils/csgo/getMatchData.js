@@ -12,7 +12,6 @@ export async function getMatchData(match_id) {
         Expires: 0,
       },
     });
-    console.log('11');
     if (res.ok) return res.json();
   })();
 }
