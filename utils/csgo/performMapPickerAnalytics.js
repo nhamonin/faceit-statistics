@@ -1,9 +1,9 @@
 import { currentMapPool } from '#config';
-import { getMatchData } from '#utils';
+import { getMatchData, withErrorHandling } from '#utils';
 import database from '#db';
 
 export async function performMapPickerAnalytics(match_id) {
-  try {
+  withErrorHandling(async () => {
     const tempPrediction = await database.tempPredictions.readBy({ match_id });
     if (!tempPrediction) return;
     const { predictions } = tempPrediction;
@@ -40,7 +40,5 @@ export async function performMapPickerAnalytics(match_id) {
     }
 
     await database.tempPredictions.deleteAllBy({ match_id });
-  } catch (e) {
-    console.log(e);
-  }
+  })();
 }

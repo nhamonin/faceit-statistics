@@ -1,7 +1,9 @@
 import { fetch } from 'undici';
 
+import { withErrorHandling } from '#utils';
+
 export async function getMatchData(match_id) {
-  try {
+  return withErrorHandling(async () => {
     const url = `https://api.faceit.com/match/v2/match/${match_id}`;
     const res = await fetch(url, {
       headers: {
@@ -10,8 +12,7 @@ export async function getMatchData(match_id) {
         Expires: 0,
       },
     });
+    console.log('11');
     if (res.ok) return res.json();
-  } catch (e) {
-    console.log(e);
-  }
+  })();
 }

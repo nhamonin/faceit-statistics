@@ -1,8 +1,8 @@
 import database from '#db';
-import { webhookMgr, chunk } from '#utils';
+import { webhookMgr, chunk, withErrorHandling } from '#utils';
 
 export async function syncWebhookStaticListWithDB() {
-  try {
+  withErrorHandling(async () => {
     const playersIDs = await database.players.readAllPlayerIds();
     const { restrictions } = await webhookMgr.getWebhookDataPayload();
 
@@ -20,7 +20,5 @@ export async function syncWebhookStaticListWithDB() {
         await webhookMgr.addPlayersToList(playersChunked);
       }
     }
-  } catch (e) {
-    console.log(e);
-  }
+  });
 }

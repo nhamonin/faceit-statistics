@@ -1,25 +1,31 @@
 import i18next from 'i18next';
 
-import { getPlayerMatches, getPlayerInfo, getLangByChatID } from '#utils';
+import {
+  getPlayerMatches,
+  getPlayerInfo,
+  getLangByChatID,
+  withErrorHandling,
+} from '#utils';
 
-export const getPlayerLastMatchesStats = async (playerNickname, chat_id) => {
-  try {
-    const { player_id } = await getPlayerInfo({ playerNickname });
-    if (!player_id)
-      return {
-        text: 'playerNotExistsError',
-        options: { nickname: playerNickname },
-        error: true,
-      };
-    const playerMatches = await getPlayerMatches(player_id);
-    const lang = await getLangByChatID(chat_id);
+export const getPlayerLastMatchesStats = async (playerNickname, chat_id) =>
+  withErrorHandling(
+    async () => {
+      const { player_id } = await getPlayerInfo({ playerNickname });
+      if (!player_id)
+        return {
+          text: 'playerNotExistsError',
+          options: { nickname: playerNickname },
+          error: true,
+        };
+      const playerMatches = await getPlayerMatches(player_id);
+      const lang = await getLangByChatID(chat_id);
 
-    return { text: formatMessage(playerMatches, playerNickname, lang) };
-  } catch (e) {
-    console.log(e);
-    return { text: 'serverError' };
-  }
-};
+      return { text: formatMessage(playerMatches, playerNickname, lang) };
+    },
+    {
+      errorMessage: 'serverError',
+    }
+  )();
 
 function formatMessage(playerMatches, nickname, lang) {
   return playerMatches.length

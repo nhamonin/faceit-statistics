@@ -1,15 +1,10 @@
 import { MAX_MATCHES_PER_REQUEST } from '#config';
-import { getPlayerMatches, getEventEmitter } from '#utils';
+import { getPlayerMatches, getEventEmitter, withErrorHandling } from '#utils';
 
 const eventEmitter = getEventEmitter();
 
-export async function getHighAmountOfPlayerLastMatches(
-  player_id,
-  amount = 20,
-  nickname,
-  chat_id
-) {
-  try {
+export const getHighAmountOfPlayerLastMatches = withErrorHandling(
+  async function (player_id, amount = 20, nickname, chat_id) {
     const pages = [
       ...Array(Math.ceil(amount / MAX_MATCHES_PER_REQUEST)).keys(),
     ];
@@ -36,7 +31,5 @@ export async function getHighAmountOfPlayerLastMatches(
       );
     }
     return res;
-  } catch (e) {
-    console.log(e);
   }
-}
+);

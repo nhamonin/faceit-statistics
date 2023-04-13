@@ -41,14 +41,10 @@ export default {
                 });
 
                 if (!prediction) {
-                  try {
-                    await database.tempPredictions.create({
-                      match_id,
-                      predictions,
-                    });
-                  } catch (e) {
-                    console.log(e);
-                  }
+                  await database.tempPredictions.create({
+                    match_id,
+                    predictions,
+                  });
                 }
               }
             }

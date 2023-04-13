@@ -1,5 +1,10 @@
 import { getPlayerLastMatchesStats } from '#services';
-import { logEvent, telegramSendMessage, telegramDeleteMessage } from '#utils';
+import {
+  logEvent,
+  telegramSendMessage,
+  telegramDeleteMessage,
+  withErrorHandling,
+} from '#utils';
 import { lastPlayerMatchesMarkup } from '#telegramReplyMarkup';
 
 export async function getPlayerLastMatchesWrapper(
@@ -13,7 +18,8 @@ export async function getPlayerLastMatchesWrapper(
     chat.id
   );
   logEvent(chat, 'Get player last matches stats');
-  try {
+
+  withErrorHandling(async () => {
     await telegramDeleteMessage(opts.chat_id, opts.message_id);
     await telegramSendMessage(
       opts.chat_id,
@@ -30,7 +36,5 @@ export async function getPlayerLastMatchesWrapper(
         ...lastPlayerMatchesMarkup(teamNicknames),
       }
     );
-  } catch (e) {
-    console.log(e);
-  }
+  })();
 }

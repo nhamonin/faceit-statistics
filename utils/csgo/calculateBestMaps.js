@@ -9,6 +9,7 @@ import {
   sendPhoto,
   getPlayerLifeTimeStats,
   cacheWithExpiry,
+  withErrorHandling,
 } from '#utils';
 import { currentMapPool, caches } from '#config';
 import { getBestMapsTemplate } from '#templates';
@@ -22,7 +23,7 @@ export async function calculateBestMaps(matchData) {
   );
   if (!addedToCache) return;
 
-  try {
+  return withErrorHandling(async () => {
     const { team1, team2 } = await processTeams(matchData);
 
     const team1Data = await getPlayersAndStats(team1.playersIDs);
@@ -54,9 +55,7 @@ export async function calculateBestMaps(matchData) {
     );
 
     return [team1Result, team2Result];
-  } catch (e) {
-    console.log(e);
-  }
+  })();
 }
 
 async function processTeams(matchData) {
@@ -113,7 +112,7 @@ async function fillInTeamVariablesWithPlayersStats(
   dbPlayers,
   stats
 ) {
-  try {
+  await withErrorHandling(async () => {
     await Promise.all(
       playerIDs.map(async (player_id) => {
         const player = await database.players.readBy({ player_id });
@@ -144,13 +143,11 @@ async function fillInTeamVariablesWithPlayersStats(
         });
       })
     );
-  } catch (e) {
-    console.log(e);
-  }
+  })();
 }
 
 function calculateAverageAvg(arr) {
-  try {
+  withErrorHandling(() => {
     arr.map((teamStats) => {
       Object.keys(teamStats.lifetime).map((mapName) => {
         teamStats.avg[mapName] = calculateAverage(
@@ -158,13 +155,11 @@ function calculateAverageAvg(arr) {
         );
       });
     });
-  } catch (e) {
-    console.log(e);
-  }
+  })();
 }
 
 function calculateAndFillAllData(arr) {
-  try {
+  withErrorHandling(() => {
     arr.map((teamStats) => {
       const lifetime = teamStats.lifetime;
 
@@ -209,9 +204,7 @@ function calculateAndFillAllData(arr) {
         };
       });
     });
-  } catch (e) {
-    console.log(e);
-  }
+  })();
 }
 
 function calculateDifferencesAndSortResult(
@@ -220,7 +213,7 @@ function calculateDifferencesAndSortResult(
   team1Result,
   team2Result
 ) {
-  try {
+  withErrorHandling(() => {
     currentMapPool.map((mapName) => {
       team1Result.push({
         mapName,
@@ -257,9 +250,7 @@ function calculateDifferencesAndSortResult(
 
     team1Result.sort((a, b) => b?.totalPoints - a?.totalPoints);
     team2Result.sort((a, b) => b?.totalPoints - a?.totalPoints);
-  } catch (e) {
-    console.log(e);
-  }
+  })();
 }
 
 async function sendMapPickerResult(
@@ -271,7 +262,8 @@ async function sendMapPickerResult(
   team2Name
 ) {
   if (!dbPlayersTeam1.length && !dbPlayersTeam2.length) return;
-  try {
+
+  withErrorHandling(async () => {
     const neededVariables = dbPlayersTeam1.length
       ? [dbPlayersTeam1, team1Result, team1Name]
       : [dbPlayersTeam2, team2Result, team2Name];
@@ -335,7 +327,5 @@ async function sendMapPickerResult(
         }
       );
     });
-  } catch (e) {
-    console.log(e);
-  }
+  })();
 }

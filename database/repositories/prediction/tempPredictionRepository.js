@@ -1,18 +1,19 @@
 import { BaseRepository } from '../baseRepository.js';
+import { withErrorHandling } from '#utils';
 
 export class TempPredictionRepository extends BaseRepository {
   constructor(db) {
     super(db, 'temp_prediction');
   }
 
-  async create({ match_id, predictions }) {
-    return this.db(this.tableName).insert({
+  create = withErrorHandling(async ({ match_id, predictions }) =>
+    this.db(this.tableName).insert({
       match_id,
       predictions: JSON.stringify(predictions),
-    });
-  }
+    })
+  );
 
-  async deleteOlderThan(timestamp) {
-    return this.db(this.tableName).where('created_at', '<', timestamp).delete();
-  }
+  deleteOlderThan = withErrorHandling(async (timestamp) =>
+    this.db(this.tableName).where('created_at', '<', timestamp).del()
+  );
 }

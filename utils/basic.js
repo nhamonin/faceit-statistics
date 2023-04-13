@@ -45,15 +45,13 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
   let image = null;
 
   await page.setContent(html);
-  await wait(500);
-  try {
+
+  await withErrorHandling(async () => {
     image = await page.screenshot({
       fullPage: true,
     });
     page.close();
-  } catch (e) {
-    console.log(e);
-  }
+  })();
 
   const chatsToSend =
     !logEnabled ||
@@ -63,21 +61,24 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
       : [...chatIDs, chatToGetNotifications];
 
   await Promise.all(
-    chatsToSend.map(async (chat_id) => {
-      try {
-        await tBot.sendPhoto(
-          chat_id,
-          image,
-          message_id ? getBasicTelegramOptions(message_id) : {}
-        );
-      } catch (e) {
-        if (e.message.startsWith(ERROR_TELEGRAM_FORBIDDEN)) {
-          await handleBlockedToSendMessage(chat_id);
-        } else {
-          console.log(e);
+    chatsToSend.map((chat_id) =>
+      withErrorHandling(
+        async () => {
+          await tBot.sendPhoto(
+            chat_id,
+            image,
+            message_id ? getBasicTelegramOptions(message_id) : {}
+          );
+        },
+        async (e) => {
+          if (e.message.startsWith(ERROR_TELEGRAM_FORBIDDEN)) {
+            await handleBlockedToSendMessage(chat_id);
+          } else {
+            console.log(e);
+          }
         }
-      }
-    })
+      )()
+    )
   );
 }
 
@@ -190,6 +191,21 @@ function cacheWithExpiry(cache, key, timeout) {
   return true;
 }
 
+function withErrorHandling(fn, errorObj) {
+  return async function (...args) {
+    try {
+      return await fn(...args);
+    } catch (e) {
+      console.log(e);
+      return {
+        error: errorObj.error,
+        text: errorObj.errorMessage,
+        options: errorObj.errorOptions,
+      };
+    }
+  };
+}
+
 export {
   adjustConsoleLog,
   logEvent,
@@ -208,4 +224,5 @@ export {
   setEnvValue,
   receiveArgs,
   cacheWithExpiry,
+  withErrorHandling,
 };

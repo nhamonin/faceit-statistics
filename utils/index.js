@@ -17,6 +17,7 @@ import {
   setEnvValue,
   receiveArgs,
   cacheWithExpiry,
+  withErrorHandling,
 } from './basic.js';
 // server
 import { startServer } from './server/startServer.js';
@@ -70,6 +71,7 @@ export {
   setEnvValue,
   receiveArgs,
   cacheWithExpiry,
+  withErrorHandling,
   startServer,
   getPlayerInfo,
   getPlayerMatches,

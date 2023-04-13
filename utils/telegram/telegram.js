@@ -4,7 +4,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import i18next from 'i18next';
 
 import database from '#db';
-import { webhookMgr, getLangByChatID } from '#utils';
+import { webhookMgr, getLangByChatID, withErrorHandling } from '#utils';
 import {
   isProduction,
   bots,
@@ -57,11 +57,9 @@ export function getTelegramBot() {
 }
 
 export async function telegramDeleteMessage(chat_id, message_id) {
-  try {
+  withErrorHandling(async () => {
     await tBot.deleteMessage(chat_id, message_id);
-  } catch (e) {
-    console.log(e);
-  }
+  })();
 }
 
 export async function telegramEditMessage(i18opts, messageOpts) {
@@ -70,14 +68,12 @@ export async function telegramEditMessage(i18opts, messageOpts) {
 
   processI18Options(options, lang);
 
-  try {
+  withErrorHandling(async () => {
     await tBot.editMessageText(
       text ? i18next.t(text, { ...options, lng: lang }) : i18opts,
       translateInlineKeyboard(messageOpts, lang)
     );
-  } catch (e) {
-    console.log(e);
-  }
+  })();
 }
 
 export async function telegramSendMessage(chat_id, i18opts, messageOpts) {
