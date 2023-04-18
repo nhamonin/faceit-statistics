@@ -1,56 +1,80 @@
 import i18next from 'i18next';
 
-import {
-  getPlayerMatches,
-  getPlayerInfo,
-  getLangByChatID,
-  withErrorHandling,
-} from '#utils';
+import database from '#db';
+import { getLangByChatID, withErrorHandling } from '#utils';
 
-export const getPlayerLastMatchesStats = async (playerNickname, chat_id) =>
+export const getPlayerLastMatchesStats = async (nickname, chat_id) =>
   withErrorHandling(
     async () => {
-      const { player_id } = await getPlayerInfo({ playerNickname });
-      if (!player_id)
+      const playerInDB = await getPlayerFromDB(nickname);
+
+      if (!playerInDB) {
         return {
           text: 'playerNotExistsError',
-          options: { nickname: playerNickname },
+          options: { nickname },
           error: true,
         };
-      const playerMatches = await getPlayerMatches(player_id);
+      }
+
+      const playerMatches = await getPlayerMatches(playerInDB.player_id);
       const lang = await getLangByChatID(chat_id);
 
-      return { text: formatMessage(playerMatches, playerNickname, lang) };
+      return { text: formatMessage(playerMatches, nickname, lang) };
     },
     {
       errorMessage: 'serverError',
     }
   )();
 
-function formatMessage(playerMatches, nickname, lang) {
+async function getPlayerFromDB(nickname) {
+  return await database.players.readBy({ nickname });
+}
+
+async function getPlayerMatches(player_id) {
+  return await database.matches.readAllBy(
+    { player_id, game_mode: '5v5' },
+    {
+      limit: 20,
+      excludeNull: 'elo',
+    }
+  );
+}
+
+function formatMessage(playerMatches, nickname, lng) {
   return playerMatches.length
     ? [
-        i18next.t('playerLastMatches', { nickname, lng: lang }),
+        i18next.t('playerLastMatches', { nickname, lng }),
         '<code>',
-        ...playerMatches.map((match) => {
-          const result = match.i10 === '1' ? ' W 🟢' : ' L 🔴';
-          const score = match.i18
-            .split('/')
-            .map((teamScore, index) => {
-              const prefix = index === 0 ? ' ' : '';
-              teamScore = teamScore.trim();
-              return (
-                prefix + (teamScore.length === 1 ? teamScore + ' ' : teamScore)
-              );
-            })
-            .join('/');
-          const playerKD =
-            '  ' + (+match.c2).toFixed(2) + (match.c2 >= 1 ? ' 🟢' : ' 🔴');
-          const map = ' ' + match.i1.replace('de_', '');
-
-          return `${result} ${score}${playerKD} ${map}`;
-        }),
+        ...playerMatches.map(formatMatch),
         '</code>',
       ].join('\n')
-    : 'No matches found.';
+    : i18next.t('playerHasNoMatches', { nickname, lng });
+}
+
+function formatMatch(match) {
+  const result = match.win ? ' W 🟢' : ' L 🔴';
+  const score = formatScore(match.score);
+  const playerKD = formatPlayerKD(match.kd);
+  const map = formatMap(match.map);
+
+  return `${result} ${score}${playerKD} ${map}`;
+}
+
+function formatScore(score) {
+  return score
+    .split('/')
+    .map((teamScore, index) => {
+      const prefix = index === 0 ? ' ' : '';
+      teamScore = teamScore.trim();
+      return prefix + (teamScore.length === 1 ? teamScore + ' ' : teamScore);
+    })
+    .join('/');
+}
+
+function formatPlayerKD(kd) {
+  return `  ${kd.toFixed(2)}${kd >= 1 ? ' 🟢' : ' 🔴'}`;
+}
+
+function formatMap(map) {
+  return ` ${map.replace('de_', '')}`;
 }

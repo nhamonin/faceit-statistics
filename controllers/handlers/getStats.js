@@ -95,33 +95,7 @@ async function handlePlayerLastMatches(
   callbackQuery
 ) {
   const nickname = callbackQuery.data.split('?')[1];
-
-  if (nickname !== 'custom') {
-    await getPlayerLastMatchesWrapper(nickname, msg.chat, opts, teamNicknames);
-  } else {
-    telegramSendMessage(
-      opts.chat_id,
-      { text: 'sendPlayerNickname' },
-      {
-        ...defaultOpts,
-      }
-    ).then(async ({ message_id: bot_message_id }) => {
-      await tBot.onReplyToMessage(
-        opts.chat_id,
-        bot_message_id,
-        async ({ text: nickname, message_id }) => {
-          await getPlayerLastMatchesWrapper(
-            nickname,
-            msg.chat,
-            opts,
-            teamNicknames
-          );
-          await telegramDeleteMessage(opts.chat_id, message_id);
-          await telegramDeleteMessage(opts.chat_id, bot_message_id);
-        }
-      );
-    });
-  }
+  await getPlayerLastMatchesWrapper(nickname, msg.chat, opts, teamNicknames);
 }
 
 async function handleHighestElo(opts, msg, teamNicknames, callbackQuery) {

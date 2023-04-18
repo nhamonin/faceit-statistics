@@ -1,18 +1,14 @@
-import { Players } from 'faceit-node-api';
-
 import database from '#db';
-import { game_id } from '#config';
 import {
   getPlayerInfo,
   getDaysBetweenDates,
-  getHighestEloMatch,
+  getHighestEloOptions,
   withErrorHandling,
 } from '#utils';
 
-export const getHighestElo = async (nickname, chat_id) =>
+export const getHighestElo = async (nickname) =>
   withErrorHandling(
     async () => {
-      const players = new Players();
       const playerInDB = await database.players.readBy({ nickname });
       let player_id, currentElo, highestElo, highestEloDate;
 
@@ -51,28 +47,16 @@ export const getHighestElo = async (nickname, chat_id) =>
         };
       }
 
-      const playerStatistics = await players.getStatisticsOfAPlayer(
-        player_id,
-        game_id
-      );
-      const playerMatchesAmount = +playerStatistics?.lifetime?.Matches || 0;
-      const highestEloMatch = await getHighestEloMatch(
-        player_id,
-        playerMatchesAmount,
-        nickname,
-        chat_id
-      );
-      highestElo = highestEloMatch?.elo || currentElo;
-      highestEloDate = highestEloMatch?.date
-        ? new Date(highestEloMatch?.date)
-        : new Date();
+      const highestEloOptions = await getHighestEloOptions(player_id);
+      highestElo = highestEloOptions?.elo || currentElo;
+      highestEloDate = highestEloOptions?.date || new Date();
       diffElo = currentElo - highestElo;
       diffDays = getDaysBetweenDates(highestEloDate, new Date());
 
       if (playerInDB) {
         playerInDB.highestElo = highestElo;
         playerInDB.highestEloDate = highestEloDate;
-        await database.players.update(playerInDB);
+        await database.players.updateAllBy({ player_id }, playerInDB);
       }
 
       return {

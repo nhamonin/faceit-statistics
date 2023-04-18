@@ -14,11 +14,14 @@ export class PlayerRepository extends BaseRepository {
   );
 
   updateHighestElo = withErrorHandling(
-    async (player_id, updatedElo, highestEloDate) =>
-      this.updateAllBy('player_id', player_id, {
-        highestElo: updatedElo,
-        highestEloDate,
-      })
+    async ({ player_id, highestElo, highestEloDate }) =>
+      this.updateAllBy(
+        { player_id },
+        {
+          highestElo,
+          highestEloDate,
+        }
+      )
   );
 
   readAllPlayerIds = withErrorHandling(async () =>

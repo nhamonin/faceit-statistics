@@ -47,9 +47,10 @@ import { prettifyMapPickerData } from './csgo/prettifyMapPickerData.js';
 import { getHighestEloWrapper } from './csgo/getHighestEloWrapper.js';
 import { performMapPickerAnalytics } from './csgo/performMapPickerAnalytics.js';
 import { getMatchData } from './csgo/getMatchData.js';
-import { getHighestEloMatch } from './csgo/getHighestEloMatch.js';
+import { getHighestEloOptions } from './csgo/getHighestEloOptions.js';
 import { getClass } from './csgo/getStatsClasses.js';
 import { handleSummaryStatsAutoSend } from './csgo/handleSummaryStatsAutoSend.js';
+import { storePlayerMatches } from './csgo/storePlayerMatches.js';
 // i18next
 import { initI18next } from './i18next/i18next.js';
 
@@ -96,8 +97,9 @@ export {
   webhookMgr,
   getCurrentBearerToken,
   getMatchData,
-  getHighestEloMatch,
+  getHighestEloOptions,
   getClass,
   handleSummaryStatsAutoSend,
+  storePlayerMatches,
   initI18next,
 };

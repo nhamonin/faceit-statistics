@@ -54,12 +54,13 @@ async function getAvgPlayersKD(players, limit = 20) {
         [nickname]: kd.last50 || 0,
       }));
     default:
-      const res = [];
-      for await (const { nickname, player_id } of players) {
-        const { kd } = await getPlayerLastStats(player_id, limit);
-        res.push({ [nickname]: kd.last || 0 });
-      }
-      return res;
+      return Promise.all(
+        players.map(({ nickname, player_id }) =>
+          getPlayerLastStats(player_id, limit).then(({ kd }) => ({
+            [nickname]: kd.last || 0,
+          }))
+        )
+      );
   }
 }
 

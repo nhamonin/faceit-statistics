@@ -11,10 +11,6 @@ export const lastPlayerMatchesMarkup = (teamNicknames) => ({
             text: nickname,
             callback_data: `getPlayerLastMatches?${nickname}`,
           })),
-          {
-            text: 'buttons.basic.custom',
-            callback_data: 'getPlayerLastMatches?custom',
-          },
         ],
         numberOfButtonsInRows
       ),

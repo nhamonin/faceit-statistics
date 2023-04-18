@@ -98,6 +98,7 @@ const COMMAND_PATTERNS = {
   syncDbWithStaticList: /\/sync_db_with_static_list/,
   limitRestrictions: /\/limit_restrictions.* (\S*)/,
   updatePlayers: /\/update_players/,
+  hardUpdatePlayers: /\/hard_update_players/,
 };
 const dynamicValues = {
   FACEIT_WEBHOOK_API_KEY,

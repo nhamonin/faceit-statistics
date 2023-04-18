@@ -1,28 +1,19 @@
-import {
-  calculateAverage,
-  getHighAmountOfPlayerLastMatches,
-  getPlayerLifeTimeStats,
-} from '#utils';
+import database from '#db';
+import { calculateAverage, getPlayerLifeTimeStats } from '#utils';
 import { statsNumberArray } from '#config';
 
 export async function getPlayerLastStats(player_id, limit) {
-  const maxNumber = limit || Math.max(...statsNumberArray);
-  const LIMIT = maxNumber + 50;
-
+  const LIMIT = limit || Math.max(...statsNumberArray);
   const [matches, stats] = await Promise.all([
-    getHighAmountOfPlayerLastMatches(player_id, LIMIT),
+    getPlayerMatches(player_id, LIMIT),
     getPlayerLifeTimeStats(player_id),
   ]);
-
-  const statsArr = matches
-    .filter((match) => match.game === 'csgo' && match.gameMode === '5v5')
-    .slice(0, maxNumber)
-    .map(({ c2, i6, i10, c4 }) => ({
-      kd: +c2,
-      avg: +i6,
-      winrate: +i10,
-      hs: +c4,
-    }));
+  const statsArr = matches.map(({ kd, kills, win, hs }) => ({
+    kd,
+    avg: kills,
+    winrate: win,
+    hs,
+  }));
   const res = {
     kd: {},
     avg: {},
@@ -49,4 +40,14 @@ export async function getPlayerLastStats(player_id, limit) {
   });
 
   return res;
+}
+
+async function getPlayerMatches(player_id, limit) {
+  return await database.matches.readAllBy(
+    { player_id, game_mode: '5v5' },
+    {
+      limit,
+      excludeNull: 'elo',
+    }
+  );
 }

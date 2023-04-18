@@ -17,7 +17,7 @@ export async function getPlayerLastMatchesWrapper(
     nickname,
     chat.id
   );
-  logEvent(chat, 'Get player last matches stats');
+  logEvent(chat, `Get player ${nickname} last matches stats`);
 
   withErrorHandling(async () => {
     await telegramDeleteMessage(opts.chat_id, opts.message_id);

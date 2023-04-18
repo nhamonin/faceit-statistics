@@ -1,9 +1,14 @@
 import database from '#db';
-import { getPlayerInfo, cacheWithExpiry, withErrorHandling } from '#utils';
+import {
+  getPlayerInfo,
+  cacheWithExpiry,
+  withErrorHandling,
+  storePlayerMatches,
+} from '#utils';
 import { getHighestElo } from '#services';
 import { caches } from '#config';
 
-export const updateTeamPlayers = async (chat_id) =>
+export const updateTeamPlayers = async (chat_id, isHardUpdate) =>
   withErrorHandling(
     async () => {
       const addedToCache = cacheWithExpiry(
@@ -17,6 +22,11 @@ export const updateTeamPlayers = async (chat_id) =>
       const teamPlayerIDs = (
         await database.players.readAllByChatId(chat_id)
       ).map(({ player_id }) => player_id);
+
+      for await (const player_id of teamPlayerIDs) {
+        if (isHardUpdate) await database.matches.deleteAllBy({ player_id });
+        await storePlayerMatches(player_id, null, isHardUpdate ? null : 100);
+      }
       const playersStats = await Promise.all(
         teamPlayerIDs.map((player_id) => getPlayerInfo({ playerID: player_id }))
       );

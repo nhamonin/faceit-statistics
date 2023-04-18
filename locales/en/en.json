@@ -31,7 +31,7 @@
       "success": "Team players was successfully updated. Check out Elo rating via the /get_team_elo or K/D via /get_team_kd commands.",
       "error": "Unfortunately, dut to the technical reasons it is impossible to update players right now. Please wait and try again later."
     },
-    "emptyMatchesError": "Your teammates have no matches in CS:GO.",
+    "emptyMatchesError": "Your teammates have no matches.",
     "statAttributes": {
       "elo": "Elo",
       "kd": "K/D"
@@ -47,6 +47,7 @@
       "peakElo_other": "<b>{{ nickname }}</b> is at its peak now! Current elo rating: <b>{{ highestElo }}</b>.\nDate when the highest elo rating was reached: <b>{{ highestEloDate }}</b> ({{ count }} days ago)."
     },
     "playerLastMatches": "Last 20 matches by player <b>{{ nickname }}</b>:",
+    "playerHasNoMatches": "Player <b>{{ nickname }}</b> has no matches.",
     "subscriptions": {
       "summaryStats": {
         "message": "You or someone from your team just finished a match. Here is updated statistics of your team: <b>upper half</b> shows the <b>lifetime stats</b>, <b>lower half</b> shows the stats for the <b>last 20 matches</b>.",

@@ -49,6 +49,11 @@ export function initOnTextListeners() {
     handleUpdatePlayersCommand,
     true
   );
+  registerCommand(
+    COMMAND_PATTERNS.hardUpdatePlayers,
+    handleHardUpdatePlayersCommand,
+    true
+  );
 }
 
 async function handleStartCommand({ chat }) {
@@ -124,6 +129,20 @@ async function handleUpdatePlayersCommand({ chat, message_id }) {
   await sendTelegramMessage({
     chatId: chat.id,
     text: 'Update players done! Now try /get_analytics command.',
+    messageId: message_id,
+  });
+}
+
+async function handleHardUpdatePlayersCommand({ chat, message_id }) {
+  const teamIDs = await database.teams.readAllChatIds();
+
+  for await (const team of teamIDs) {
+    await updateTeamPlayers(team, true);
+  }
+
+  await sendTelegramMessage({
+    chatId: chat.id,
+    text: 'Hard update players done! Now try /get_analytics command.',
     messageId: message_id,
   });
 }
