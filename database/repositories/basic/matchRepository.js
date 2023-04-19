@@ -37,7 +37,7 @@ export class MatchRepository extends BaseRepository {
         await this.db(this.tableName)
           .insert(chunk)
           .onConflict(['match_id', 'player_id'])
-          .ignore();
+          .merge();
       }
     }
   });
