@@ -6,6 +6,26 @@ export class MatchRepository extends BaseRepository {
     super(db, 'match');
   }
 
+  readAllBy = withErrorHandling(async (criteria, options = {}) => {
+    let query = this.db(this.tableName).where(criteria);
+
+    if (options.excludeNull) {
+      query = query.whereNotNull(options.excludeNull);
+    }
+
+    if (options.orderBy && options.orderDirection) {
+      query = query.orderBy(options.orderBy, options.orderDirection);
+    } else {
+      query = query.orderBy('timestamp', 'desc');
+    }
+
+    if (options.limit) {
+      query = query.limit(options.limit);
+    }
+
+    return query;
+  });
+
   createMany = withErrorHandling(async (records) => {
     const maxSingleInsert = 30;
 

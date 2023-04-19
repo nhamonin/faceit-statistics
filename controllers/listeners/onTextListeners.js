@@ -122,8 +122,8 @@ async function handleLimitRestrictionsCommand({ chat, message_id }, match) {
 async function handleUpdatePlayersCommand({ chat, message_id }) {
   const teamIDs = await database.teams.readAllChatIds();
 
-  for await (const team of teamIDs) {
-    await updateTeamPlayers(team);
+  for await (const teamID of teamIDs) {
+    await updateTeamPlayers(teamID);
   }
 
   await sendTelegramMessage({
@@ -136,8 +136,8 @@ async function handleUpdatePlayersCommand({ chat, message_id }) {
 async function handleHardUpdatePlayersCommand({ chat, message_id }) {
   const teamIDs = await database.teams.readAllChatIds();
 
-  for await (const team of teamIDs) {
-    await updateTeamPlayers(team, true);
+  for await (const teamID of teamIDs) {
+    await updateTeamPlayers(teamID, true);
   }
 
   await sendTelegramMessage({

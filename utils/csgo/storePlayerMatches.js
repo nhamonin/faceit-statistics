@@ -45,7 +45,7 @@ export async function storePlayerMatches(player_id, chat_id, limit) {
         kills: +i6,
         win: +i10,
         hs: +c4,
-        date: new Date(date),
+        timestamp: new Date(date),
       })
     );
 
