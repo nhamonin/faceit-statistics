@@ -17,7 +17,6 @@ export async function storePlayerMatches(player_id, chat_id, limit) {
     matchesAmount,
     chat_id
   );
-  console.log({ player_id, matchesAmount, matches: matches.length });
 
   const matchesToStore = matches
     .filter(({ game }) => game === game_id)
