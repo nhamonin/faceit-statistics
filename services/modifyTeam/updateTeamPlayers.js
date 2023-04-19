@@ -14,7 +14,7 @@ export const updateTeamPlayers = async (chat_id, isHardUpdate) =>
       const addedToCache = cacheWithExpiry(
         caches.updateTeamPlayers,
         chat_id,
-        1000 * 60
+        1000 * 60 * 7
       );
       if (!addedToCache) return;
       const team = await database.teams.readBy({ chat_id });
