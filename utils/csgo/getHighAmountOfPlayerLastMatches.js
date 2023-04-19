@@ -18,7 +18,7 @@ export const getHighAmountOfPlayerLastMatches = withErrorHandling(
         page
       );
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       if (!matches?.length) break;
 
