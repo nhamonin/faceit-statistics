@@ -13,17 +13,6 @@ export class PlayerRepository extends BaseRepository {
       .where('team_player.chat_id', chat_id)
   );
 
-  updateHighestElo = withErrorHandling(
-    async ({ player_id, highestElo, highestEloDate }) =>
-      this.updateAllBy(
-        { player_id },
-        {
-          highestElo,
-          highestEloDate,
-        }
-      )
-  );
-
   readAllPlayerIds = withErrorHandling(async () =>
     this.db(this.tableName).pluck('player_id')
   );

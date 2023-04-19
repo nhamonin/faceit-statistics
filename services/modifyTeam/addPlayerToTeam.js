@@ -79,6 +79,15 @@ async function addPlayerFromAPI(playerNickname, players, chat_id) {
   }
 
   await addNewPlayer(playerInfo, chat_id);
+  await updatePlayerStats(playerInfo.player_id);
+}
+
+async function updatePlayerStats(player_id) {
+  const { kd, avg, hs, winrate } = await getPlayerInfo({
+    playerID: player_id,
+  });
+
+  await database.players.updateAllBy({ player_id }, { kd, avg, hs, winrate });
 }
 
 async function checkTeamExists(chat_id) {
@@ -98,17 +107,17 @@ function checkPlayerLimit(players) {
 }
 
 async function addNewPlayer(playerInfo, chat_id) {
-  const { player_id, nickname, elo, lvl, kd, avg, hs, winrate } = playerInfo;
+  const { player_id, nickname, elo, lvl } = playerInfo;
 
   await database.players.create({
     player_id,
     nickname,
     elo,
     lvl,
-    kd,
-    avg,
-    hs,
-    winrate,
+    kd: 0,
+    avg: 0,
+    hs: 0,
+    winrate: 0,
   });
   await database.teamsPlayers.create({
     chat_id,
@@ -116,11 +125,13 @@ async function addNewPlayer(playerInfo, chat_id) {
   });
   await storePlayerMatches(player_id, chat_id);
   const { options } = await getHighestElo(nickname);
-  await database.players.updateHighestElo({
-    player_id,
-    highestElo: options.highestElo,
-    highestEloDate: options.highestEloDate,
-  });
+  await database.players.updateAllBy(
+    { player_id },
+    {
+      highestElo: options.highestElo,
+      highestEloDate: options.highestEloDate,
+    }
+  );
   await webhookMgr.addPlayersToList([player_id]);
 
   console.log(
