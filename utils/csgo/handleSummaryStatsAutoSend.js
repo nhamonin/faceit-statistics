@@ -9,7 +9,7 @@ export async function handleSummaryStatsAutoSend(matchID, chatIDs) {
   const addedToCache = cacheWithExpiry(
     caches.summaryStatsMatchIDs,
     matchID,
-    1000 * 10
+    1000 * 60 * 3
   );
   if (!addedToCache) return;
 

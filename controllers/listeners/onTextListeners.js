@@ -119,30 +119,23 @@ async function handleLimitRestrictionsCommand({ chat, message_id }, match) {
   });
 }
 
-async function handleUpdatePlayersCommand({ chat, message_id }) {
-  const teamIDs = await database.teams.readAllChatIds();
-
-  for await (const teamID of teamIDs) {
-    await updateTeamPlayers(teamID);
-  }
-
-  await sendTelegramMessage({
-    chatId: chat.id,
-    text: 'Update players done! Now try /get_analytics command.',
-    messageId: message_id,
-  });
+async function handleUpdatePlayersCommand(params) {
+  await updatePlayers({ ...params });
 }
 
-async function handleHardUpdatePlayersCommand({ chat, message_id }) {
-  const teamIDs = await database.teams.readAllChatIds();
+async function handleHardUpdatePlayersCommand(params) {
+  await updatePlayers({ ...params, isHardUpdate: true });
+}
 
-  for await (const teamID of teamIDs) {
-    await updateTeamPlayers(teamID, true);
-  }
+async function updatePlayers({ chat, message_id, isHardUpdate = false }) {
+  const playerIDs = await database.players.readAllPlayerIds();
 
+  await updateTeamPlayers({ playerIDs, isHardUpdate });
   await sendTelegramMessage({
     chatId: chat.id,
-    text: 'Hard update players done! Now try /get_analytics command.',
+    text: `${
+      isHardUpdate ? 'Hard' : ''
+    } Update players done! Now try /get_analytics command.`,
     messageId: message_id,
   });
 }

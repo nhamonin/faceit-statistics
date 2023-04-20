@@ -8,55 +8,26 @@ import {
 import { getHighestElo } from '#services';
 import { caches } from '#config';
 
-export const updateTeamPlayers = async (chat_id, isHardUpdate) =>
+export const updateTeamPlayers = async ({ playerIDs, isHardUpdate }) =>
   withErrorHandling(
     async () => {
-      const addedToCache = cacheWithExpiry(
-        caches.updateTeamPlayers,
-        chat_id,
-        1000 * 60 * 7
-      );
-      if (!addedToCache) return;
-      const team = await database.teams.readBy({ chat_id });
-      if (!team) return { text: 'teamNotExistError' };
-      const teamPlayerIDs = (
-        await database.players.readAllByChatId(chat_id)
-      ).map(({ player_id }) => player_id);
+      const filteredPlayerIDs = [];
 
-      for await (const player_id of teamPlayerIDs) {
-        if (isHardUpdate) await database.matches.deleteAllBy({ player_id });
-        await storePlayerMatches(player_id, null, isHardUpdate ? null : 100);
-      }
-      const playersStats = await Promise.all(
-        teamPlayerIDs.map((player_id) => getPlayerInfo({ playerID: player_id }))
-      );
-      for await (const {
-        player_id,
-        nickname,
-        elo,
-        lvl,
-        kd,
-        avg,
-        hs,
-        winrate,
-      } of playersStats) {
-        await database.players.updateAllBy(
-          { player_id },
-          { nickname, elo, lvl, kd, avg, hs, winrate }
+      for (const player_id of playerIDs) {
+        const addedToCache = cacheWithExpiry(
+          caches.updatedPlayers,
+          player_id,
+          1000 * 60 * 5
         );
-
-        const updatedPlayer = await database.players.readBy({ player_id });
-        const { elo: updatedElo, highestElo, highestEloDate } = updatedPlayer;
-
-        await getHighestElo(nickname);
-
-        if (highestElo && highestEloDate && updatedElo >= highestElo) {
-          await database.players.updateAllBy(
-            { player_id },
-            { highestElo: updatedElo, highestEloDate: new Date() }
-          );
+        if (addedToCache) {
+          filteredPlayerIDs.push(player_id);
         }
       }
+
+      const existingPlayerIDs = await filterExistingPlayers(filteredPlayerIDs);
+
+      await updatePlayerMatches(existingPlayerIDs, isHardUpdate);
+      await updatePlayerStats(existingPlayerIDs);
 
       return { text: 'updateTeamPlayers.success' };
     },
@@ -64,3 +35,47 @@ export const updateTeamPlayers = async (chat_id, isHardUpdate) =>
       errorMessage: 'updateTeamPlayers.error',
     }
   )();
+
+async function filterExistingPlayers(teamPlayerIDs) {
+  const playersInDatabase = await Promise.all(
+    teamPlayerIDs.map(async (player_id) => {
+      const player = await database.players.readBy({ player_id });
+      return !!player;
+    })
+  );
+  return teamPlayerIDs.filter((_, index) => playersInDatabase[index]);
+}
+
+async function updatePlayerMatches(playerIDs, isHardUpdate) {
+  for await (const player_id of playerIDs) {
+    if (isHardUpdate) await database.matches.deleteAllBy({ player_id });
+    await storePlayerMatches(player_id, null, isHardUpdate ? null : 100);
+  }
+}
+
+async function updatePlayerStats(playerIDs) {
+  const playerStatsArray = await Promise.all(
+    playerIDs.map((playerID) => getPlayerInfo({ playerID }))
+  );
+
+  for (const playerStats of playerStatsArray) {
+    const { player_id, nickname, elo, lvl, kd, avg, hs, winrate } = playerStats;
+
+    await database.players.updateAllBy(
+      { player_id },
+      { nickname, elo, lvl, kd, avg, hs, winrate }
+    );
+
+    const updatedPlayer = await database.players.readBy({ player_id });
+    const { elo: updatedElo, highestElo, highestEloDate } = updatedPlayer;
+
+    await getHighestElo(nickname);
+
+    if (highestElo && highestEloDate && updatedElo >= highestElo) {
+      await database.players.updateAllBy(
+        { player_id },
+        { highestElo: updatedElo, highestEloDate: new Date() }
+      );
+    }
+  }
+}

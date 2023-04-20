@@ -76,7 +76,7 @@ const puppeteerArgs = [
   '--no-zygote',
 ];
 const caches = {
-  updateTeamPlayers: new Set(),
+  updatedPlayers: new Set(),
   bestMapsMatchIDs: new Set(),
   summaryStatsMatchIDs: new Set(),
 };
