@@ -1,5 +1,7 @@
 import { clearInterval } from 'node:timers';
 
+import { Players } from 'faceit-node-api';
+
 import database from '#db';
 import { updatePlayers } from '#services';
 import {
@@ -18,6 +20,8 @@ const eventHandlers = new Map([
   ['match_object_created', handleMatchObjectCreated],
   ['match_status_finished', handleMatchStatusFinished],
 ]);
+
+const players = new Players();
 
 export default {
   '/faceit-webhook': {
@@ -132,16 +136,13 @@ async function handleMatchStatusFinished(data) {
   const updatedTeams = new Map();
   const [matchStats] = await getMatchStats(data.payload.id);
 
-  await wait(1000 * 2);
-
   for await (const player_id of playerIDs) {
     const teams = await database.teams.readAllByPlayerId(player_id);
+    if (!teams.length) continue;
 
-    if (teams.length) {
-      for (const team of teams) {
-        updatedTeams.set(team.chat_id, team);
-        teamsToSendSummary.add(team.chat_id);
-      }
+    for (const team of teams) {
+      updatedTeams.set(team.chat_id, team);
+      teamsToSendSummary.add(team.chat_id);
     }
 
     await createMatchRows(player_id, matchStats);
@@ -171,18 +172,21 @@ async function createMatchRows(player_id, matchStats) {
     .find((player) => player.playerId === player_id);
   if (!playerData) return;
 
+  const playerDetails = await players.getPlayerDetailsByPlayerID(player_id);
+  const newElo = playerDetails?.games?.csgo?.faceit_elo;
+
   console.log(
     JSON.stringify({
       player_id,
       prevElo: dbPlayer.previous_elo,
-      elo: dbPlayer.elo,
+      elo: newElo,
     })
   );
 
   return await database.matches.create({
     match_id: matchStats.matchId,
     player_id: player_id,
-    elo: dbPlayer.previous_elo !== dbPlayer.elo ? dbPlayer.elo : null,
+    elo: newElo !== dbPlayer.previous_elo ? newElo : null,
     timestamp: new Date(matchStats.date),
     kd: +playerData.c2,
     kills: +playerData.i6,
