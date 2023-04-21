@@ -171,7 +171,13 @@ async function createMatchRows(player_id, matchStats) {
     .find((player) => player.playerId === player_id);
   if (!playerData) return;
 
-  console.log({ player_id, prevElo: dbPlayer.previous_elo, elo: dbPlayer.elo });
+  console.log(
+    JSON.stringify({
+      player_id,
+      prevElo: dbPlayer.previous_elo,
+      elo: dbPlayer.elo,
+    })
+  );
 
   return await database.matches.create({
     match_id: matchStats.matchId,
