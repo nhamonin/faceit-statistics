@@ -79,6 +79,8 @@ const caches = {
   updatedPlayers: new Set(),
   bestMapsMatchIDs: new Set(),
   summaryStatsMatchIDs: new Set(),
+  match_object_created: new Set(),
+  match_status_finished: new Set(),
 };
 const loggedInCookie = {
   name: COOKIES_LOGGED_IN_NAME,
@@ -97,6 +99,7 @@ const COMMAND_PATTERNS = {
   addNewWhPlayers: /\/add_new_wh_players.* (\S*)/,
   syncDbWithStaticList: /\/sync_db_with_static_list/,
   limitRestrictions: /\/limit_restrictions.* (\S*)/,
+  softUpdatePlayers: /\/soft_update_players/,
   updatePlayers: /\/update_players/,
   hardUpdatePlayers: /\/hard_update_players/,
 };

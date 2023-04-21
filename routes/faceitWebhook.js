@@ -1,15 +1,17 @@
 import { clearInterval } from 'node:timers';
 
 import database from '#db';
-import { updateTeamPlayers } from '#services';
+import { updatePlayers } from '#services';
 import {
   calculateBestMaps,
   performMapPickerAnalytics,
   getMatchData,
+  getMatchStats,
   handleSummaryStatsAutoSend,
   receiveArgs,
+  cacheWithExpiry,
 } from '#utils';
-import { allowedCompetitionNames } from '#config';
+import { allowedCompetitionNames, caches } from '#config';
 
 const eventHandlers = new Map([
   ['match_object_created', handleMatchObjectCreated],
@@ -21,6 +23,17 @@ export default {
     post: async (req, res) => {
       try {
         const data = await receiveArgs(req);
+        const addedToCache = cacheWithExpiry(
+          caches[data.event],
+          data.payload.id,
+          1000 * 60 * 5
+        );
+        if (!addedToCache) {
+          res.statusCode = 304;
+          res.end('Already cached');
+          return;
+        }
+
         const eventHandler = eventHandlers.get(data.event);
 
         if (eventHandler) {
@@ -62,6 +75,7 @@ async function handleMatchObjectCreated(data) {
       allowedCompetitionName
     ) {
       clearInterval(interval);
+      await updatePlayersInMatch(matchData.payload.teams);
       const predictions = await calculateBestMaps(matchData);
       if (predictions?.length) {
         const prediction = await database.tempPredictions.readBy({
@@ -77,6 +91,24 @@ async function handleMatchObjectCreated(data) {
       }
     }
   }, 4500);
+}
+
+async function updatePlayersInMatch(teams) {
+  const factions = Object.keys(teams);
+
+  for (const faction of factions) {
+    const team = teams[faction];
+
+    for (const player of team.roster) {
+      const player_id = player.id;
+      const dbPlayer = await database.players.readBy({ player_id });
+      if (!dbPlayer) continue;
+      await database.players.updateAllBy(
+        { player_id },
+        { previous_elo: dbPlayer.elo, in_match: true }
+      );
+    }
+  }
 }
 
 async function handleMatchStatusFinished(data) {
@@ -97,9 +129,9 @@ async function handleMatchStatusFinished(data) {
   const playerIDs = playersRoster.map(({ id }) => id);
   const teamsToSendSummary = new Set();
   const updatedTeams = new Map();
+  const [matchStats] = await getMatchStats(data.payload.id);
 
-  await updateTeamPlayers({ playerIDs });
-  for (const player_id of playerIDs) {
+  for await (const player_id of playerIDs) {
     const teams = await database.teams.readAllByPlayerId(player_id);
 
     if (teams.length) {
@@ -108,7 +140,12 @@ async function handleMatchStatusFinished(data) {
         teamsToSendSummary.add(team.chat_id);
       }
     }
+
+    await createMatchRows(player_id, matchStats);
+    await deleteMatchInProgressAttrs(player_id);
   }
+
+  await updatePlayers({ playerIDs });
 
   if (updatedTeams.size) {
     console.log(
@@ -120,4 +157,35 @@ async function handleMatchStatusFinished(data) {
   }
 
   await handleSummaryStatsAutoSend(data.payload.id, [...teamsToSendSummary]);
+}
+
+async function createMatchRows(player_id, matchStats) {
+  const dbPlayer = await database.players.readBy({ player_id });
+  if (!dbPlayer) return;
+
+  const playerData = matchStats.teams
+    .flatMap((team) => team.players)
+    .find((player) => player.playerId === player_id);
+  if (!playerData) return;
+
+  return await database.matches.create({
+    match_id: matchStats.matchId,
+    player_id: player_id,
+    elo: dbPlayer.previous_elo,
+    timestamp: new Date(matchStats.date),
+    kd: +playerData.c2,
+    kills: +playerData.i6,
+    hs: +playerData.c4,
+    map: matchStats.i1,
+    game_mode: matchStats.gameMode,
+    win: +playerData.i10,
+    score: matchStats.i18,
+  });
+}
+
+async function deleteMatchInProgressAttrs(player_id) {
+  return await database.players.updateAllBy(
+    { player_id },
+    { previous_elo: null, in_match: false }
+  );
 }

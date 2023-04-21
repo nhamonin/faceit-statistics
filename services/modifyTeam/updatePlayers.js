@@ -8,7 +8,11 @@ import {
 import { getHighestElo } from '#services';
 import { caches } from '#config';
 
-export const updateTeamPlayers = async ({ playerIDs, isHardUpdate }) =>
+export const updatePlayers = async ({
+  playerIDs,
+  isHardUpdate,
+  withAPIMatches = false,
+}) =>
   withErrorHandling(
     async () => {
       const filteredPlayerIDs = [];
@@ -19,20 +23,22 @@ export const updateTeamPlayers = async ({ playerIDs, isHardUpdate }) =>
           player_id,
           1000 * 60 * 5
         );
-        if (addedToCache) {
-          filteredPlayerIDs.push(player_id);
-        }
+        if (!addedToCache) continue;
+
+        filteredPlayerIDs.push(player_id);
       }
 
       const existingPlayerIDs = await filterExistingPlayers(filteredPlayerIDs);
 
-      await updatePlayerMatches(existingPlayerIDs, isHardUpdate);
+      if (withAPIMatches) {
+        await updatePlayerMatches(existingPlayerIDs, isHardUpdate);
+      }
       await updatePlayerStats(existingPlayerIDs);
 
-      return { text: 'updateTeamPlayers.success' };
+      return { text: 'updatePlayers.success' };
     },
     {
-      errorMessage: 'updateTeamPlayers.error',
+      errorMessage: 'updatePlayers.error',
     }
   )();
 
@@ -63,7 +69,15 @@ async function updatePlayerStats(playerIDs) {
 
     await database.players.updateAllBy(
       { player_id },
-      { nickname, elo, lvl, kd, avg, hs, winrate }
+      {
+        nickname,
+        elo,
+        lvl,
+        kd: JSON.stringify(kd),
+        avg: JSON.stringify(avg),
+        hs: JSON.stringify(hs),
+        winrate: JSON.stringify(winrate),
+      }
     );
 
     const updatedPlayer = await database.players.readBy({ player_id });

@@ -24,9 +24,10 @@ export class BaseRepository {
     }
   });
 
-  readBy = withErrorHandling(async (criteria) =>
-    this.db(this.tableName).where(criteria).first()
-  );
+  readBy = withErrorHandling(async (criteria) => {
+    const result = await this.db(this.tableName).where(criteria).first();
+    return result || null;
+  });
 
   readAllBy = withErrorHandling(async (criteria, options = {}) => {
     let query = this.db(this.tableName).where(criteria);

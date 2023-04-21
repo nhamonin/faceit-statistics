@@ -5,8 +5,6 @@ import { getHighAmountOfPlayerLastMatches } from '#utils';
 import { game_id } from '#config';
 
 const players = new Players();
-const MAX_RETRY_COUNT = 3;
-const RETRY_DELAY = 60 * 1000;
 
 export async function storePlayerMatches(player_id, chat_id, limit) {
   const playerStatistics = await players.getStatisticsOfAPlayer(
@@ -25,7 +23,6 @@ export async function storePlayerMatches(player_id, chat_id, limit) {
     .map(mapMatchProperties);
 
   await database.matches.createMany(matchesToStore);
-  await updateMissingElo(player_id, matchesToStore);
 }
 
 function mapMatchProperties({
@@ -54,37 +51,4 @@ function mapMatchProperties({
     hs: +c4,
     timestamp: new Date(date),
   };
-}
-
-async function updateMissingElo(player_id, matches, retryCount = 0) {
-  if (retryCount >= MAX_RETRY_COUNT) {
-    return;
-  }
-
-  const missingEloMatches = matches.filter((match) => !match.elo);
-
-  if (missingEloMatches.length > 0) {
-    const newMatches = await getHighAmountOfPlayerLastMatches(player_id, 100);
-
-    setTimeout(async () => {
-      for (const match of missingEloMatches) {
-        const updatedMatch = newMatches.find(
-          (newMatch) => newMatch.matchId === match.match_id
-        );
-        const updatedElo = updatedMatch.elo ? +updatedMatch.elo : null;
-
-        if (updatedElo) {
-          await database.matches.updateAllBy(
-            { match_id: match.match_id },
-            { elo: updatedElo }
-          );
-        } else {
-          setTimeout(
-            () => updateMissingElo(player_id, [match], retryCount + 1),
-            RETRY_DELAY
-          );
-        }
-      }
-    }, RETRY_DELAY);
-  }
 }

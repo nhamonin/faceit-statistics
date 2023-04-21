@@ -51,6 +51,7 @@ import { getHighestEloOptions } from './csgo/getHighestEloOptions.js';
 import { getClass } from './csgo/getStatsClasses.js';
 import { handleSummaryStatsAutoSend } from './csgo/handleSummaryStatsAutoSend.js';
 import { storePlayerMatches } from './csgo/storePlayerMatches.js';
+import { getMatchStats } from './csgo/getMatchStats.js';
 // i18next
 import { initI18next } from './i18next/i18next.js';
 
@@ -101,5 +102,6 @@ export {
   getClass,
   handleSummaryStatsAutoSend,
   storePlayerMatches,
+  getMatchStats,
   initI18next,
 };

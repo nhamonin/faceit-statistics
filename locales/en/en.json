@@ -27,7 +27,7 @@
       "select": "Your team: <b>{{ teamNicknames }}</b>.\nChoose a player you want to delete:",
       "lastWasDeleted": "You just deleted the last player in your team. Please add at least one player via the button below."
     },
-    "updateTeamPlayers": {
+    "updatePlayers": {
       "success": "Team players was successfully updated. Check out Elo rating via the /get_team_elo or K/D via /get_team_kd commands.",
       "error": "Unfortunately, dut to the technical reasons it is impossible to update players right now. Please wait and try again later."
     },

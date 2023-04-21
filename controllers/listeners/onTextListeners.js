@@ -1,7 +1,7 @@
 import database from '#db';
 import {
   initTeam,
-  updateTeamPlayers,
+  updatePlayers,
   addNewPlayersToWebhookList,
   getAnalytics,
   deleteAnalytics,
@@ -42,6 +42,11 @@ export function initOnTextListeners() {
   registerCommand(
     COMMAND_PATTERNS.limitRestrictions,
     handleLimitRestrictionsCommand,
+    true
+  );
+  registerCommand(
+    COMMAND_PATTERNS.softUpdatePlayers,
+    handleSoftUpdatePlayersCommand,
     true
   );
   registerCommand(
@@ -119,18 +124,31 @@ async function handleLimitRestrictionsCommand({ chat, message_id }, match) {
   });
 }
 
+async function handleSoftUpdatePlayersCommand(params) {
+  await performUpdatePlayers({ ...params });
+}
+
 async function handleUpdatePlayersCommand(params) {
-  await updatePlayers({ ...params });
+  await performUpdatePlayers({ ...params, withAPIMatches: true });
 }
 
 async function handleHardUpdatePlayersCommand(params) {
-  await updatePlayers({ ...params, isHardUpdate: true });
+  await performUpdatePlayers({
+    ...params,
+    withAPIMatches: true,
+    isHardUpdate: true,
+  });
 }
 
-async function updatePlayers({ chat, message_id, isHardUpdate = false }) {
+async function performUpdatePlayers({
+  chat,
+  message_id,
+  isHardUpdate = false,
+  withAPIMatches = false,
+}) {
   const playerIDs = await database.players.readAllPlayerIds();
 
-  await updateTeamPlayers({ playerIDs, isHardUpdate });
+  await updatePlayers({ playerIDs, isHardUpdate, withAPIMatches });
   await sendTelegramMessage({
     chatId: chat.id,
     text: `${

@@ -2,7 +2,7 @@ import { initTeam } from './modifyTeam/initTeam.js';
 import { resetTeam } from './modifyTeam/resetTeam.js';
 import { addPlayer } from './modifyTeam/addPlayerToTeam.js';
 import { deletePlayer } from './modifyTeam/deletePlayerFromTeam.js';
-import { updateTeamPlayers } from './modifyTeam/updateTeamPlayers.js';
+import { updatePlayers } from './modifyTeam/updatePlayers.js';
 
 import { getSummaryStats } from './statistics/getSummaryStats.js';
 import { getTeamEloMessage } from './statistics/getTeamElo.js';
@@ -19,7 +19,7 @@ export {
   resetTeam,
   addPlayer,
   deletePlayer,
-  updateTeamPlayers,
+  updatePlayers,
   getSummaryStats,
   getTeamEloMessage,
   getTeamKDMessage,
