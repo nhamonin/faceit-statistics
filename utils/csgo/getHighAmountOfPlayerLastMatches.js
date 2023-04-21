@@ -1,6 +1,11 @@
 import database from '#db';
 import { MAX_MATCHES_PER_REQUEST } from '#config';
-import { getPlayerMatches, getEventEmitter, withErrorHandling } from '#utils';
+import {
+  getPlayerMatches,
+  getEventEmitter,
+  withErrorHandling,
+  wait,
+} from '#utils';
 
 const eventEmitter = getEventEmitter();
 
@@ -18,7 +23,7 @@ export const getHighAmountOfPlayerLastMatches = withErrorHandling(
         page
       );
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await wait(1000 * 3);
 
       if (!matches?.length) break;
 
