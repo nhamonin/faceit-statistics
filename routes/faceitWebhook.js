@@ -175,14 +175,6 @@ async function createMatchRows(player_id, matchStats) {
   const playerDetails = await players.getPlayerDetailsByPlayerID(player_id);
   const newElo = playerDetails?.games?.csgo?.faceit_elo;
 
-  console.log(
-    JSON.stringify({
-      player_id,
-      prevElo: dbPlayer.previous_elo,
-      elo: newElo,
-    })
-  );
-
   return await database.matches.create({
     match_id: matchStats.matchId,
     player_id: player_id,
