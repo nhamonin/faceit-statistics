@@ -171,7 +171,7 @@ async function createMatchRows(player_id, matchStats) {
   return await database.matches.create({
     match_id: matchStats.matchId,
     player_id: player_id,
-    elo: dbPlayer.previous_elo,
+    elo: dbPlayer.previous_elo !== dbPlayer.elo ? dbPlayer.elo : null,
     timestamp: new Date(matchStats.date),
     kd: +playerData.c2,
     kills: +playerData.i6,
