@@ -12,7 +12,7 @@ import {
   handleSummaryStatsAutoSend,
   receiveArgs,
   cacheWithExpiry,
-  wait,
+  prettifyScoreBasedOnResult,
 } from '#utils';
 import { allowedCompetitionNames, caches } from '#config';
 
@@ -186,7 +186,7 @@ async function createMatchRows(player_id, matchStats) {
     map: matchStats.i1,
     game_mode: matchStats.gameMode,
     win: +playerData.i10,
-    score: matchStats.i18,
+    score: prettifyScoreBasedOnResult(matchStats.i18, +matchStats.i10),
   });
 }
 

@@ -51,6 +51,22 @@ export class BaseRepository {
     this.db(this.tableName).where(criteria).update(updates)
   );
 
+  batchUpdate = withErrorHandling(async (key, records) => {
+    const updateQueries = records.map((record) => {
+      const { [key]: keyValue, ...updates } = record;
+      const whereClause = `${key} = '${keyValue}'`;
+      const setClause = Object.entries(updates)
+        .map(([column, value]) => `${column} = ${this.db.raw('?', [value])}`)
+        .join(', ');
+
+      return this.db.raw(
+        `UPDATE ${this.tableName} SET ${setClause} WHERE ${whereClause}`
+      );
+    });
+
+    await Promise.all(updateQueries);
+  });
+
   deleteAllBy = withErrorHandling(async (criteria) =>
     this.db(this.tableName).where(criteria).del()
   );

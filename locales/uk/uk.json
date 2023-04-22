@@ -14,7 +14,7 @@
     "choosePlayer": "Оберіть <b>нікнейм гравця</b>, якого ви хочете перевірити:",
     "addPlayer": {
       "inProgress": "Додаю гравця <b>{{ nickname }}</b> до вашої команди. Будь ласка, зачекайте...",
-      "progressLevel": "Додаю гравця <b>{{ nickname }}</b>. Прогрес: <code>{{ percentage }}</code> %.",
+      "progressLevel": "Додаю гравця <b>{{ nickname }}</b>. Завантажую матчі: <code>{{ percentage }}</code> %.",
       "success": "Гравець <b>{{ nickname }}</b> був доданий.\nВаша команда: <b>{{ teamNicknames }}</b>.",
       "sendNickname": "Надішліть <b>нікнейм</b> гравця, якого ви хочете додати.",
       "exists": "Вибачте, але гравець <b>{{ nickname }}</b> вже існує в вашій команді. Спробуйте додати іншого гравця.\nВаша команда: <b>{{ teamNicknames }}</b>.",

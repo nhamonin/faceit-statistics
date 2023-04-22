@@ -1,7 +1,10 @@
 import { Players } from 'faceit-node-api';
 
 import database from '#db';
-import { getHighAmountOfPlayerLastMatches } from '#utils';
+import {
+  getHighAmountOfPlayerLastMatches,
+  prettifyScoreBasedOnResult,
+} from '#utils';
 import { game_id } from '#config';
 
 const players = new Players();
@@ -44,7 +47,7 @@ function mapMatchProperties({
     game_mode: gameMode,
     map: i1,
     elo: elo ? +elo : null,
-    score: i18,
+    score: prettifyScoreBasedOnResult(i18, +i10),
     kd: +c2,
     kills: +i6,
     win: +i10,
