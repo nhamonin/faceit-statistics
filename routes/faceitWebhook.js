@@ -28,6 +28,7 @@ export default {
     post: async (req, res) => {
       try {
         const data = await receiveArgs(req);
+        console.log('event type:', data.event, '\nmatch_id:', data.payload.id);
         const addedToCache = cacheWithExpiry(
           caches[data.event],
           data.payload.id,
