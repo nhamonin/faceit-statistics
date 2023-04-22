@@ -38,7 +38,12 @@ export default {
           res.end('Already cached');
           return;
         }
-        console.log('event type:', data.event, '\nmatch_id:', data.payload.id);
+        console.log(
+          'event type:',
+          data.event,
+          'match link:',
+          `https://www.faceit.com/en/csgo/room/${data.payload.id}`
+        );
         const eventHandler = eventHandlers.get(data.event);
 
         if (eventHandler) {
