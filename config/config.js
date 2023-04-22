@@ -81,6 +81,8 @@ const caches = {
   summaryStatsMatchIDs: new Set(),
   match_object_created: new Set(),
   match_status_finished: new Set(),
+  match_status_ready: new Set(),
+  match_status_configuring: new Set(),
 };
 const loggedInCookie = {
   name: COOKIES_LOGGED_IN_NAME,
