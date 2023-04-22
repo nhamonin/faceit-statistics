@@ -46,6 +46,11 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
 
   await page.setContent(html);
 
+  await page.waitForNetworkIdle({
+    idleTime: 500,
+    timeout: 10000,
+  });
+
   await withErrorHandling(async () => {
     image = await page.screenshot({
       fullPage: true,
