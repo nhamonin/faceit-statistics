@@ -28,7 +28,6 @@ export default {
     post: async (req, res) => {
       try {
         const data = await receiveArgs(req);
-        console.log('event type:', data.event, '\nmatch_id:', data.payload.id);
         const addedToCache = cacheWithExpiry(
           caches[data.event],
           data.payload.id,
@@ -39,7 +38,7 @@ export default {
           res.end('Already cached');
           return;
         }
-
+        console.log('event type:', data.event, '\nmatch_id:', data.payload.id);
         const eventHandler = eventHandlers.get(data.event);
 
         if (eventHandler) {
