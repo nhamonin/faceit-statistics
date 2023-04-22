@@ -54,14 +54,11 @@ export class BaseRepository {
   batchUpdate = withErrorHandling(async (key, records, chunkSize = 10) => {
     const executeUpdateQuery = async (record) => {
       const { [key]: keyValue, ...updates } = record;
-      const whereClause = `${key} = '${keyValue}'`;
-      const setClause = Object.entries(updates)
-        .map(([column, value]) => `${column} = ${this.db.raw('?', [value])}`)
-        .join(', ');
 
-      return this.db.raw(
-        `UPDATE ${this.tableName} SET ${setClause} WHERE ${whereClause}`
-      );
+      return this.db(this.tableName)
+        .insert({ [key]: keyValue, ...updates })
+        .onConflict(['match_id', 'player_id'])
+        .merge(updates);
     };
 
     const chunks = chunk(records, chunkSize);
