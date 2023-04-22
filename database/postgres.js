@@ -12,7 +12,7 @@ const db = knex({
   searchPath: ['knex', 'public'],
   pool: {
     min: 1,
-    max: 100,
+    max: 200,
   },
 });
 
