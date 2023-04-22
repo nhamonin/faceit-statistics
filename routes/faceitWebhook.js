@@ -17,7 +17,7 @@ import {
 import { allowedCompetitionNames, caches } from '#config';
 
 const eventHandlers = new Map([
-  ['match_object_created', handleMatchObjectCreated],
+  ['match_status_ready', handleMatchStatusReady],
   ['match_status_finished', handleMatchStatusFinished],
 ]);
 
@@ -38,9 +38,7 @@ export default {
           res.end('Already cached');
           return;
         }
-        if (data.event === 'match_status_ready') {
-          console.log(JSON.stringify(data));
-        }
+
         const eventHandler = eventHandlers.get(data.event);
 
         if (eventHandler) {
@@ -64,7 +62,7 @@ export default {
   },
 };
 
-async function handleMatchObjectCreated(data) {
+async function handleMatchStatusReady(data) {
   const match_id = data.payload.id;
 
   let maxIntervalCount = 15;
