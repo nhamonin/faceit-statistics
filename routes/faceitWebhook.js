@@ -145,8 +145,10 @@ async function handleMatchStatusFinished(data) {
       teamsToSendSummary.add(team.chat_id);
     }
 
-    await createMatchRows(player_id, matchStats);
-    await deleteMatchInProgressAttrs(player_id);
+    Promise.all([
+      createMatchRows(player_id, matchStats),
+      deleteMatchInProgressAttrs(player_id),
+    ]);
   }
 
   await updatePlayers({ playerIDs });
@@ -174,6 +176,13 @@ async function createMatchRows(player_id, matchStats) {
 
   const playerDetails = await players.getPlayerDetailsByPlayerID(player_id);
   const newElo = playerDetails?.games?.csgo?.faceit_elo;
+  console.log(
+    JSON.stringify({
+      prevScore: matchStats.i18,
+      win: +matchStats.i10,
+      newScore: prettifyScoreBasedOnResult(matchStats.i18, +matchStats.i10),
+    })
+  );
 
   return await database.matches.create({
     match_id: matchStats.matchId,

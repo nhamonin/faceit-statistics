@@ -41,7 +41,6 @@ function mapMatchProperties({
   c4,
   date,
 }) {
-  console.log(JSON.stringify({ i18, i10: +i10 }));
   return {
     match_id: matchId,
     player_id: playerId,
