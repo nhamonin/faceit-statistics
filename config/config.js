@@ -15,6 +15,7 @@ const {
   TELEGRAM_BOT_API_TOKEN_PROD,
   TELEGRAM_BOT_API_TOKEN_TEST,
   TELEGRAM_ADMIN_CHAT_ID,
+  TELEGRAM_LOGS_CHAT_ID,
   PG_CONNECTION_STRING_PROD,
   PG_CONNECTION_STRING_TEST,
   COOKIES_LOGGED_IN_NAME,
@@ -90,7 +91,6 @@ const loggedInCookie = {
 };
 const ERROR_TELEGRAM_FORBIDDEN = 'ETELEGRAM: 403 Forbidden:';
 const statsNumberArray = [10, 20, 50];
-const chatToGetNotifications = -886965844;
 const eventEmitter = {
   main: null,
 };
@@ -116,6 +116,7 @@ export {
   ENVIRONMENT,
   TELEGRAM_BOT_API_TOKEN,
   TELEGRAM_ADMIN_CHAT_ID,
+  TELEGRAM_LOGS_CHAT_ID,
   FACEIT_API_KEY,
   FACEIT_APP_ID,
   FACEIT_WEBHOOK_ID,
@@ -135,7 +136,6 @@ export {
   caches,
   ERROR_TELEGRAM_FORBIDDEN,
   statsNumberArray,
-  chatToGetNotifications,
   eventEmitter,
   COMMAND_PATTERNS,
 };

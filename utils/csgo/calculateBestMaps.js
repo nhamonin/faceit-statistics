@@ -11,7 +11,7 @@ import {
   cacheWithExpiry,
   withErrorHandling,
 } from '#utils';
-import { currentMapPool, caches } from '#config';
+import { currentMapPool, caches, TELEGRAM_LOGS_CHAT_ID } from '#config';
 import { getBestMapsTemplate } from '#templates';
 import { subscriptionReceivedMarkup } from '#telegramReplyMarkup';
 
@@ -290,7 +290,7 @@ async function sendMapPickerResult(
     }
 
     teamsToSendNotification.set(
-      -886965844,
+      TELEGRAM_LOGS_CHAT_ID,
       neededVariables[0].map(({ nickname }) => nickname)
     );
 

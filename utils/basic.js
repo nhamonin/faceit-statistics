@@ -15,7 +15,8 @@ import {
   isProduction,
   puppeteerArgs,
   ERROR_TELEGRAM_FORBIDDEN,
-  chatToGetNotifications,
+  TELEGRAM_LOGS_CHAT_ID,
+  TELEGRAM_ADMIN_CHAT_ID,
   eventEmitter,
 } from '#config';
 
@@ -24,11 +25,10 @@ const browser = await getBrowser();
 function adjustConsoleLog() {
   if (!isProduction) return;
   const oldConsoleLog = console.log;
-  const logsChatID = -886965844;
 
   console.log = function () {
     oldConsoleLog(...[...arguments]);
-    telegramSendMessage(logsChatID, [...arguments].join(' '), {
+    telegramSendMessage(TELEGRAM_LOGS_CHAT_ID, [...arguments].join(' '), {
       disable_notification: true,
     });
   };
@@ -47,7 +47,7 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
   await page.setContent(html);
 
   await page.waitForNetworkIdle({
-    idleTime: 500,
+    idleTime: 200,
     timeout: 10000,
   });
 
@@ -61,9 +61,9 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
   const chatsToSend =
     !logEnabled ||
     !isProduction ||
-    (chatIDs.length === 1 && chatIDs[0] === 146612362)
+    (chatIDs.length === 1 && chatIDs[0] === TELEGRAM_ADMIN_CHAT_ID)
       ? chatIDs
-      : [...chatIDs, chatToGetNotifications];
+      : [...chatIDs, TELEGRAM_LOGS_CHAT_ID];
 
   await Promise.all(
     chatsToSend.map((chat_id) =>
