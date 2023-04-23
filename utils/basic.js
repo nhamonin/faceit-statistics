@@ -47,7 +47,7 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
   await page.setContent(html);
 
   await page.waitForNetworkIdle({
-    idleTime: 200,
+    idleTime: 350,
     timeout: 10000,
   });
 
