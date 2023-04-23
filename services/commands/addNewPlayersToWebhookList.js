@@ -58,7 +58,6 @@ async function fetchAndProcessMatches(
     await addNewPlayersToWebhookManager(faction1IDs, faction2IDs, addedPlayers);
 
     const newRestrictionsCount = await webhookMgr.getRestrictionsCount();
-    console.log(newRestrictionsCount);
 
     if (newRestrictionsCount >= limit) {
       return 'Limit reached, adding new players process stopped.';
