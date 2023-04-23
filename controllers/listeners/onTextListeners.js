@@ -98,7 +98,7 @@ async function handleDeleteAnalyticsCommand({ chat, message_id }) {
 }
 
 async function handleAddNewWhPlayersCommand({ chat, message_id }, match) {
-  const text = await addNewPlayersToWebhookList(match[1]);
+  const text = await addNewPlayersToWebhookList(match[1], match[2]);
   await sendTelegramMessage({
     chatId: chat.id,
     text,

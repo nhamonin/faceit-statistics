@@ -261,7 +261,8 @@ async function sendMapPickerResult(
   team1Name,
   team2Name
 ) {
-  if (!dbPlayersTeam1.length && !dbPlayersTeam2.length) return;
+  const playersInDB = dbPlayersTeam1.length || dbPlayersTeam2.length;
+  // if (!playersInDB) return;
 
   withErrorHandling(async () => {
     const neededVariables = dbPlayersTeam1.length
@@ -301,6 +302,7 @@ async function sendMapPickerResult(
       false
     );
 
+    if (!playersInDB) return;
     [...teamsToSendNotification].forEach((team) => {
       const chat_id = team[0];
       const teammates = team[1];

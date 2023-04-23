@@ -109,9 +109,16 @@ async function limitRestrictions(limit) {
   }
 }
 
+async function getRestrictionsCount() {
+  const webhookData = await getWebhookDataPayload();
+  const { restrictions } = webhookData;
+  return restrictions?.length || 0;
+}
+
 export const webhookMgr = {
   getWebhookDataPayload,
   limitRestrictions,
+  getRestrictionsCount,
   addPlayersToList: changeWebhookPlayersList('add'),
   removePlayersFromList: changeWebhookPlayersList('remove'),
 };

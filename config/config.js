@@ -95,15 +95,15 @@ const eventEmitter = {
   main: null,
 };
 const COMMAND_PATTERNS = {
-  start: /\/start/,
-  getAnalytics: /\/get_analytics/,
-  deleteAnalytics: /\/delete_analytics/,
-  addNewWhPlayers: /\/add_new_wh_players.* (\S*)/,
-  syncDbWithStaticList: /\/sync_db_with_static_list/,
-  limitRestrictions: /\/limit_restrictions.* (\S*)/,
-  softUpdatePlayers: /\/soft_update_players/,
-  updatePlayers: /\/update_players/,
-  hardUpdatePlayers: /\/hard_update_players/,
+  start: /^\/start$/,
+  getAnalytics: /^\/get_analytics$/,
+  deleteAnalytics: /^\/delete_analytics$/,
+  addNewWhPlayers: /^\/add_new_wh_players\s+(\S+)\s+(\d+)$/,
+  syncDbWithStaticList: /^\/sync_db_with_static_list$/,
+  limitRestrictions: /^\/limit_restrictions\s*(\S*)$/,
+  softUpdatePlayers: /^\/soft_update_players$/,
+  updatePlayers: /^\/update_players$/,
+  hardUpdatePlayers: /^\/hard_update_players$/,
 };
 const dynamicValues = {
   FACEIT_WEBHOOK_API_KEY,

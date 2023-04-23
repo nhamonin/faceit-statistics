@@ -9,9 +9,7 @@ export async function getAnalytics() {
   const totalMatches = matchPrediction?.totalMatches || 0;
   const avgPredictions = matchPrediction?.avgPredictions || 0;
   const winratePrediction = matchPrediction?.winratePredictions || 0;
-  const dataPayload = await webhookMgr.getWebhookDataPayload();
-  const restrictions = dataPayload?.restrictions;
-  const webhookListLength = restrictions?.length || 0;
+  const webhookListLength = await webhookMgr.getRestrictionsCount();
   const text = [
     `winrate predictions: ${(
       (winratePrediction / totalMatches || 0) * 100
