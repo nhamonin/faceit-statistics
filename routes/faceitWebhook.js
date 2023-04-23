@@ -176,13 +176,6 @@ async function createMatchRows(player_id, matchStats) {
 
   const playerDetails = await players.getPlayerDetailsByPlayerID(player_id);
   const newElo = playerDetails?.games?.csgo?.faceit_elo;
-  console.log(
-    JSON.stringify({
-      prevScore: matchStats.i18,
-      win: +matchStats.i10,
-      newScore: prettifyScoreBasedOnResult(matchStats.i18, +matchStats.i10),
-    })
-  );
 
   return await database.matches.create({
     match_id: matchStats.matchId,
@@ -195,7 +188,7 @@ async function createMatchRows(player_id, matchStats) {
     map: matchStats.i1,
     game_mode: matchStats.gameMode,
     win: +playerData.i10,
-    score: prettifyScoreBasedOnResult(matchStats.i18, +matchStats.i10),
+    score: prettifyScoreBasedOnResult(matchStats.i18, +playerData.i10),
   });
 }
 
