@@ -61,7 +61,7 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
   const chatsToSend =
     !logEnabled ||
     !isProduction ||
-    (chatIDs.length === 1 && chatIDs[0] === TELEGRAM_ADMIN_CHAT_ID)
+    (chatIDs.length === 1 && chatIDs[0] === +TELEGRAM_ADMIN_CHAT_ID)
       ? chatIDs
       : [...chatIDs, TELEGRAM_LOGS_CHAT_ID];
 
