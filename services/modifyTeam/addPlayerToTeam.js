@@ -120,6 +120,18 @@ async function addNewPlayer(playerInfo, chat_id) {
     hs: 0,
     winrate: 0,
   });
+  console.log(
+    JSON.stringify({
+      player_id,
+      nickname,
+      elo,
+      lvl,
+      kd: 0,
+      avg: 0,
+      hs: 0,
+      winrate: 0,
+    })
+  );
   await database.teamsPlayers.create({
     chat_id,
     player_id,
