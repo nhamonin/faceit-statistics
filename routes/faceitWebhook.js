@@ -123,7 +123,6 @@ async function handleMatchStatusFinished(data) {
     !data.payload.teams[0]?.roster?.length ||
     !data.payload.teams[1]?.roster?.length
   ) {
-    console.log(JSON.stringify(data.payload));
     throw new Error('Invalid team data');
   }
 
@@ -168,10 +167,10 @@ async function handleMatchStatusFinished(data) {
 
 async function createMatchRows(player_id, matchStats) {
   if (!matchStats) return;
+
   const dbPlayer = await database.players.readBy({ player_id });
   if (!dbPlayer) return;
 
-  console.log(JSON.stringify(matchStats));
   const playerData = matchStats.teams
     .flatMap((team) => team.players)
     .find((player) => player.playerId === player_id);
