@@ -122,6 +122,7 @@ async function handleMatchStatusFinished(data) {
     !data.payload.teams[0]?.roster?.length ||
     !data.payload.teams[1]?.roster?.length
   ) {
+    console.log(JSON.stringify(data.payload));
     throw new Error('Invalid team data');
   }
 
