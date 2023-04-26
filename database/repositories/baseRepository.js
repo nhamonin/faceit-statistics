@@ -7,10 +7,7 @@ export class BaseRepository {
   }
 
   create = withErrorHandling(async (record) =>
-    this.db(this.tableName)
-      .insert(record)
-      .onConflict(['match_id', 'player_id'])
-      .ignore()
+    this.db(this.tableName).insert(record).onConflict().ignore()
   );
 
   createMany = withErrorHandling(async (records) => {
@@ -59,7 +56,7 @@ export class BaseRepository {
 
       return this.db(this.tableName)
         .insert({ [key]: keyValue, ...updates })
-        .onConflict(['match_id', 'player_id'])
+        .onConflict()
         .merge(updates);
     };
 
