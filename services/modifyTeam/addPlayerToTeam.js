@@ -69,6 +69,7 @@ async function addPlayerFromAPI(playerNickname, players, chat_id) {
   const playerInfo = await getPlayerInfo({
     playerNickname,
     playersNicknames: getTeamNicknames(players).join(', '),
+    newPlayer: true,
   });
 
   if (playerInfo.error) {
