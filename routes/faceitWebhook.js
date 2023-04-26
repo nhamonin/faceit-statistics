@@ -169,6 +169,7 @@ async function createMatchRows(player_id, matchStats) {
   const dbPlayer = await database.players.readBy({ player_id });
   if (!dbPlayer) return;
 
+  console.log(JSON.stringify(matchStats));
   const playerData = matchStats.teams
     .flatMap((team) => team.players)
     .find((player) => player.playerId === player_id);
