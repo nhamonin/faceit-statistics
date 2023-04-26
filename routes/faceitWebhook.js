@@ -146,7 +146,7 @@ async function handleMatchStatusFinished(data) {
       teamsToSendSummary.add(team.chat_id);
     }
 
-    Promise.all([
+    await Promise.all([
       createMatchRows(player_id, matchStats),
       deleteMatchInProgressAttrs(player_id),
     ]);

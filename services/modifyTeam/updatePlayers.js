@@ -10,7 +10,7 @@ import { caches } from '#config';
 
 export const updatePlayers = async ({
   playerIDs,
-  isHardUpdate,
+  isHardUpdate = false,
   withAPIMatches = false,
 }) =>
   withErrorHandling(
