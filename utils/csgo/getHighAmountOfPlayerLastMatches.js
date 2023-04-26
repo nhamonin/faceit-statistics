@@ -41,10 +41,10 @@ export const getHighAmountOfPlayerLastMatches = withErrorHandling(
       const player = await database.players.readBy({ player_id });
 
       eventEmitter.emit(
-        `addingPlayerProcess-${chat_id}-${player.nickname}`,
+        `addingPlayerProcess-${chat_id}-${player?.nickname}`,
         'addPlayer.progressLevel',
         {
-          nickname: player.nickname,
+          nickname: player?.nickname,
           percentage,
         }
       );
