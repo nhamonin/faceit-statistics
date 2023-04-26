@@ -23,6 +23,8 @@ export const getHighAmountOfPlayerLastMatches = withErrorHandling(
         page
       );
 
+      console.log('chunk matches length: ', matches?.length);
+
       await wait(1000 * 3);
 
       if (!matches?.length) break;
