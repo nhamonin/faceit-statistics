@@ -7,7 +7,10 @@ export class BaseRepository {
   }
 
   create = withErrorHandling(async (record) =>
-    this.db(this.tableName).insert(record)
+    this.db(this.tableName)
+      .insert(record)
+      .onConflict(['match_id', 'player_id'])
+      .ignore()
   );
 
   createMany = withErrorHandling(async (records) => {
