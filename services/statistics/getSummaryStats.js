@@ -70,13 +70,13 @@ function formatText(team, players) {
             <div class="stats-value-wrapper">
               <div class="stats-value__item ${getClass.kd(
                 player.kd[`last${lastMatchesSetting}`]
-              )}">${player.kd[`last${lastMatchesSetting}`].toFixed(2)}</div>
+              )}">${player.kd[`last${lastMatchesSetting}`]?.toFixed(2)}</div>
               <div class="stats-value__item ${getClass.avg(
                 player.avg[`last${lastMatchesSetting}`]
-              )}">${player.avg[`last${lastMatchesSetting}`].toFixed(1)}</div>
+              )}">${player.avg[`last${lastMatchesSetting}`]?.toFixed(1)}</div>
               <div class="stats-value__item ${getClass.hs(
                 player.hs[`last${lastMatchesSetting}`]
-              )} percent">${player.hs[`last${lastMatchesSetting}`].toFixed(
+              )} percent">${player.hs[`last${lastMatchesSetting}`]?.toFixed(
           2
         )}</div>
             </div>

@@ -18,8 +18,7 @@ export class BaseRepository {
     } else {
       const chunks = chunk(records, maxSingleInsert);
       for (const chunk of chunks) {
-        const res = await this.db(this.tableName).insert(chunk);
-        console.log(res);
+        await this.db(this.tableName).insert(chunk);
       }
     }
   });
