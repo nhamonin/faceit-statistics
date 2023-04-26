@@ -1,6 +1,6 @@
 // basic
 import {
-  adjustConsoleLog,
+  adjustConsolesBehavior,
   calculateAverage,
   calculateDifference,
   isPlayerTeamMember,
@@ -57,7 +57,7 @@ import { prettifyScoreBasedOnResult } from './csgo/prettifyScoreBasedOnResult.js
 import { initI18next } from './i18next/i18next.js';
 
 export {
-  adjustConsoleLog,
+  adjustConsolesBehavior,
   calculateAverage,
   calculateDifference,
   isPlayerTeamMember,

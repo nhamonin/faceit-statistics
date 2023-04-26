@@ -34,6 +34,23 @@ function adjustConsoleLog() {
   };
 }
 
+function adjustConsoleError() {
+  if (!isProduction) return;
+  const oldConsoleError = console.error;
+
+  console.error = function () {
+    oldConsoleError(...[...arguments]);
+    telegramSendMessage(TELEGRAM_LOGS_CHAT_ID, [...arguments].join(' '), {
+      disable_notification: true,
+    });
+  };
+}
+
+function adjustConsolesBehavior() {
+  adjustConsoleLog();
+  adjustConsoleError();
+}
+
 function logEvent(chat, action) {
   const name = chat.username || chat.title || chat.id;
   console.log(`${name}: ${action}. Date: ${new Date().toLocaleString()}`);
@@ -212,7 +229,7 @@ function withErrorHandling(fn, errorObj) {
 }
 
 export {
-  adjustConsoleLog,
+  adjustConsolesBehavior,
   logEvent,
   sendPhoto,
   calculateAverage,
