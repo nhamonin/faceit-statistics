@@ -218,7 +218,7 @@ function withErrorHandling(fn, errorObj) {
     try {
       return await fn(...args);
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return {
         error: errorObj?.error,
         text: errorObj?.errorMessage,
