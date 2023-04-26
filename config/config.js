@@ -108,6 +108,7 @@ const COMMAND_PATTERNS = {
 const dynamicValues = {
   FACEIT_WEBHOOK_API_KEY,
 };
+const MATCHES_FETCH_DELAY = isProduction ? 3 * 1000 : 500;
 
 export {
   isProduction,
@@ -138,4 +139,5 @@ export {
   statsNumberArray,
   eventEmitter,
   COMMAND_PATTERNS,
+  MATCHES_FETCH_DELAY,
 };

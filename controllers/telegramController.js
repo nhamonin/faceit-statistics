@@ -78,12 +78,12 @@ function initTelegramBotListener() {
     if (actionHandlers[action]) {
       await actionHandlers[action]();
     } else {
-      console.log(`Unhandled action: ${action}`);
+      console.error(`Unhandled action: ${action}`);
     }
   });
 
   tBot.on(`${isProduction ? 'webhook' : 'polling'}_error`, (e) => {
-    console.log(e);
+    console.error(e);
   });
 }
 

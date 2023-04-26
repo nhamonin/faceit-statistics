@@ -1,5 +1,5 @@
 import database from '#db';
-import { MAX_MATCHES_PER_REQUEST } from '#config';
+import { MAX_MATCHES_PER_REQUEST, MATCHES_FETCH_DELAY } from '#config';
 import {
   getPlayerMatches,
   getEventEmitter,
@@ -23,9 +23,7 @@ export const getHighAmountOfPlayerLastMatches = withErrorHandling(
         page
       );
 
-      console.log('chunk matches length: ', matches?.length);
-
-      await wait(1000 * 3);
+      await wait(MATCHES_FETCH_DELAY);
 
       if (!matches?.length) break;
 

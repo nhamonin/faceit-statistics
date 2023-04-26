@@ -93,7 +93,7 @@ export async function telegramSendMessage(chat_id, i18opts, messageOpts) {
     if (e.message.startsWith(ERROR_TELEGRAM_FORBIDDEN)) {
       handleBlockedToSendMessage(chat_id);
     } else {
-      console.log(e);
+      console.error(e);
     }
   }
 

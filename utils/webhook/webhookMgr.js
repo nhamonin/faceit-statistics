@@ -11,7 +11,7 @@ function changeWebhookPlayersList(action) {
     const webhookData = await getWebhookDataPayload();
 
     if (!webhookData) {
-      console.log('Webhook data error, please update API key');
+      console.error('Webhook data error, please update API key');
       return;
     }
 
