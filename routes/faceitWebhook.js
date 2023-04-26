@@ -49,13 +49,11 @@ export default {
 
         res.statusCode = 200;
         res.end('OK');
-      } catch (error) {
-        console.error('Error handling Faceit webhook:', error);
-        res.statusCode = error.message === 'Invalid team data' ? 404 : 500;
+      } catch (e) {
+        console.error(e);
+        res.statusCode = e.message === 'Invalid team data' ? 404 : 500;
         res.end(
-          error.message === 'Invalid team data'
-            ? 'ERROR'
-            : 'Internal Server Error'
+          e.message === 'Invalid team data' ? 'ERROR' : 'Internal Server Error'
         );
       }
     },
