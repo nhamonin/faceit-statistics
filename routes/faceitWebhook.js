@@ -133,7 +133,6 @@ async function handleMatchStatusFinished(data) {
   const playerIDs = playersRoster.map(({ id }) => id);
   const teamsToSendSummary = new Set();
   const updatedTeams = new Map();
-  await wait(3 * 1000);
   const [matchStats] = await getMatchStats(data.payload.id);
 
   for await (const player_id of playerIDs) {
