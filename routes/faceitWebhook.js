@@ -165,6 +165,7 @@ async function handleMatchStatusFinished(data) {
 }
 
 async function createMatchRows(player_id, matchStats) {
+  if (!matchStats) return;
   const dbPlayer = await database.players.readBy({ player_id });
   if (!dbPlayer) return;
 
