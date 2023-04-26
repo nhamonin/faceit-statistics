@@ -13,6 +13,6 @@ export async function getHighestEloOptions(player_id) {
 
   return {
     elo: highestEloMatch?.elo,
-    date: highestEloMatch?.date,
+    date: highestEloMatch?.timestamp,
   };
 }
