@@ -52,10 +52,8 @@ export default {
         res.end('OK');
       } catch (e) {
         console.error(e);
-        res.statusCode = e.message === 'Invalid team data' ? 404 : 500;
-        res.end(
-          e.message === 'Invalid team data' ? 'ERROR' : 'Internal Server Error'
-        );
+        res.statusCode = 500;
+        res.end('Internal Server Error');
       }
     },
   },
@@ -123,7 +121,7 @@ async function handleMatchStatusFinished(data) {
     !data.payload.teams[0]?.roster?.length ||
     !data.payload.teams[1]?.roster?.length
   ) {
-    throw new Error('Invalid team data');
+    return;
   }
 
   const playersRoster = [
