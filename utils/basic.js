@@ -38,9 +38,10 @@ function adjustConsoleError() {
   if (!isProduction) return;
   const oldConsoleError = console.error;
 
-  console.error = function () {
-    oldConsoleError(...[...arguments]);
-    telegramSendMessage(TELEGRAM_LOGS_CHAT_ID, [...arguments].join(' '), {
+  console.error = function (e) {
+    oldConsoleError(e);
+    const errorMessage = e.stack || e.toString();
+    telegramSendMessage(TELEGRAM_LOGS_CHAT_ID, errorMessage, {
       disable_notification: true,
     });
   };
