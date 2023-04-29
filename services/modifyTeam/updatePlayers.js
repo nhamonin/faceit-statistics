@@ -66,6 +66,7 @@ async function updatePlayerStats(playerIDs) {
 
   for (const playerStats of playerStatsArray) {
     const { player_id, nickname, elo, lvl, kd, avg, hs, winrate } = playerStats;
+    if (!player_id) continue;
 
     await database.players.updateAllBy(
       { player_id },

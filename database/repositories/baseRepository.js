@@ -56,7 +56,7 @@ export class BaseRepository {
 
       return this.db(this.tableName)
         .insert({ [key]: keyValue, ...updates })
-        .onConflict()
+        .onConflict(key)
         .merge(updates);
     };
 

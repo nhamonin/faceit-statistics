@@ -13,8 +13,8 @@ export async function getPlayerInfo({ playerNickname, playerID, newPlayer }) {
       const res = {
         nickname,
         player_id,
-        elo: games.csgo.faceit_elo,
-        lvl: games.csgo.skill_level,
+        elo: games?.csgo?.faceit_elo || 0,
+        lvl: games?.csgo?.skill_level || 1,
       };
 
       if (newPlayer) return res;

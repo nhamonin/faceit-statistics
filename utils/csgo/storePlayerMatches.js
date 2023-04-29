@@ -23,8 +23,18 @@ export async function storePlayerMatches(player_id, chat_id, limit) {
   const matchesToStore = matches
     .filter(({ game }) => game === game_id)
     .map(mapMatchProperties);
+  const uniqueKeys = new Set();
+  const uniqueMatchesToStore = matchesToStore.filter((match) => {
+    const key = `${match.match_id}-${match.player_id}`;
+    if (uniqueKeys.has(key)) {
+      return false;
+    }
+    uniqueKeys.add(key);
+    return true;
+  });
+  if (!uniqueMatchesToStore.length) return;
 
-  await database.matches.createMany(matchesToStore);
+  await database.matches.createMany(uniqueMatchesToStore);
 }
 
 function mapMatchProperties({

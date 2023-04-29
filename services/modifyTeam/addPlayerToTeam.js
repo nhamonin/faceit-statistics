@@ -88,7 +88,23 @@ async function updatePlayerStats(player_id) {
     playerID: player_id,
   });
 
-  await database.players.updateAllBy({ player_id }, { kd, avg, hs, winrate });
+  const updates = { kd, avg, hs, winrate };
+
+  const filteredUpdates = Object.entries(updates).reduce(
+    (acc, [key, value]) => {
+      if (value !== null && value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    },
+    {}
+  );
+
+  if (Object.keys(filteredUpdates).length > 0) {
+    await database.players.updateAllBy({ player_id }, filteredUpdates);
+  } else {
+    console.log(`No updates found for player_id ${player_id}`);
+  }
 }
 
 async function checkTeamExists(chat_id) {
