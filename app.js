@@ -1,6 +1,6 @@
 import { Faceit } from 'faceit-node-api';
 
-import { FACEIT_API_KEY } from '#config';
+import { FACEIT_API_KEY, isProduction } from '#config';
 import { initTelegramBotListener } from '#controllers';
 import {
   adjustConsolesBehavior,
@@ -15,4 +15,7 @@ Promise.all([initI18next(), webhookMgr.getWebhookDataPayload()]);
 Faceit.setApiKeys([FACEIT_API_KEY]);
 adjustConsolesBehavior();
 initTelegramBotListener();
-runCrons();
+
+if (isProduction) {
+  runCrons();
+}

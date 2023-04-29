@@ -32,10 +32,9 @@ export default {
         const addedToCache = cacheWithExpiry(
           caches[data.event],
           data.payload.id,
-          1000 * 60 * 5
+          1000 * 60 * 30
         );
         if (!addedToCache) {
-          res.statusCode = 304;
           res.end('Already cached');
           return;
         }
@@ -48,13 +47,13 @@ export default {
           console.warn(`Unhandled event type: ${data.event}`);
         }
 
-        res.statusCode = 200;
         res.end('OK');
       } catch (e) {
         console.error(e);
-        res.statusCode = 500;
         res.end('Internal Server Error');
       }
+
+      res.statusCode = 200;
     },
   },
 };
@@ -131,6 +130,7 @@ async function handleMatchStatusFinished(data) {
   const playerIDs = playersRoster.map(({ id }) => id);
   const teamsToSendSummary = new Set();
   const updatedTeams = new Map();
+  await wait(1000 * 3);
   const [matchStats] = await getMatchStats(data.payload.id);
 
   for await (const player_id of playerIDs) {
