@@ -26,20 +26,27 @@ export class MatchRepository extends BaseRepository {
     return query;
   });
 
+  create = withErrorHandling(async (record) =>
+    this.db(this.tableName)
+      .insert(record)
+      .onConflict(['match_id', 'player_id'])
+      .merge()
+  );
+
   createMany = withErrorHandling(async (records) => {
     const maxSingleInsert = 30;
 
     if (records.length < maxSingleInsert) {
       await this.db(this.tableName)
         .insert(records)
-        .onConflict('match_id')
+        .onConflict(['match_id', 'player_id'])
         .merge();
     } else {
       const chunks = chunk(records, maxSingleInsert);
       for (const chunk of chunks) {
         await this.db(this.tableName)
           .insert(chunk)
-          .onConflict('match_id')
+          .onConflict(['match_id', 'player_id'])
           .merge();
       }
     }

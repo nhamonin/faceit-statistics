@@ -7,18 +7,18 @@ export class BaseRepository {
   }
 
   create = withErrorHandling(async (record) =>
-    this.db(this.tableName).insert(record).onConflict().ignore().merge()
+    this.db(this.tableName).insert(record)
   );
 
   createMany = withErrorHandling(async (records) => {
     const maxSingleInsert = 30;
 
     if (records.length < maxSingleInsert) {
-      await this.db(this.tableName).insert(records).onConflict().merge();
+      await this.db(this.tableName).insert(records);
     } else {
       const chunks = chunk(records, maxSingleInsert);
       for (const chunk of chunks) {
-        await this.db(this.tableName).insert(chunk).onConflict().merge();
+        await this.db(this.tableName).insert(chunk);
       }
     }
   });
