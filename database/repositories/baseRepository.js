@@ -14,7 +14,7 @@ export class BaseRepository {
     const maxSingleInsert = 30;
 
     if (records.length < maxSingleInsert) {
-      await this.db(this.tableName).insert(records);
+      await this.db(this.tableName).insert(records).onConflict().merge();
     } else {
       const chunks = chunk(records, maxSingleInsert);
       for (const chunk of chunks) {
