@@ -41,7 +41,7 @@ export async function getCurrentBearerToken() {
 
   if (bearerToken)
     console.log(
-      'Success on getting webhook token via puppeteer. Date: ',
+      'Success on getting webhook token via puppeteer. Date:',
       new Date().toLocaleString()
     );
 

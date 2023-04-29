@@ -7,7 +7,7 @@ export class BaseRepository {
   }
 
   create = withErrorHandling(async (record) =>
-    this.db(this.tableName).insert(record).onConflict().ignore()
+    this.db(this.tableName).insert(record).onConflict().ignore().merge()
   );
 
   createMany = withErrorHandling(async (records) => {
@@ -18,7 +18,7 @@ export class BaseRepository {
     } else {
       const chunks = chunk(records, maxSingleInsert);
       for (const chunk of chunks) {
-        await this.db(this.tableName).insert(chunk);
+        await this.db(this.tableName).insert(chunk).onConflict().merge();
       }
     }
   });

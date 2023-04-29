@@ -13,12 +13,17 @@ export async function syncWebhookStaticListWithDB() {
       return !isPlayerInWebhook;
     });
 
-    if (playersIDsNotInWebHook.length) {
-      const playersIDsNotInWebHookChunks = chunk(playersIDsNotInWebHook, 5);
+    if (!playersIDsNotInWebHook.length) return;
 
-      for await (const playersChunked of playersIDsNotInWebHookChunks) {
-        await webhookMgr.addPlayersToList(playersChunked);
-      }
+    const playersIDsNotInWebHookChunks = chunk(playersIDsNotInWebHook, 5);
+
+    for await (const playersChunked of playersIDsNotInWebHookChunks) {
+      await webhookMgr.addPlayersToList(playersChunked);
     }
+
+    console.log(
+      'syncWebhookStaticListWithDB done. Date:',
+      new Date().toLocaleString()
+    );
   })();
 }
