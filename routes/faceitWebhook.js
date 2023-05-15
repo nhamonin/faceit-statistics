@@ -161,7 +161,11 @@ async function handleMatchStatusFinished(data) {
     );
   }
 
-  await handleSummaryStatsAutoSend(data.payload.id, [...teamsToSendSummary]);
+  await handleSummaryStatsAutoSend(
+    data.payload.id,
+    [...teamsToSendSummary],
+    playerIDs
+  );
 }
 
 async function createMatchRows(player_id, matchStats) {

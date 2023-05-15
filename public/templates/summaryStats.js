@@ -47,8 +47,17 @@ export const getSummaryStatsTemplate = (playersMarkup, playersAmount) =>
         margin-top: 3px;
     }
 
+    .player-container__main-stats--played,
+    .player-container__last-stats--played {
+        border-color: #00ff00;
+    }
+
     .player-container__last-stats {
         box-shadow: 0px 4px 60px 0px rgba(255, 255, 255, 0.2);
+    }
+
+    .player-container__last-stats--played {
+        box-shadow: 0px 4px 60px 0px rgba(0, 255, 0, 0.2);
     }
 
     .faceit-lvl {

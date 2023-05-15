@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import database from '#db';
 import { getClass } from '#utils';
 
-export const getSummaryStats = async (chat_id) => {
+export const getSummaryStats = async (chat_id, playedPlayers) => {
   const team = await database.teams.readBy({ chat_id });
   if (!team) return { text: 'teamNotExistError', error: true };
   const players = await database.players.readAllByChatId(chat_id);
@@ -12,11 +12,15 @@ export const getSummaryStats = async (chat_id) => {
 
   return isTeamEmpty
     ? prepareEmptyTeamResult(statAttribute)
-    : prepareProperResult(team, players);
+    : prepareProperResult(team, players, playedPlayers);
 };
 
-function prepareProperResult(team, players) {
-  const playerSummaryStatsMarkup = formatText(team, players);
+function prepareProperResult(team, players, playedPlayers = []) {
+  const playersWithStatus = players.map((player) => ({
+    ...player,
+    status: playedPlayers.includes(player.nickname) ? 'played' : 'not-played',
+  }));
+  const playerSummaryStatsMarkup = formatText(team, playersWithStatus);
 
   return {
     error: false,
@@ -33,7 +37,9 @@ function formatText(team, players) {
       (player) =>
         `<div class="player-container">
         <div class="player-container__nickname">${player.nickname}</div>
-        <div class="player-container__main-stats">
+        <div class="player-container__main-stats player-container__main-stats--${
+          player.status
+        }">
           <img
             class="faceit-lvl"
             src="data:image/svg+xml;base64,${readFileSync(
@@ -60,7 +66,9 @@ function formatText(team, players) {
             </div>
           </div>
         </div>
-        <div class="player-container__last-stats">
+        <div class="player-container__last-stats player-container__last-stats--${
+          player.status
+        }">
           <div class="stats-wrapper">
             <div class="stats-attribute-wrapper">
               <div class="stats-attribute__item">K/D</div>

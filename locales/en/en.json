@@ -50,7 +50,8 @@
     "playerHasNoMatches": "Player <b>{{ nickname }}</b> has no matches.",
     "subscriptions": {
       "summaryStats": {
-        "message": "You or someone from your team just finished a match. Here is updated statistics of your team: <b>upper half</b> shows the <b>lifetime stats</b>, <b>lower half</b> shows the stats for the <b>last 20 matches</b>.",
+        "message_one": "<b>{{ teamNicknames }}</b> has just completed a match. Here are the updated team statistics: The <b>upper half</b> of a player represents the <b>lifetime stats</b>, while the <b>lower half</b> reflects the performance in the <b>last 20 matches</b>.",
+        "message_other": "<b>{{ teamNicknames }}</b> have just completed a match. Here are the updated team statistics: The <b>upper half</b> of a player represents the <b>lifetime stats</b>, while the <b>lower half</b> reflects the performance in the <b>last 20 matches</b>.",
         "unsubscribed": "You have been successfully unsubscribed from the summary stats.",
         "subscribed": "You have been successfully subscribed to the summary stats."
       },
