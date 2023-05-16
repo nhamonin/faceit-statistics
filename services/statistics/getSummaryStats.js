@@ -18,7 +18,7 @@ export const getSummaryStats = async (chat_id, playedPlayers) => {
 function prepareProperResult(team, players, playedPlayers = []) {
   const playersWithStatus = players.map((player) => ({
     ...player,
-    status: playedPlayers.includes(player.nickname) ? 'played' : 'not-played',
+    active: playedPlayers.includes(player.nickname),
   }));
   const playerSummaryStatsMarkup = formatText(team, playersWithStatus);
 
@@ -36,9 +36,11 @@ function formatText(team, players) {
     .map(
       (player) =>
         `<div class="player-container">
-        <div class="player-container__nickname">${player.nickname}</div>
-        <div class="player-container__main-stats player-container__main-stats--${
-          player.status
+        <div class="player-container__nickname ${
+          player.active ? 'player-container__nickname--active' : ''
+        }">${player.nickname}</div>
+        <div class="player-container__main-stats ${
+          player.active ? 'player-container__main-stats--active' : ''
         }">
           <img
             class="faceit-lvl"
@@ -66,8 +68,8 @@ function formatText(team, players) {
             </div>
           </div>
         </div>
-        <div class="player-container__last-stats player-container__last-stats--${
-          player.status
+        <div class="player-container__last-stats ${
+          player.active ? 'player-container__last-stats--active' : ''
         }">
           <div class="stats-wrapper">
             <div class="stats-attribute-wrapper">
