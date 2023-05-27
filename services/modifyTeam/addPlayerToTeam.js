@@ -36,7 +36,17 @@ export const addPlayer = async (playerNickname, chat_id) =>
       } else if (playerInDB) {
         await addPlayerFromDB(playerInDB, chat_id);
       } else {
-        await addPlayerFromAPI(playerNickname, players, chat_id);
+        const errorObj = await addPlayerFromAPI(
+          playerNickname,
+          players,
+          chat_id
+        );
+
+        if (errorObj)
+          return {
+            text: errorObj.text,
+            options: errorObj.options,
+          };
       }
 
       const updatedPlayers = await database.players.readAllByChatId(chat_id);
@@ -74,8 +84,8 @@ async function addPlayerFromAPI(playerNickname, players, chat_id) {
 
   if (playerInfo.error) {
     return {
-      text: playerInfo.errorMessage,
-      options: playerInfo.errorOptions,
+      text: playerInfo.text,
+      options: playerInfo.options,
     };
   }
 
