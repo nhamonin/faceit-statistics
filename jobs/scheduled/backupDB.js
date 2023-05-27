@@ -8,9 +8,6 @@ import { PG_CONNECTION_STRING, TELEGRAM_BACKUPS_CHAT_ID } from '#config';
 import { getTelegramBot } from '#utils';
 
 const { Client } = pg;
-const client = new Client({
-  connectionString: PG_CONNECTION_STRING,
-});
 const tBot = getTelegramBot();
 const date = new Date();
 const currentDate = `${date.getFullYear()}.${
@@ -31,6 +28,10 @@ if (!fs.existsSync(backupDir)) {
 }
 
 export async function backupDB() {
+  const client = new Client({
+    connectionString: PG_CONNECTION_STRING,
+  });
+
   try {
     await client.connect();
     const res = await client.query(
@@ -67,10 +68,10 @@ export async function backupDB() {
 
     // Delete files older than 7 days
     await deleteOldBackups(backupDir);
-
-    await client.end();
   } catch (error) {
     console.log(error);
+  } finally {
+    await client.end();
   }
 }
 
