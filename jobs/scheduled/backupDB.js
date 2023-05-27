@@ -25,6 +25,11 @@ const schemaOnlyFileName = path.join(
 const excludedTables = ['match', 'temp_prediction'];
 const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000; // in milliseconds
 
+// Ensure the backup directory exists
+if (!fs.existsSync(backupDir)) {
+  fs.mkdirSync(backupDir, { recursive: true });
+}
+
 export async function backupDB() {
   try {
     await client.connect();
