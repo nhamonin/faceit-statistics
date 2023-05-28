@@ -82,7 +82,7 @@ async function addPlayerFromAPI(playerNickname, players, chat_id) {
     newPlayer: true,
   });
 
-  if (playerInfo.error) {
+  if (playerInfo.error || !playerInfo.player_id) {
     return {
       text: playerInfo.text,
       options: playerInfo.options,
