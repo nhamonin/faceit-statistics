@@ -9,6 +9,7 @@ export async function getPlayerInfo({ playerNickname, playerID, newPlayer }) {
       const playerDetails = playerID
         ? await players.getPlayerDetailsByPlayerID(playerID)
         : await players.getPlayerDetailsByNickname(playerNickname);
+      if (!playerDetails.player_id) throw new Error('Player not found.');
       const { nickname, player_id, games } = playerDetails;
       const res = {
         nickname,
