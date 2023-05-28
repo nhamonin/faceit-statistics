@@ -81,7 +81,7 @@ async function handleDeletePlayer(opts, callbackQuery) {
       ? addPlayerOnlyMarkup
       : modifyTeamMarkup;
 
-  logEvent(callbackQuery.message.chat, 'Delete player');
+  logEvent(callbackQuery.message.chat, `Delete player: ${nickname}`);
   await telegramEditMessage(
     { text, options },
     {

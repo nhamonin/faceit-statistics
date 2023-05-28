@@ -1,32 +1,43 @@
-import { fetch } from 'undici';
-
 import { FACEIT_WEBHOOK_ID, dynamicValues } from '#config';
-import { getCurrentBearerToken, setEnvValue } from '#utils';
+import {
+  getCurrentBearerToken,
+  setEnvValue,
+  withErrorHandling,
+  fetchData,
+} from '#utils';
 import { syncWebhookStaticListWithDB } from '#jobs';
 
 const url = `https://api.faceit.com/webhooks/v1/subscriptions/${FACEIT_WEBHOOK_ID}`;
 
 function changeWebhookPlayersList(action) {
-  return async function (playersIDs) {
-    const webhookData = await getWebhookDataPayload();
+  return withErrorHandling(
+    async (playersIDs) => {
+      const webhookData = await getWebhookDataPayload();
 
-    if (!webhookData) {
-      console.error('Webhook data error, please update API key');
-      return;
+      if (!webhookData) {
+        console.error('Webhook data error, please update API key');
+        return;
+      }
+
+      const body = createBodyFromWebhookData(playersIDs, action, webhookData);
+      const res = await fetchData(url, {
+        headers: {
+          ...getAuthorizationHeader(),
+          'Content-Type': 'application/json',
+        },
+        method: 'PUT',
+        body,
+        retries: 3,
+        delay: 1000,
+      });
+
+      return res;
+    },
+    {
+      error: 'FetchError',
+      errorMessage: 'Unable to change webhook players list.',
     }
-
-    const body = createBodyFromWebhookData(playersIDs, action, webhookData);
-    const res = await fetch(url, {
-      headers: {
-        ...getAuthorizationHeader(),
-        'Content-Type': 'application/json',
-      },
-      method: 'PUT',
-      body,
-    });
-
-    if (res.ok) return res.json();
-  };
+  );
 }
 
 async function getWebhookDataPayload() {
@@ -119,6 +130,7 @@ export const webhookMgr = {
   getWebhookDataPayload,
   limitRestrictions,
   getRestrictionsCount,
-  addPlayersToList: changeWebhookPlayersList('add'),
-  removePlayersFromList: changeWebhookPlayersList('remove'),
+  addPlayersToList: (playersIDs) => changeWebhookPlayersList('add')(playersIDs),
+  removePlayersFromList: (playersIDs) =>
+    changeWebhookPlayersList('remove')(playersIDs),
 };

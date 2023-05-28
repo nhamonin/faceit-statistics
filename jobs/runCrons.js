@@ -9,7 +9,6 @@ import {
 import { webhookMgr } from '#utils';
 
 export function runCrons() {
-  backupDB();
   performUpdatePlayers();
 
   cron.schedule('0 4 * * *', syncWebhookStaticListWithDB);

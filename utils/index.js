@@ -18,6 +18,7 @@ import {
   receiveArgs,
   cacheWithExpiry,
   withErrorHandling,
+  fetchData,
 } from './basic.js';
 // server
 import { startServer } from './server/startServer.js';
@@ -75,6 +76,7 @@ export {
   receiveArgs,
   cacheWithExpiry,
   withErrorHandling,
+  fetchData,
   startServer,
   getPlayerInfo,
   getPlayerMatches,

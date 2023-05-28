@@ -1,11 +1,9 @@
-import { fetch } from 'undici';
-
-import { withErrorHandling } from '#utils';
+import { withErrorHandling, fetchData } from '#utils';
 
 export async function getMatchStats(match_id) {
-  return withErrorHandling(async () => {
-    const url = `https://api.faceit.com/stats/v1/stats/matches/${match_id}`;
-    const res = await fetch(url);
-    if (res.ok) return res.json();
+  const url = `https://api.faceit.com/stats/v1/stats/matches/${match_id}`;
+  return withErrorHandling(() => fetchData(url), {
+    error: 'FetchError',
+    errorMessage: 'Unable to fetch match stats data.',
   })();
 }

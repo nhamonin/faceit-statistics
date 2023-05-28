@@ -229,6 +229,37 @@ function withErrorHandling(fn, errorObj) {
   };
 }
 
+async function fetchData(url, options) {
+  options = options || {
+    retries: 3,
+    delay: 1000,
+    headers: {},
+    method: 'GET',
+    body: null,
+  };
+  const { retries, delay, headers, method, body } = options;
+  for (let i = 0; i < retries; i++) {
+    try {
+      const res = await fetch(url, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          Pragma: 'no-cache',
+          Expires: 0,
+          ...headers,
+        },
+        method,
+        body,
+      });
+
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      return res.json();
+    } catch (e) {
+      if (i === retries - 1) throw { url, originalError: e };
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+}
+
 export {
   adjustConsolesBehavior,
   logEvent,
@@ -248,4 +279,5 @@ export {
   receiveArgs,
   cacheWithExpiry,
   withErrorHandling,
+  fetchData,
 };
