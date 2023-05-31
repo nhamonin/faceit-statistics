@@ -254,7 +254,7 @@ async function fetchData(url, options) {
       if (!res.ok) {
         if (res.status === 404) {
           return;
-        } else if ([400, 401, 403, 405, 410].includes(res.status)) {
+        } else if ([400, 401, 405, 410].includes(res.status)) {
           throw new Error(`HTTP error! status: ${res.status}. No retries.`);
         } else {
           throw new Error(`HTTP error! status: ${res.status}`);
