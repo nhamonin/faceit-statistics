@@ -251,12 +251,23 @@ async function fetchData(url, options) {
         body,
       });
 
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      if (!res.ok) {
+        if (res.status === 404) {
+          return;
+        } else if ([400, 401, 403, 405, 410].includes(res.status)) {
+          throw new Error(`HTTP error! status: ${res.status}. No retries.`);
+        } else {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+      }
+
       return res.json();
     } catch (e) {
-      if (i === retries - 1)
+      if (e.message.includes('No retries') || i === retries - 1)
         throw new Error(
-          `Failed after ${retries} retries. URL: ${url}. Original error: ${e.message}`
+          `Failed after ${i + 1} attempts. URL: ${url}. Original error: ${
+            e.message
+          }`
         );
 
       await new Promise((resolve) => setTimeout(resolve, delay));
