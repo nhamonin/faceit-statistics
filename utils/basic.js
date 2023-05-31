@@ -254,7 +254,11 @@ async function fetchData(url, options) {
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       return res.json();
     } catch (e) {
-      if (i === retries - 1) throw { url, originalError: e };
+      if (i === retries - 1)
+        throw new Error(
+          `Failed after ${retries} retries. URL: ${url}. Original error: ${e.message}`
+        );
+
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }

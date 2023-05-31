@@ -21,11 +21,11 @@ export async function getPlayerLastStats(player_id, limit) {
     hs: {},
   };
 
-  res.kd.lifetime = stats ? +stats.lifetime.k5 : 0;
+  res.kd.lifetime = stats ? +stats.lifetime?.k5 : 0;
   res.winrate.lifetime = stats
-    ? +((stats.lifetime.m2 / stats.lifetime.m1) * 100).toFixed(2)
+    ? +((stats.lifetime?.m2 / stats.lifetime?.m1) * 100).toFixed(2)
     : 0;
-  res.hs.lifetime = stats ? +stats.lifetime.k8 : 0;
+  res.hs.lifetime = stats ? +stats.lifetime?.k8 : 0;
 
   statsNumberArray.forEach((number) => {
     Object.keys(res).forEach((attr) => {
