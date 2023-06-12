@@ -59,22 +59,29 @@ function logEvent(chat, action) {
 
 async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
   const tBot = getTelegramBot();
-  const page = await browser.newPage();
+  const context = await browser.createIncognitoBrowserContext();
+  const page = await context.newPage();
   let image = null;
 
-  await page.setContent(html);
+  try {
+    await page.setContent(html);
 
-  await page.waitForNetworkIdle({
-    idleTime: 350,
-    timeout: 10000,
-  });
-
-  await withErrorHandling(async () => {
-    image = await page.screenshot({
-      fullPage: true,
+    await page.waitForNetworkIdle({
+      idleTime: 350,
+      timeout: 10000,
     });
-    page.close();
-  })();
+
+    await withErrorHandling(async () => {
+      image = await page.screenshot({
+        fullPage: true,
+      });
+    })();
+  } catch (e) {
+    console.log(e);
+  } finally {
+    await page.close();
+    await context.close();
+  }
 
   const chatsToSend =
     !logEnabled ||
@@ -106,10 +113,21 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
 }
 
 async function getBrowser() {
-  return puppeteer.launch({
+  const browser = await puppeteer.launch({
     headless: true,
     args: puppeteerArgs,
   });
+
+  process.on('beforeExit', async () => {
+    await browser.close();
+  });
+
+  process.on('SIGINT', async () => {
+    await browser.close();
+    process.exit();
+  });
+
+  return browser;
 }
 
 function calculateAverage(arr, digits = 2) {
