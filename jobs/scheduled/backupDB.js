@@ -83,7 +83,7 @@ async function deleteOldBackups() {
     const filePath = path.join(backupDir, file);
     const fileStat = fs.statSync(filePath);
 
-    if (now - fileStat.birthtimeMs > SEVEN_DAYS) {
+    if (now - fileStat.mtimeMs > SEVEN_DAYS) {
       fs.unlinkSync(filePath);
     }
   }
