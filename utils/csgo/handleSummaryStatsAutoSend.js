@@ -5,7 +5,11 @@ import { getSummaryStatsTemplate } from '#templates';
 import { subscriptionReceivedMarkup } from '#telegramReplyMarkup';
 import { caches } from '#config';
 
-export async function handleSummaryStatsAutoSend(matchID, chatIDs, playerIDs) {
+export async function handleSummaryStatsAutoSend(
+  matchID,
+  chatIDs,
+  playersWithResults
+) {
   const addedToCache = cacheWithExpiry(
     caches.summaryStatsMatchIDs,
     matchID,
@@ -20,9 +24,15 @@ export async function handleSummaryStatsAutoSend(matchID, chatIDs, playerIDs) {
     if (!statusFinishedSubscriptions.summaryStats) return;
     const teamPlayers = await database.players.readAllByChatId(chat_id);
     const playedPlayers = teamPlayers
-      .filter((player) => playerIDs.includes(player.player_id))
+      .filter((player) =>
+        playersWithResults.map((p) => p.id).includes(player.player_id)
+      )
       .map(({ nickname }) => nickname);
-    const { text, error } = await getSummaryStats(chat_id, playedPlayers);
+    const { text, error } = await getSummaryStats(
+      chat_id,
+      playedPlayers,
+      playersWithResults
+    );
     error
       ? await telegramSendMessage(chat_id, { text: text || error })
       : await sendPhoto([chat_id], null, getSummaryStatsTemplate(text));

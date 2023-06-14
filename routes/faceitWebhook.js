@@ -134,6 +134,13 @@ async function handleMatchStatusFinished(data) {
   const matchStatsArr = await getMatchStats(data.payload.id);
   if (!matchStatsArr?.length) return;
   const [matchStats] = matchStatsArr;
+  const playersWithResults = matchStats.teams
+    .map((team) => team.players)
+    .flat()
+    .map(({ playerId, i10 }) => ({
+      id: playerId,
+      win: +i10,
+    }));
 
   for await (const player_id of playerIDs) {
     const teams = await database.teams.readAllByPlayerId(player_id);
@@ -164,7 +171,7 @@ async function handleMatchStatusFinished(data) {
   await handleSummaryStatsAutoSend(
     data.payload.id,
     [...teamsToSendSummary],
-    playerIDs
+    playersWithResults
   );
 }
 

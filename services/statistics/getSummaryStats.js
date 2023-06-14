@@ -3,7 +3,11 @@ import { readFileSync } from 'node:fs';
 import database from '#db';
 import { getClass } from '#utils';
 
-export const getSummaryStats = async (chat_id, playedPlayers) => {
+export const getSummaryStats = async (
+  chat_id,
+  playedPlayers,
+  playersWithResults
+) => {
   const team = await database.teams.readBy({ chat_id });
   if (!team) return { text: 'teamNotExistError', error: true };
   const players = await database.players.readAllByChatId(chat_id);
@@ -12,14 +16,25 @@ export const getSummaryStats = async (chat_id, playedPlayers) => {
 
   return isTeamEmpty
     ? prepareEmptyTeamResult(statAttribute)
-    : prepareProperResult(team, players, playedPlayers);
+    : prepareProperResult(team, players, playedPlayers, playersWithResults);
 };
 
-function prepareProperResult(team, players, playedPlayers = []) {
-  const playersWithStatus = players.map((player) => ({
-    ...player,
-    active: playedPlayers.includes(player.nickname),
-  }));
+function prepareProperResult(
+  team,
+  players,
+  playedPlayers = [],
+  playersWithResults = []
+) {
+  const playersWithStatus = players.map((player) => {
+    const playerResult = playersWithResults.find(
+      (p) => p.id === player.player_id
+    );
+    return {
+      ...player,
+      active: playedPlayers.includes(player.nickname),
+      win: playerResult ? playerResult.win : null,
+    };
+  });
   const playerSummaryStatsMarkup = formatText(team, playersWithStatus);
 
   return {
@@ -33,15 +48,28 @@ function formatText(team, players) {
 
   return players
     .sort((a, b) => b.elo - a.elo)
-    .map(
-      (player) =>
-        `<div class="player-container">
-        <div class="player-container__nickname ${
-          player.active ? 'player-container__nickname--active' : ''
-        }">${player.nickname}</div>
-        <div class="player-container__main-stats ${
-          player.active ? 'player-container__main-stats--active' : ''
-        }">
+    .map((player) => {
+      const styleSuffix = player.active
+        ? player.win
+          ? '--win'
+          : '--lose'
+        : '';
+
+      const playerContainerModificator = player.active
+        ? ` player-container__nickname${styleSuffix}`
+        : '';
+      const mainStatsModificator = player.active
+        ? ` player-container__main-stats${styleSuffix}`
+        : '';
+      const lastStatsModificator = player.active
+        ? ` player-container__last-stats${styleSuffix}`
+        : '';
+
+      return `<div class="player-container">
+        <div class="player-container__nickname${playerContainerModificator}">${
+        player.nickname
+      }</div>
+        <div class="player-container__main-stats${mainStatsModificator}">
           <img
             class="faceit-lvl"
             src="data:image/svg+xml;base64,${readFileSync(
@@ -57,8 +85,8 @@ function formatText(team, players) {
             </div>
             <div class="stats-value-wrapper">
               <div class="stats-value__item ${getClass.elo(player.elo)}">${
-          player.elo
-        }</div>
+        player.elo
+      }</div>
               <div class="stats-value__item ${getClass.elo(
                 player.highestElo
               )}">${player.highestElo}</div>
@@ -68,9 +96,7 @@ function formatText(team, players) {
             </div>
           </div>
         </div>
-        <div class="player-container__last-stats ${
-          player.active ? 'player-container__last-stats--active' : ''
-        }">
+        <div class="player-container__last-stats${lastStatsModificator}">
           <div class="stats-wrapper">
             <div class="stats-attribute-wrapper">
               <div class="stats-attribute__item">K/D</div>
@@ -87,13 +113,13 @@ function formatText(team, players) {
               <div class="stats-value__item ${getClass.hs(
                 player.hs[`last${lastMatchesSetting}`]
               )} percent">${player.hs[`last${lastMatchesSetting}`]?.toFixed(
-          2
-        )}</div>
+        2
+      )}</div>
             </div>
           </div>
         </div>
       </div>
-    </div>`
-    )
+    </div>`;
+    })
     .join('');
 }

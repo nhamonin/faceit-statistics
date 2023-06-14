@@ -47,22 +47,35 @@ export const getSummaryStatsTemplate = (playersMarkup, playersAmount) =>
         margin-top: 3px;
     }
 
-    .player-container__nickname--active {
-        box-shadow: inset 0 60px 4px -4px rgb(0 100 0);
-        border-color: transparent;
-        margin-bottom: -3px;
-    }
-    .player-container__main-stats--active,
-    .player-container__last-stats--active {
-        border-color: #00ff00;
-    }
-
     .player-container__last-stats {
         box-shadow: 0px 4px 60px 0px rgba(255, 255, 255, 0.2);
     }
 
-    .player-container__last-stats--active {
+    .player-container__nickname--win {
+        box-shadow: inset 0 60px 4px -4px rgb(0 100 0);
+        border-color: transparent;
+        margin-bottom: -3px;
+    }
+    .player-container__main-stats--win,
+    .player-container__last-stats--win {
+        border-color: #00ff00;
+    }
+    .player-container__last-stats--win {
         box-shadow: 0px 4px 60px 0px rgba(0, 255, 0, 0.2);
+    }
+
+
+    .player-container__nickname--lose {
+        box-shadow: inset 0 60px 4px -4px rgb(100 0 0);
+        border-color: transparent;
+        margin-bottom: -3px;
+    }
+    .player-container__main-stats--lose,
+    .player-container__last-stats--lose {
+        border-color: #ff0000;
+    }
+    .player-container__last-stats--lose {
+        box-shadow: 0px 4px 60px 0px rgba(255, 0, 0, 0.2);
     }
 
     .faceit-lvl {
