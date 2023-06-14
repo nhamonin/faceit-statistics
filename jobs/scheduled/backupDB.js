@@ -4,7 +4,11 @@ import fs from 'node:fs';
 import pg from 'pg';
 import { execute } from '@getvim/execute';
 
-import { PG_CONNECTION_STRING, TELEGRAM_BACKUPS_CHAT_ID } from '#config';
+import {
+  PG_CONNECTION_STRING,
+  TELEGRAM_BACKUPS_CHAT_ID,
+  isProduction,
+} from '#config';
 import { getTelegramBot } from '#utils';
 
 const { Client } = pg;
@@ -63,8 +67,10 @@ export async function backupDB() {
     );
 
     // send backup files to Telegram
-    await tBot.sendDocument(TELEGRAM_BACKUPS_CHAT_ID, fileName);
-    await tBot.sendDocument(TELEGRAM_BACKUPS_CHAT_ID, schemaOnlyFileName);
+    if (isProduction) {
+      await tBot.sendDocument(TELEGRAM_BACKUPS_CHAT_ID, fileName);
+      await tBot.sendDocument(TELEGRAM_BACKUPS_CHAT_ID, schemaOnlyFileName);
+    }
 
     // Delete files older than 7 days
     await deleteOldBackups(backupDir);
@@ -81,9 +87,12 @@ async function deleteOldBackups() {
 
   for (const file of files) {
     const filePath = path.join(backupDir, file);
-    const fileStat = fs.statSync(filePath);
+    const datePattern = /\d{4}.\d{1,2}.\d{1,2}/;
+    const dateString = file.match(datePattern)[0];
+    const [year, month, day] = dateString.split('.').map(Number);
+    const fileDate = new Date(year, month - 1, day);
 
-    if (now - fileStat.mtimeMs > SEVEN_DAYS) {
+    if (now - fileDate.getTime() > SEVEN_DAYS) {
       fs.unlinkSync(filePath);
     }
   }
