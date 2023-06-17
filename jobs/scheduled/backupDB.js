@@ -13,18 +13,9 @@ import { getTelegramBot } from '#utils';
 
 const { Client } = pg;
 const tBot = getTelegramBot();
-const date = new Date();
-const currentDate = `${date.getFullYear()}.${
-  date.getMonth() + 1
-}.${date.getDate()}`;
 const backupDir = path.join(process.cwd(), 'database', 'backups');
-const fileName = path.join(backupDir, `database-backup-${currentDate}.sql`);
-const schemaOnlyFileName = path.join(
-  backupDir,
-  `database-schema-only-backup-${currentDate}.sql`
-);
 const excludedTables = ['match', 'temp_prediction'];
-const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000; // in milliseconds
+const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
 
 // Ensure the backup directory exists
 if (!fs.existsSync(backupDir)) {
@@ -35,6 +26,15 @@ export async function backupDB() {
   const client = new Client({
     connectionString: PG_CONNECTION_STRING,
   });
+  const date = new Date();
+  const currentDate = `${date.getFullYear()}.${
+    date.getMonth() + 1
+  }.${date.getDate()}`;
+  const fileName = path.join(backupDir, `database-backup-${currentDate}.sql`);
+  const schemaOnlyFileName = path.join(
+    backupDir,
+    `database-schema-only-backup-${currentDate}.sql`
+  );
 
   try {
     await client.connect();
