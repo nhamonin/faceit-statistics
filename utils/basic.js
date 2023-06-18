@@ -232,12 +232,14 @@ function cacheWithExpiry(cache, key, timeout) {
   return true;
 }
 
-function withErrorHandling(fn, errorObj) {
+function withErrorHandling(fn, errorObj, options = { log: true }) {
   return async function (...args) {
     try {
       return await fn(...args);
     } catch (e) {
-      console.error(e);
+      if (options?.log) {
+        console.log(e);
+      }
       return {
         error: errorObj?.error,
         text: errorObj?.errorMessage,

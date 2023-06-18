@@ -57,9 +57,13 @@ export function getTelegramBot() {
 }
 
 export async function telegramDeleteMessage(chat_id, message_id) {
-  withErrorHandling(async () => {
-    await tBot.deleteMessage(chat_id, message_id);
-  })();
+  withErrorHandling(
+    async () => {
+      await tBot.deleteMessage(chat_id, message_id);
+    },
+    null,
+    { log: false }
+  )();
 }
 
 export async function telegramEditMessage(i18opts, messageOpts) {

@@ -1,13 +1,18 @@
+import Bottleneck from 'bottleneck';
+
 import database from '#db';
-import { MAX_MATCHES_PER_REQUEST, MATCHES_FETCH_DELAY } from '#config';
 import {
-  getPlayerMatches,
-  getEventEmitter,
-  withErrorHandling,
-  wait,
-} from '#utils';
+  MAX_MATCHES_PER_REQUEST,
+  MATCHES_FETCH_DELAY,
+  TELEGRAM_MESSAGE_UPDATE_DELAY,
+} from '#config';
+import { getPlayerMatches, getEventEmitter, withErrorHandling } from '#utils';
 
 const eventEmitter = getEventEmitter();
+const matchLimiter = new Bottleneck({
+  maxConcurrent: 1,
+  minTime: MATCHES_FETCH_DELAY,
+});
 
 export const getHighAmountOfPlayerLastMatches = withErrorHandling(
   async function (player_id, amount = 20, chat_id) {
@@ -17,13 +22,9 @@ export const getHighAmountOfPlayerLastMatches = withErrorHandling(
     const res = [];
 
     for await (const [index, page] of pages.entries()) {
-      const matches = await getPlayerMatches(
-        player_id,
-        MAX_MATCHES_PER_REQUEST,
-        page
+      const matches = await matchLimiter.schedule(() =>
+        getPlayerMatches(player_id, MAX_MATCHES_PER_REQUEST, page)
       );
-
-      await wait(MATCHES_FETCH_DELAY);
 
       if (!matches?.length) break;
 
@@ -37,14 +38,24 @@ export const getHighAmountOfPlayerLastMatches = withErrorHandling(
       if (!chat_id) continue;
 
       const player = await database.players.readBy({ player_id });
+      const latestUpdates = new Map();
 
-      eventEmitter.emit(
-        `addingPlayerProcess-${chat_id}-${player?.nickname}`,
-        'addPlayer.progressLevel',
-        {
-          nickname: player?.nickname,
-          percentage,
-        }
+      if (latestUpdates.has(player_id)) {
+        clearTimeout(latestUpdates.get(player_id));
+      }
+
+      latestUpdates.set(
+        player_id,
+        setTimeout(() => {
+          eventEmitter.emit(
+            `addingPlayerProcess-${chat_id}-${player?.nickname}`,
+            'addPlayer.progressLevel',
+            {
+              nickname: player?.nickname,
+              percentage,
+            }
+          );
+        }, TELEGRAM_MESSAGE_UPDATE_DELAY)
       );
     }
 

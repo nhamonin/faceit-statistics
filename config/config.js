@@ -109,7 +109,8 @@ const COMMAND_PATTERNS = {
 const dynamicValues = {
   FACEIT_WEBHOOK_API_KEY,
 };
-const MATCHES_FETCH_DELAY = isProduction ? 3 * 1000 : 500;
+const MATCHES_FETCH_DELAY = 1250;
+const TELEGRAM_MESSAGE_UPDATE_DELAY = 1750;
 
 export {
   isProduction,
@@ -142,4 +143,5 @@ export {
   eventEmitter,
   COMMAND_PATTERNS,
   MATCHES_FETCH_DELAY,
+  TELEGRAM_MESSAGE_UPDATE_DELAY,
 };
