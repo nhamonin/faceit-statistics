@@ -64,13 +64,14 @@ async function updatePlayerStats(playerIDs) {
     playerIDs.map((playerID) => getPlayerInfo({ playerID }))
   );
 
-  for await (const playerStats of playerStatsArray) {
-    const { player_id, nickname, elo, lvl, kd, avg, hs, winrate } = playerStats;
-    if (!player_id) continue;
+  const recordsToUpdate = playerStatsArray
+    .map((playerStats) => {
+      const { player_id, nickname, elo, lvl, kd, avg, hs, winrate } =
+        playerStats;
+      if (!player_id) return null;
 
-    await database.players.updateAllBy(
-      { player_id },
-      {
+      return {
+        player_id,
         nickname,
         elo,
         lvl,
@@ -78,9 +79,14 @@ async function updatePlayerStats(playerIDs) {
         avg: JSON.stringify(avg),
         hs: JSON.stringify(hs),
         winrate: JSON.stringify(winrate),
-      }
-    );
+      };
+    })
+    .filter(Boolean);
 
+  await database.players.batchUpdate('player_id', recordsToUpdate);
+
+  for (const record of recordsToUpdate) {
+    const { player_id, nickname } = record;
     const updatedPlayer = await database.players.readBy({ player_id });
     const { elo: updatedElo, highestElo, highestEloDate } = updatedPlayer;
 

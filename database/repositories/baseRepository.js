@@ -2,6 +2,11 @@ import Bottleneck from 'bottleneck';
 
 import { withErrorHandling, chunk } from '#utils';
 
+const limiter = new Bottleneck({
+  maxConcurrent: 10,
+  minTime: 100,
+});
+
 export class BaseRepository {
   constructor(db, tableName) {
     this.db = db;
@@ -64,10 +69,12 @@ export class BaseRepository {
 
     const chunks = chunk(records, chunkSize);
 
-    for (const chunk of chunks) {
-      const updateQueries = chunk.map((record) => executeUpdateQuery(record));
-      await Promise.all(updateQueries);
-    }
+    const tasks = chunks.map((chunk) =>
+      limiter.schedule(() =>
+        Promise.all(chunk.map((record) => executeUpdateQuery(record)))
+      )
+    );
+    await Promise.all(tasks);
   });
 
   deleteAllBy = withErrorHandling(async (criteria) =>
