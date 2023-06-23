@@ -19,11 +19,7 @@ import { COMMAND_PATTERNS } from '#config';
 
 export function initOnTextListeners() {
   registerCommand(COMMAND_PATTERNS.start, handleStartCommand);
-  registerCommand(
-    COMMAND_PATTERNS.getAnalytics,
-    handleGetAnalyticsCommand,
-    true
-  );
+  registerCommand(COMMAND_PATTERNS.getAnalytics, handleGetAnalyticsCommand);
   registerCommand(
     COMMAND_PATTERNS.deleteAnalytics,
     handleDeleteAnalyticsCommand,
