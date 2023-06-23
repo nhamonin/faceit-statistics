@@ -64,7 +64,7 @@ async function updatePlayerStats(playerIDs) {
     playerIDs.map((playerID) => getPlayerInfo({ playerID }))
   );
 
-  for (const playerStats of playerStatsArray) {
+  for await (const playerStats of playerStatsArray) {
     const { player_id, nickname, elo, lvl, kd, avg, hs, winrate } = playerStats;
     if (!player_id) continue;
 
