@@ -1,3 +1,5 @@
+import Bottleneck from 'bottleneck';
+
 import { BaseRepository } from '../baseRepository.js';
 import { withErrorHandling, chunk } from '#utils';
 
@@ -35,20 +37,26 @@ export class MatchRepository extends BaseRepository {
 
   createMany = withErrorHandling(async (records) => {
     const maxSingleInsert = 30;
+    const concurrencyLimit = 25;
+    const chunks = chunk(records, maxSingleInsert);
 
-    if (records.length < maxSingleInsert) {
+    const createChunk = async (chunk) => {
       await this.db(this.tableName)
-        .insert(records)
+        .insert(chunk)
         .onConflict(['match_id', 'player_id'])
         .merge();
+    };
+
+    const limiter = new Bottleneck({ maxConcurrent: concurrencyLimit });
+
+    if (chunks.length === 1) {
+      await createChunk(chunks[0]);
     } else {
-      const chunks = chunk(records, maxSingleInsert);
-      for (const chunk of chunks) {
-        await this.db(this.tableName)
-          .insert(chunk)
-          .onConflict(['match_id', 'player_id'])
-          .merge();
-      }
+      const promises = chunks.map((chunk) =>
+        limiter.schedule(() => createChunk(chunk))
+      );
+
+      await Promise.all(promises);
     }
   });
 }

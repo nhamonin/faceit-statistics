@@ -1,3 +1,5 @@
+import Bottleneck from 'bottleneck';
+
 import { withErrorHandling, chunk } from '#utils';
 
 export class BaseRepository {
