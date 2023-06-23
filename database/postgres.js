@@ -11,8 +11,8 @@ const db = knex({
   connection: PG_CONNECTION_STRING,
   searchPath: ['knex', 'public'],
   pool: {
-    min: 1,
-    max: 100,
+    min: 10,
+    max: 200,
   },
 });
 

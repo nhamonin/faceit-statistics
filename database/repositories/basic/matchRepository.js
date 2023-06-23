@@ -37,7 +37,7 @@ export class MatchRepository extends BaseRepository {
 
   createMany = withErrorHandling(async (records) => {
     const maxSingleInsert = 30;
-    const concurrencyLimit = 10;
+    const concurrencyLimit = 100;
     const chunks = chunk(records, maxSingleInsert);
 
     const createChunk = async (chunk) => {
