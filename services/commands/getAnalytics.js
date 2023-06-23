@@ -5,6 +5,7 @@ export async function getAnalytics() {
   const matchPrediction = await database.matchPredictions.readBy({});
   const totalTempPredictions = await database.tempPredictions.getCount();
   const totalTeams = await database.teams.getCount();
+  const totalActiveTeams = await database.teamsPlayers.getActiveTeamsCount();
   const totalPlayers = await database.players.getCount();
   const totalMatches = matchPrediction?.totalMatches || 0;
   const avgPredictions = matchPrediction?.avgPredictions || 0;
@@ -21,7 +22,9 @@ export async function getAnalytics() {
     `Total matches: ${totalMatches}`,
     `Pending matches: ${totalTempPredictions}`,
     '',
-    `Total teams: ${totalTeams}`,
+    `Total active teams: ${totalActiveTeams} (${(
+      (totalActiveTeams / totalTeams || 0) * 100
+    ).toFixed(2)} %)`,
     `Total players: ${totalPlayers}`,
     `Webhook static list length: ${webhookListLength}`,
   ].join('\n');
