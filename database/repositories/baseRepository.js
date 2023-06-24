@@ -53,6 +53,26 @@ export class BaseRepository {
     return query;
   });
 
+  readAllWhereIn = withErrorHandling(
+    async (columnName, valuesArray, options = {}) => {
+      let query = this.db(this.tableName).whereIn(columnName, valuesArray);
+
+      if (options.excludeNull) {
+        query = query.whereNotNull(options.excludeNull);
+      }
+
+      if (options.orderBy && options.orderDirection) {
+        query = query.orderBy(options.orderBy, options.orderDirection);
+      }
+
+      if (options.limit) {
+        query = query.limit(options.limit);
+      }
+
+      return query;
+    }
+  );
+
   updateAllBy = withErrorHandling(async (criteria, updates) =>
     this.db(this.tableName).where(criteria).update(updates)
   );

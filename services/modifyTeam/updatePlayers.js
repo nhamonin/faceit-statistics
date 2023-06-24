@@ -1,3 +1,5 @@
+import Bottleneck from 'bottleneck';
+
 import database from '#db';
 import {
   getPlayerInfo,
@@ -7,6 +9,11 @@ import {
 } from '#utils';
 import { getHighestElo } from '#services';
 import { caches } from '#config';
+
+const limiter = new Bottleneck({
+  maxConcurrent: 5,
+  minTime: 200,
+});
 
 export const updatePlayers = async ({
   playerIDs,
@@ -43,13 +50,18 @@ export const updatePlayers = async ({
   )();
 
 async function filterExistingPlayers(teamPlayerIDs) {
-  const playersInDatabase = await Promise.all(
-    teamPlayerIDs.map(async (player_id) => {
-      const player = await database.players.readBy({ player_id });
-      return !!player;
-    })
+  const playersInDatabase = await database.players.readAllWhereIn(
+    'player_id',
+    teamPlayerIDs
   );
-  return teamPlayerIDs.filter((_, index) => playersInDatabase[index]);
+  const playerIdsInDatabase = new Set(
+    playersInDatabase.map((player) => player.player_id)
+  );
+  const existingPlayerIDs = teamPlayerIDs.filter((player_id) =>
+    playerIdsInDatabase.has(player_id)
+  );
+
+  return existingPlayerIDs;
 }
 
 async function updatePlayerMatches(playerIDs, isHardUpdate) {
@@ -61,9 +73,10 @@ async function updatePlayerMatches(playerIDs, isHardUpdate) {
 
 async function updatePlayerStats(playerIDs) {
   const playerStatsArray = await Promise.all(
-    playerIDs.map((playerID) => getPlayerInfo({ playerID }))
+    playerIDs.map((playerID) =>
+      limiter.schedule(() => getPlayerInfo({ playerID }))
+    )
   );
-
   const recordsToUpdate = playerStatsArray
     .map((playerStats) => {
       const { player_id, nickname, elo, lvl, kd, avg, hs, winrate } =
@@ -85,7 +98,9 @@ async function updatePlayerStats(playerIDs) {
 
   await database.players.batchUpdate('player_id', recordsToUpdate);
 
-  for (const record of recordsToUpdate) {
+  const highestEloUpdates = [];
+
+  for await (const record of recordsToUpdate) {
     const { player_id, nickname } = record;
     const updatedPlayer = await database.players.readBy({ player_id });
     const { elo: updatedElo, highestElo, highestEloDate } = updatedPlayer;
@@ -93,10 +108,13 @@ async function updatePlayerStats(playerIDs) {
     await getHighestElo(nickname);
 
     if (highestElo && highestEloDate && updatedElo >= highestElo) {
-      await database.players.updateAllBy(
-        { player_id },
-        { highestElo: updatedElo, highestEloDate: new Date() }
-      );
+      highestEloUpdates.push({
+        player_id,
+        highestElo: updatedElo,
+        highestEloDate: new Date(),
+      });
     }
   }
+
+  await database.players.batchUpdate('player_id', highestEloUpdates);
 }
