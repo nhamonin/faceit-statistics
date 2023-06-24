@@ -50,6 +50,10 @@ export class BaseRepository {
       query = query.limit(options.limit);
     }
 
+    if (options.pluck) {
+      query = query.pluck(options.pluck);
+    }
+
     return query;
   });
 
