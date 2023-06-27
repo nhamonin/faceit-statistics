@@ -1,5 +1,4 @@
 import https from 'node:https';
-import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -45,25 +44,24 @@ function requestHandler(req, res) {
 }
 
 export function startServer() {
-  if (isProduction) {
-    https
-      .createServer(
-        {
-          key: fs.readFileSync('./certs/private.key'),
-          cert: fs.readFileSync('./certs/faceit-helper_pro.crt'),
-          ca: [
-            fs.readFileSync('./certs/faceit-helper_pro-root.crt'),
-            fs.readFileSync('./certs/faceit-helper_pro-bundle.crt'),
-          ],
-        },
-        requestHandler
-      )
-      .listen(port, host, () => {
-        console.log(`Server listens ${SERVER_URL}`);
-      });
-  } else {
-    http.createServer(requestHandler).listen(port, host, () => {
-      console.log(`Server listens ${SERVER_URL}`);
-    });
-  }
+  const options = {
+    key: fs.readFileSync(
+      `./certs/private${isProduction ? '.key' : '_test.pem'}`
+    ),
+    cert: fs.readFileSync(
+      `./certs/${
+        isProduction ? 'faceit-helper_pro.crt' : 'certificate_test.pem'
+      }`
+    ),
+    ...(isProduction && {
+      ca: [
+        fs.readFileSync('./certs/faceit-helper_pro-root.crt'),
+        fs.readFileSync('./certs/faceit-helper_pro-bundle.crt'),
+      ],
+    }),
+  };
+
+  https.createServer(options, requestHandler).listen(port, host, () => {
+    console.log(`Server listens ${SERVER_URL}`);
+  });
 }

@@ -35,7 +35,7 @@ const FACEIT_WEBHOOK_ID = isProduction
   : FACEIT_WEBHOOK_ID_TEST;
 const host = isProduction ? HOST_PROD : HOST_TEST;
 const port = isProduction ? PORT_PROD : PORT_TEST;
-const SERVER_URL = (isProduction ? 'https' : 'http') + `://${host}:${port}`;
+const SERVER_URL = `https://${host}:${port}`;
 const game_id = 'csgo';
 const currentMapPool = [
   'de_ancient',

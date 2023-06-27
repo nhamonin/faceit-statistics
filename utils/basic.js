@@ -116,6 +116,7 @@ async function getBrowser() {
   const browser = await puppeteer.launch({
     headless: true,
     args: puppeteerArgs,
+    ignoreHTTPSErrors: true,
   });
 
   process.on('beforeExit', async () => {
