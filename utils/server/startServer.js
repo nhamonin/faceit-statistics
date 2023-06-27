@@ -18,7 +18,7 @@ function requestHandler(req, res) {
 
     if (mimeType) {
       const filePath = path.join(__dirname, '..', '..', url);
-      console.log(filePath);
+
       fs.readFile(filePath, (error, content) => {
         if (error) {
           res.writeHead(500);
