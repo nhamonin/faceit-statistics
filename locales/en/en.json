@@ -53,7 +53,9 @@
         "message_one": "<b>{{ teamNicknames }}</b> has just completed a match. Above, you can find updated team statistics.",
         "message_other": "<b>{{ teamNicknames }}</b> have just completed a match. Above, you can find updated team statistics.",
         "unsubscribed": "You have been successfully unsubscribed from the summary stats.",
-        "subscribed": "You have been successfully subscribed to the summary stats."
+        "subscribed": "You have been successfully subscribed to the summary stats.",
+        "overall": "<b>Overall:</b>",
+        "last20": "<b>Last 20:</b>"
       },
       "calculateBestMaps": {
         "message": "Match <b>{{ yourTeamName }}</b> vs <b>{{ opponentTeamName }}</b> just created! Above, you can find the best maps for <b>{{ yourTeamName }}</b> ({{ teamNicknames }} from your team).",

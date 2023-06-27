@@ -1,5 +1,7 @@
+import i18next from 'i18next';
+
 import database from '#db';
-import { getClass } from '#utils';
+import { getLangByChatID, getClass } from '#utils';
 
 export const getSummaryStats = async (
   chat_id,
@@ -7,6 +9,7 @@ export const getSummaryStats = async (
   playersWithResults
 ) => {
   const team = await database.teams.readBy({ chat_id });
+  const lang = await getLangByChatID(chat_id);
   if (!team) return { text: 'teamNotExistError', error: true };
   const players = await database.players.readAllByChatId(chat_id);
   const isTeamEmpty = !players || players?.length === 0;
@@ -14,14 +17,21 @@ export const getSummaryStats = async (
 
   return isTeamEmpty
     ? prepareEmptyTeamResult(statAttribute)
-    : prepareProperResult(team, players, playedPlayers, playersWithResults);
+    : prepareProperResult(
+        team,
+        players,
+        playedPlayers,
+        playersWithResults,
+        lang
+      );
 };
 
 function prepareProperResult(
   team,
   players,
   playedPlayers = [],
-  playersWithResults = []
+  playersWithResults = [],
+  lang
 ) {
   const playersWithStatus = players.map((player) => {
     const playerResult = playersWithResults.find(
@@ -33,7 +43,7 @@ function prepareProperResult(
       win: playerResult ? playerResult.win : null,
     };
   });
-  const playerSummaryStatsMarkup = formatText(team, playersWithStatus);
+  const playerSummaryStatsMarkup = formatText(team, playersWithStatus, lang);
 
   return {
     error: false,
@@ -41,7 +51,7 @@ function prepareProperResult(
   };
 }
 
-function formatText(team, players) {
+function formatText(team, players, lng) {
   const lastMatchesSetting = team?.settings?.lastMatches || 20;
 
   return players
@@ -67,7 +77,10 @@ function formatText(team, players) {
         <div class="player-container__main-stats">
           <div class="stats-wrapper__main-stats">
             <div class="stats-wrapper__image"></div>
-            <div class="stats-wrapper__title">Overall</div>
+            <div class="stats-wrapper__title">${i18next.t(
+              'subscriptions.summaryStats.overall',
+              { lng }
+            )}</div>
             <div class="stats-wrapper__stats">
               <div class="stats-attribute-wrapper">
                 <div class="stats-attribute__item">Elo</div>
@@ -91,7 +104,10 @@ function formatText(team, players) {
         <div class="player-container__last-stats">
           <div class="stats-wrapper__last-stats">
             <div class="stats-wrapper__image"></div>
-            <div class="stats-wrapper__title">Last 20</div>
+            <div class="stats-wrapper__title">${i18next.t(
+              'subscriptions.summaryStats.last20',
+              { lng }
+            )}</div>
             <div class="stats-wrapper__stats">
               <div class="stats-attribute-wrapper">
                 <div class="stats-attribute__item">K/D</div>
