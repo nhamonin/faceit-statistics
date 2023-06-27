@@ -1,7 +1,3 @@
-@font-face {
-  font-family: 'MyFontRegular';
-  src: url('public/fonts/MyFont-Regular.ttf');
-}
 html {
   height: 1000px;
   width: 1700px;

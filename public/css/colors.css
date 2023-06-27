@@ -1,0 +1,21 @@
+.red {
+  color: #f81e00;
+}
+.yellow {
+  color: #ffc803;
+}
+.orange {
+  color: #ffa500;
+}
+.green {
+  color: #1de100;
+}
+.aqua {
+  color: aqua;
+}
+.purple {
+  color: #9400d3;
+}
+.white {
+  color: var(--white);
+}

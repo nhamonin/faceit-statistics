@@ -24,6 +24,16 @@ function requestHandler(req, res) {
           res.end(`Error: ${error.code}\n`);
           res.end();
         } else {
+          if (
+            mimeType === 'font/ttf' ||
+            mimeType === 'font/otf' ||
+            mimeType === 'font/woff' ||
+            mimeType === 'font/woff2'
+          ) {
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Access-Control-Allow-Methods', 'GET');
+          }
+
           res.writeHead(200, { 'Content-Type': mimeType });
           res.end(content, 'utf-8');
         }

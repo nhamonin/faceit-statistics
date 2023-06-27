@@ -1,0 +1,28 @@
+@font-face {
+  font-family: 'Kharkiv Tone';
+  src: url('../fonts/KharkivTone.ttf');
+}
+
+:root {
+  --main-bg-color: rgb(16, 22, 34);
+  --light-main-bg-color: #182030;
+  --dark-blue: #21345a;
+  --white: #fff;
+  --white-opacity: rgba(255, 255, 255, 0.2);
+  --border-color: #4f4f4f;
+  --main-font: 'Kharkiv Tone', sans-serif;
+  --font-weight-heavy: 900;
+  --font-weight-light: 400;
+  --win-color: #228b22;
+  --win-color-opacity: rgba(34, 139, 34, 0.2);
+  --lose-color: #8b0000;
+  --lose-color-opacity: rgba(139, 0, 0, 0.2);
+}
+
+html {
+  background-color: var(--main-bg-color);
+  font-family: var(--main-font);
+  font-weight: var(--font-weight-light);
+  font-size: 16px;
+  color: var(--white);
+}
