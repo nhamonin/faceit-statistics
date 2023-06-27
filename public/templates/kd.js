@@ -1,48 +1,12 @@
 import i18next from 'i18next';
 
+import { SERVER_URL } from '#config';
+
 export const getKDTemplate = (lastNMatches, teamStats) =>
   `<html lang="en">
         <head>
-          <style>
-            html {
-              width: 1000px;
-              height: 600px;
-              font-weight: bold;
-              color: white;
-              background: #0E1621;
-              font-size: 4rem;
-              font-family: Open Sans,sans-serif;
-            }
-            body {
-              padding: 40px;
-            }
-            span {
-              float: right;
-            }
-            .player-kd-block {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-            }
-            .red {
-              color: #F81E00;
-            }
-            .yellow {
-              color: #FFC803;
-            }
-            .green {
-              color: #1DE100;
-            }
-            .aqua {
-              color: aqua;
-            }
-            .purple {
-              color: #9400D3;
-            }
-            .white {
-              color: white;
-            }
-          </style>
+        <base href="${SERVER_URL}">
+        <link rel="stylesheet" href="public/css/kd.css">
         </head>
     <body>${i18next.t(
       lastNMatches.text,

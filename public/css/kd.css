@@ -1,0 +1,38 @@
+html {
+  width: 1000px;
+  height: 600px;
+  font-weight: bold;
+  color: white;
+  background: #0e1621;
+  font-size: 4rem;
+  font-family: Open Sans, sans-serif;
+}
+body {
+  padding: 40px;
+}
+span {
+  float: right;
+}
+.player-kd-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.red {
+  color: #f81e00;
+}
+.yellow {
+  color: #ffc803;
+}
+.green {
+  color: #1de100;
+}
+.aqua {
+  color: aqua;
+}
+.purple {
+  color: #9400d3;
+}
+.white {
+  color: white;
+}

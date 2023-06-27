@@ -35,6 +35,7 @@ const FACEIT_WEBHOOK_ID = isProduction
   : FACEIT_WEBHOOK_ID_TEST;
 const host = isProduction ? HOST_PROD : HOST_TEST;
 const port = isProduction ? PORT_PROD : PORT_TEST;
+const SERVER_URL = (isProduction ? 'https' : 'http') + `://${host}:${port}`;
 const game_id = 'csgo';
 const currentMapPool = [
   'de_ancient',
@@ -111,11 +112,20 @@ const dynamicValues = {
 };
 const MATCHES_FETCH_DELAY = 1250;
 const TELEGRAM_MESSAGE_UPDATE_DELAY = 1750;
+const mimeTypes = {
+  '.css': 'text/css',
+  '.js': 'text/javascript',
+  '.json': 'application/json',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.svg': 'image/svg+xml',
+};
 
 export {
   isProduction,
   host,
   port,
+  SERVER_URL,
   ENVIRONMENT,
   TELEGRAM_BOT_API_TOKEN,
   TELEGRAM_ADMIN_CHAT_ID,
@@ -144,4 +154,5 @@ export {
   COMMAND_PATTERNS,
   MATCHES_FETCH_DELAY,
   TELEGRAM_MESSAGE_UPDATE_DELAY,
+  mimeTypes,
 };
