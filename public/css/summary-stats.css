@@ -3,7 +3,7 @@ html {
   justify-content: center;
   font-family: Roboto, Kharkiv Tone, sans-serif;
   padding: 30px;
-  width: 2300px;
+  width: 2600px;
 }
 
 body .player-container:last-child {
@@ -11,7 +11,7 @@ body .player-container:last-child {
 }
 
 .player-container {
-  width: 2100px;
+  width: 2300px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -19,7 +19,7 @@ body .player-container:last-child {
 }
 
 .faceit-lvl {
-  z-index: 2;
+  z-index: 4;
   width: 15rem;
   height: 15rem;
   position: absolute;
@@ -105,14 +105,22 @@ body .player-container:last-child {
 }
 
 .player-container--win .stats-wrapper__main-stats,
+.player-container--win .stats-wrapper__last-stats,
+.player-container--lose .stats-wrapper__main-stats,
+.player-container--lose .stats-wrapper__last-stats {
+  --box-shadow-width: 0.4rem;
+  border-width: 0.6rem;
+}
+
+.player-container--win .stats-wrapper__main-stats,
 .player-container--win .stats-wrapper__last-stats {
-  --box-shadow-color: var(--win-color-opacity);
+  --box-shadow-color: var(--win-color);
   --border-color: var(--win-color);
 }
 
 .player-container--lose .stats-wrapper__main-stats,
 .player-container--lose .stats-wrapper__last-stats {
-  --box-shadow-color: var(--lose-color-opacity);
+  --box-shadow-color: var(--lose-color);
   --border-color: var(--lose-color);
 }
 
@@ -144,6 +152,8 @@ body .player-container:last-child {
 
 .stats-attribute-wrapper {
   height: 30%;
+  display: flex;
+  justify-content: space-around;
 }
 
 .stats-value-wrapper {
@@ -153,13 +163,16 @@ body .player-container:last-child {
 .stats-attribute__item,
 .stats-value__item {
   z-index: 3;
+}
+
+.stats-value__item {
   width: 23rem;
 }
 
 .stats-attribute__item {
   display: flex;
   height: 2rem;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 3.5rem;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
@@ -177,6 +190,7 @@ body .player-container:last-child {
 }
 
 .stats-value__item {
+  position: relative;
   display: flex;
   padding: 0.25rem 0.5rem;
   justify-content: center;
@@ -186,13 +200,13 @@ body .player-container:last-child {
   font-weight: bolder;
   margin: 0 1.5rem;
   line-height: 0;
-  margin-top: 1rem;
+  margin-top: 0.6rem;
 }
 
 .percent::after {
   position: absolute;
   content: '%';
-  right: 6rem;
+  right: -1.5rem;
   font-size: 3rem;
   margin-left: 5px;
   font-weight: bold;

@@ -14,9 +14,7 @@
   --font-weight-heavy: 900;
   --font-weight-light: 400;
   --win-color: #228b22;
-  --win-color-opacity: rgba(34, 139, 34, 0.2);
   --lose-color: #8b0000;
-  --lose-color-opacity: rgba(139, 0, 0, 0.2);
 }
 
 html {
