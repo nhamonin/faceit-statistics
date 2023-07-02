@@ -34,11 +34,14 @@ export const getKDTemplate = ({
             )
             .join('')}
         </div>
-        <div class="player-kd__summary">${
-          avgTeamStats.average
-        }:&nbsp;<span class="${avgTeamStats.class}">${
-    avgTeamStats.value
-  }</span>&nbsp;${statAttribute}</div>
+        ${
+          avgTeamStats.value !== null
+            ? `
+        <div class="player-kd__summary">
+          ${avgTeamStats.average}:&nbsp;<span class="${avgTeamStats.class}">${avgTeamStats.value}</span>&nbsp;${statAttribute}
+        </div>`
+            : ''
+        }
       </div>
     </body>
 </html>`;

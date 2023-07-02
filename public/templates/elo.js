@@ -21,11 +21,14 @@ export const getEloTemplate = ({ avgTeamStats, playersStats }) =>
                   )
                   .join('')}
             </div>
+            ${
+              avgTeamStats.value !== null
+                ? `
             <div class="player-elo__summary">
-                ${avgTeamStats.average}:&nbsp;<span class="${
-    avgTeamStats.class
-  }">${avgTeamStats.value}&nbsp;${avgTeamStats.statAttribute}</span>
-            </div>
+                ${avgTeamStats.average}:&nbsp;<span class="${avgTeamStats.class}">${avgTeamStats.value}&nbsp;${avgTeamStats.statAttribute}</span>
+            </div>`
+                : ''
+            }
         </div>
     </body>
 </html>`;
