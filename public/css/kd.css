@@ -1,18 +1,62 @@
-html {
-  width: 1000px;
-  height: 600px;
-  font-weight: bold;
-  font-size: 4rem;
-  font-family: Open Sans, sans-serif;
+.player-kd {
+  font-family: Roboto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
 }
-body {
-  padding: 40px;
-}
-span {
-  float: right;
-}
-.player-kd-block {
+
+.player-kd__title {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0.5rem 3.125rem;
+  background-color: #20293a;
+  color: #b9bfcb;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border-radius: 1.25rem;
+  line-height: 3rem;
+}
+
+.player-kd__title img {
+  height: 1.2rem;
+}
+
+.player-kd__title span {
+  margin-bottom: -0.3rem;
+}
+
+.player-kd__main {
+  margin: 2rem 0;
+}
+
+.player-kd__value {
+  font-size: 2.875rem;
+  font-weight: 700;
+}
+
+.player-kd__player {
+  border-radius: 1.5rem;
+  border: 1px solid var(--white, #fff);
+  padding: 1.375rem 3.125rem;
+  color: var(--white);
+  font-size: 2.875rem;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+}
+
+.player-kd__summary {
+  border-radius: 1.25rem;
+  background: var(--dark-blue, #21345a);
+  display: flex;
+  padding: 0.5rem 3.125rem;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 2.375rem;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
 }

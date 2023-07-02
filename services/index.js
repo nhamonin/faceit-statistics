@@ -6,7 +6,7 @@ import { updatePlayers } from './modifyTeam/updatePlayers.js';
 
 import { getSummaryStats } from './statistics/getSummaryStats.js';
 import { getTeamEloMessage } from './statistics/getTeamElo.js';
-import { getTeamKDMessage } from './statistics/getTeamKD.js';
+import { getTeamKDData } from './statistics/getTeamKD.js';
 import { getPlayerLastMatchesStats } from './statistics/getPlayerLastMatchesStats.js';
 import { getHighestElo } from './statistics/getHighestElo.js';
 
@@ -22,7 +22,7 @@ export {
   updatePlayers,
   getSummaryStats,
   getTeamEloMessage,
-  getTeamKDMessage,
+  getTeamKDData,
   getPlayerLastMatchesStats,
   getHighestElo,
   addNewPlayersToWebhookList,

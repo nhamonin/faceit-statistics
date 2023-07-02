@@ -121,11 +121,11 @@
       }
     },
     "images": {
-      "lastNMatches_one": "Останній {{ count }} матч:",
-      "lastNMatches_few": "Останні {{ count }} матчі:",
-      "lastNMatches_many": "Останні {{ count }} матчів:",
+      "lastNMatches_one": "Останній {{ count }} матч",
+      "lastNMatches_few": "Останні {{ count }} матчі",
+      "lastNMatches_many": "Останні {{ count }} матчів",
       "getTeamStats": "{{ playersStatText }}",
-      "getTeamStatsWithAvg": "{{ playersStatText }}<br><div>Середнє {{ statAttribute }}: {{ avgTeamStat }}</div>"
+      "average": "Середнє"
     }
   }
 }

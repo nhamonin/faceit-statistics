@@ -1,4 +1,4 @@
-import { getTeamKDMessage } from '#services';
+import { getTeamKDData } from '#services';
 import {
   sendPhoto,
   telegramSendMessage,
@@ -9,29 +9,16 @@ import { getKDTemplate } from '#templates';
 import { getTeamKDMenu } from '#telegramReplyMarkup';
 
 export async function getTeamKDWrapper(amount, opts, message_id) {
-  const { text, options, error } = await getTeamKDMessage(amount, opts.chat_id);
-  const lang = await getLangByChatID(opts.chat_id);
-  const lastNMatches = {
-    text: 'images.lastNMatches',
-    options: {
-      count: +amount,
-      lng: lang,
-    },
-  };
-  const teamStats = { text, options: { lng: lang, ...options } };
+  const { errorMessage, data } = await getTeamKDData(amount, opts.chat_id);
 
-  if (!error) {
-    await sendPhoto(
-      [opts.chat_id],
-      message_id,
-      getKDTemplate(lastNMatches, teamStats)
-    );
+  if (!errorMessage) {
+    await sendPhoto([opts.chat_id], message_id, getKDTemplate(data));
   }
 
   await telegramDeleteMessage(opts.chat_id, opts.message_id);
   await telegramSendMessage(
     opts.chat_id,
-    { text: error ? text : 'doneSelectOneOfTheOptions' },
+    { text: errorMessage || 'doneSelectOneOfTheOptions' },
     {
       ...opts,
       ...getTeamKDMenu,
