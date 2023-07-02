@@ -6,11 +6,21 @@ export class PlayerRepository extends BaseRepository {
     super(db, 'player');
   }
 
-  readAllByChatId = withErrorHandling(async (chat_id) =>
-    this.db(this.tableName)
-      .select('player.*')
-      .join('team_player', 'player.player_id', '=', 'team_player.player_id')
-      .where('team_player.chat_id', chat_id)
+  readAllByChatId = withErrorHandling(
+    async (
+      chat_id,
+      attributes = ['*'],
+      sort = { column: 'player_id', direction: 'asc' }
+    ) =>
+      this.db(this.tableName)
+        .select(
+          attributes.map((attribute) =>
+            attribute === '*' ? 'player.*' : `player.${attribute}`
+          )
+        )
+        .join('team_player', 'player.player_id', '=', 'team_player.player_id')
+        .where('team_player.chat_id', chat_id)
+        .orderBy(`player.${sort.column}`, sort.direction)
   );
 
   readAllPlayerIds = withErrorHandling(async () =>

@@ -10,8 +10,10 @@ import {
 import { DEFAULT_MATCH_GET_LIMIT } from '#config';
 
 export const getTeamKDData = async (matchLimit, chat_id) => {
-  const limit = Number(matchLimit) || DEFAULT_MATCH_GET_LIMIT;
-  if (matchLimit && (!Number.isInteger(limit) || limit === 0)) {
+  const limit =
+    matchLimit !== undefined ? Number(matchLimit) : DEFAULT_MATCH_GET_LIMIT;
+
+  if (matchLimit !== undefined && (!Number.isInteger(limit) || limit <= 0)) {
     return {
       errorMessage: 'getTeamKD.validationError',
     };
@@ -40,8 +42,8 @@ async function getTemplateData(players, limit, statAttribute, lng) {
     data: {
       avgPlayersKD,
       statAttribute,
-      avgTeamStat: {
-        average: i18next.t('images.average', { lng }),
+      avgTeamStats: {
+        average: i18next.t('images.teamAverage', { lng }),
         value: avgTeamKD,
         class: getClass.kd(+avgTeamKD),
       },

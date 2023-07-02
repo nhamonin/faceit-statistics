@@ -3,7 +3,7 @@ import { SERVER_URL } from '#config';
 export const getKDTemplate = ({
   avgPlayersKD,
   statAttribute,
-  avgTeamStat,
+  avgTeamStats,
   lastMatchesMessage,
 }) =>
   `<html lang="en">
@@ -35,9 +35,9 @@ export const getKDTemplate = ({
             .join('')}
         </div>
         <div class="player-kd__summary">${
-          avgTeamStat.average
-        }:&nbsp;<span class="${avgTeamStat.class}">${
-    avgTeamStat.value
+          avgTeamStats.average
+        }:&nbsp;<span class="${avgTeamStats.class}">${
+    avgTeamStats.value
   }</span>&nbsp;${statAttribute}</div>
       </div>
     </body>

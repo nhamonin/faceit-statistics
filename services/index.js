@@ -5,7 +5,7 @@ import { deletePlayer } from './modifyTeam/deletePlayerFromTeam.js';
 import { updatePlayers } from './modifyTeam/updatePlayers.js';
 
 import { getSummaryStats } from './statistics/getSummaryStats.js';
-import { getTeamEloMessage } from './statistics/getTeamElo.js';
+import { getTeamEloData } from './statistics/getTeamElo.js';
 import { getTeamKDData } from './statistics/getTeamKD.js';
 import { getPlayerLastMatchesStats } from './statistics/getPlayerLastMatchesStats.js';
 import { getHighestElo } from './statistics/getHighestElo.js';
@@ -21,7 +21,7 @@ export {
   deletePlayer,
   updatePlayers,
   getSummaryStats,
-  getTeamEloMessage,
+  getTeamEloData,
   getTeamKDData,
   getPlayerLastMatchesStats,
   getHighestElo,

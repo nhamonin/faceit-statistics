@@ -120,8 +120,7 @@
     "images": {
       "lastNMatches_one": "Last {{ count }} match",
       "lastNMatches_other": "Last {{ count }} matches",
-      "getTeamStats": "{{ playersStatText }}",
-      "average": "Average"
+      "teamAverage": "Team's average"
     }
   }
 }

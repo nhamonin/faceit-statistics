@@ -1,45 +1,40 @@
+import i18next from 'i18next';
+
 import database from '#db';
 import { calculateAverage, getLangByChatID } from '#utils';
 import { lvlClasses } from '#config';
 
-export const getTeamEloMessage = async (chat_id) => {
+export const getTeamEloData = async (chat_id) => {
   const team = await database.teams.readBy({ chat_id });
-  if (!team) return { error: true, text: 'teamNotExistError' };
-  const players = await database.players.readAllByChatId(chat_id);
-  const lang = await getLangByChatID(chat_id);
+  if (!team) return { errorMessage: 'teamNotExistError' };
+  let playersStats = await database.players.readAllByChatId(
+    chat_id,
+    ['nickname', 'elo', 'lvl'],
+    { column: 'elo', direction: 'desc' }
+  );
+  playersStats = playersStats.map((player) => ({
+    ...player,
+    class: lvlClasses[player.lvl],
+  }));
+  const lng = await getLangByChatID(chat_id);
   const statAttribute = 'ELO';
 
-  return prepareProperResult(players, statAttribute, lang);
+  return getTemplateData(playersStats, statAttribute, lng);
 };
 
-function prepareProperResult(players, statAttribute, lang) {
-  const playersStats = players.sort((a, b) => b.elo - a.elo);
-  const playersEloText = formatText(playersStats);
+function getTemplateData(playersStats, statAttribute, lng) {
   const playersElo = playersStats.map(({ elo }) => elo);
   const avgTeamElo =
     playersElo.length > 1 ? calculateAverage(playersElo).toFixed(0) : null;
 
   return {
-    error: false,
-    text: avgTeamElo ? 'images.getTeamStatsWithAvg' : 'images.getTeamStats',
-    options: {
-      playersStatText: playersEloText,
-      statAttribute,
-      avgTeamStat: avgTeamElo,
-      lng: lang,
+    data: {
+      playersStats,
+      avgTeamStats: {
+        average: i18next.t('images.teamAverage', { lng }),
+        value: avgTeamElo,
+        statAttribute,
+      },
     },
   };
-}
-
-function formatText(playersStats) {
-  return playersStats
-    .map(
-      (playerStats) =>
-        `<div class="player-elo-block"><span>${
-          playerStats.nickname
-        }:</span> <span class=${lvlClasses[playerStats.lvl]}>${
-          playerStats.elo
-        }&nbsp;</span></div>`
-    )
-    .join('');
 }

@@ -1,4 +1,4 @@
-import { getSummaryStats, getTeamEloMessage } from '#services';
+import { getSummaryStats, getTeamEloData } from '#services';
 import {
   telegramSendMessage,
   telegramDeleteMessage,
@@ -67,16 +67,16 @@ async function handleTeamKD(opts, msg, callbackQuery) {
 }
 
 async function handleTeamElo(opts, msg) {
-  const { text, options, error } = await getTeamEloMessage(opts.chat_id);
+  const { errorMessage, data } = await getTeamEloData(opts.chat_id);
 
   logEvent(msg.chat, 'Get team Elo');
-  error
+  errorMessage
     ? await telegramSendMessage(
         opts.chat_id,
-        { text: error },
+        { text: errorMessage },
         getBasicTelegramOptions(opts.message_id)
       )
-    : await sendPhoto([opts.chat_id], null, getEloTemplate({ text, options }));
+    : await sendPhoto([opts.chat_id], null, getEloTemplate(data));
   await telegramDeleteMessage(opts.chat_id, opts.message_id);
   await telegramSendMessage(
     opts.chat_id,

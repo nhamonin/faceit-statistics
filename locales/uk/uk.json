@@ -38,7 +38,7 @@
     },
     "getTeamKD": {
       "chooseLastMatchesAmount": "Оберіть <b>кількість останніх матчів</b>, які ви хочете побачити:",
-      "validationError": "Помилка введення: Ваш ввід повинен бути цілим числом більше 0."
+      "validationError": "Помилка введення: потрібно ввести число більше 0."
     },
     "highestElo": {
       "default_one": "<b>Найвище ело {{ nickname }}</b>'а: <b>{{ highestElo }}</b> ({{ diffElo }} від теперішнього).\nДата коли найвище ело було апнуте: <b>{{ highestEloDate }}</b> ({{ count }} день тому).",
@@ -124,8 +124,7 @@
       "lastNMatches_one": "Останній {{ count }} матч",
       "lastNMatches_few": "Останні {{ count }} матчі",
       "lastNMatches_many": "Останні {{ count }} матчів",
-      "getTeamStats": "{{ playersStatText }}",
-      "average": "Середнє"
+      "teamAverage": "Середнє по команді"
     }
   }
 }
