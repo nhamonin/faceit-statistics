@@ -125,6 +125,7 @@ body .player-container:last-child {
 }
 
 .stats-wrapper__title {
+  min-width: 22rem;
   background: var(--light-main-bg-color);
   border-radius: 0.625rem;
   display: flex;
