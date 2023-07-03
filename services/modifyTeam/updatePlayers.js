@@ -112,7 +112,6 @@ async function updatePlayerStats(playerIDs) {
         player_id,
         highestElo: updatedElo,
         highestEloDate: new Date(),
-        nickname,
       });
     }
   }

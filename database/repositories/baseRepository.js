@@ -86,9 +86,8 @@ export class BaseRepository {
       const { [key]: keyValue, ...updates } = record;
 
       return this.db(this.tableName)
-        .insert({ [key]: keyValue, ...updates })
-        .onConflict(key)
-        .merge(updates);
+        .where({ [key]: keyValue })
+        .update(updates);
     };
 
     const chunks = chunk(records, chunkSize);
