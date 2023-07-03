@@ -8,11 +8,7 @@ import {
   getEventEmitter,
   logEvent,
 } from '#utils';
-import {
-  modifyTeamMarkup,
-  addPlayerOnlyMarkup,
-  waitMarkup,
-} from '#telegramReplyMarkup';
+import { modifyTeamMarkup, addPlayerOnlyMarkup } from '#telegramReplyMarkup';
 
 const tBot = getTelegramBot();
 const eventEmitter = getEventEmitter();
@@ -43,7 +39,7 @@ async function handleAddPlayer(opts) {
           },
           {
             ...opts,
-            ...waitMarkup,
+            ...modifyTeamMarkup,
           }
         );
 
@@ -52,7 +48,7 @@ async function handleAddPlayer(opts) {
             { text, options },
             {
               ...opts,
-              ...waitMarkup,
+              ...modifyTeamMarkup,
             }
           );
         });
