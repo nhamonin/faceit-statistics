@@ -18,7 +18,7 @@ const tBot = getTelegramBot();
 const defaultOpts = getDefaultTelegramCallbackOptions();
 
 async function handleSummary(opts, msg) {
-  const { text, error } = await getSummaryStats(opts.chat_id);
+  const { data, error } = await getSummaryStats(opts.chat_id);
   logEvent(msg.chat, 'Get summary stats');
   error
     ? await telegramSendMessage(
@@ -26,7 +26,7 @@ async function handleSummary(opts, msg) {
         { text: text || error },
         getBasicTelegramOptions(opts.message_id)
       )
-    : await sendPhoto([opts.chat_id], null, getSummaryStatsTemplate(text));
+    : await sendPhoto([opts.chat_id], null, getSummaryStatsTemplate(data));
   await telegramDeleteMessage(opts.chat_id, opts.message_id);
   await telegramSendMessage(
     opts.chat_id,

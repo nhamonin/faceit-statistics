@@ -19,6 +19,7 @@ import {
   cacheWithExpiry,
   withErrorHandling,
   fetchData,
+  prepareEmptyTeamResult,
 } from './basic.js';
 // server
 import { startServer } from './server/startServer.js';
@@ -77,6 +78,7 @@ export {
   cacheWithExpiry,
   withErrorHandling,
   fetchData,
+  prepareEmptyTeamResult,
   startServer,
   getPlayerInfo,
   getPlayerMatches,

@@ -44,6 +44,7 @@ export const addPlayer = async (playerNickname, chat_id) =>
 
         if (errorObj)
           return {
+            error: true,
             text: errorObj.text,
             options: errorObj.options,
           };

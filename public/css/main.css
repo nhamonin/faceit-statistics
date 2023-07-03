@@ -3,6 +3,12 @@
   src: url('../fonts/KharkivTone.ttf');
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 :root {
   --main-bg-color: rgb(16, 22, 34);
   --light-main-bg-color: #182030;

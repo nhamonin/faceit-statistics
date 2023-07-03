@@ -1,8 +1,6 @@
 .player-kd {
   font-family: Roboto;
   padding: 2rem;
-  display: flex;
-  flex-direction: column;
 }
 
 .player-kd__title {

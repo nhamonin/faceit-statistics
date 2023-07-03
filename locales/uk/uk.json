@@ -124,7 +124,10 @@
       "lastNMatches_one": "Останній {{ count }} матч",
       "lastNMatches_few": "Останні {{ count }} матчі",
       "lastNMatches_many": "Останні {{ count }} матчів",
-      "teamAverage": "Середнє по команді"
+      "teamAverage": "Середнє по команді",
+      "errors": {
+        "noPlayers": "Вибачте, але у вашій команді немає гравців."
+      }
     }
   }
 }

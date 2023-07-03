@@ -6,16 +6,20 @@ html {
   width: 2600px;
 }
 
+body .player-container:first-child {
+  border-top: 4rem solid var(--main-bg-color);
+}
+
 body .player-container:last-child {
   border-bottom: 10rem solid var(--main-bg-color);
 }
 
-.player-container {
+body .player-container {
   width: 2300px;
   position: relative;
   display: flex;
   flex-direction: column;
-  margin-bottom: 2rem;
+  margin-bottom: 3.5rem;
 }
 
 .faceit-lvl {

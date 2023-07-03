@@ -68,7 +68,7 @@ export async function telegramDeleteMessage(chat_id, message_id) {
 
 export async function telegramEditMessage(i18opts, messageOpts) {
   const { text, options } = i18opts;
-  const lang = await getLangByChatID(messageOpts.chat_id);
+  const lang = await getLangByChatID(messageOpts?.chat_id);
 
   processI18Options(options, lang);
 

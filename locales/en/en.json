@@ -120,7 +120,10 @@
     "images": {
       "lastNMatches_one": "Last {{ count }} match",
       "lastNMatches_other": "Last {{ count }} matches",
-      "teamAverage": "Team's average"
+      "teamAverage": "Team's average",
+      "errors": {
+        "noPlayers": "Sorry, but you need to have at least one player added to the team."
+      }
     }
   }
 }

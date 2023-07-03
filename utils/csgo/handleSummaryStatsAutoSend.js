@@ -22,20 +22,23 @@ export async function handleSummaryStatsAutoSend(
     const statusFinishedSubscriptions =
       team.settings.subscriptions.match_status_finished;
     if (!statusFinishedSubscriptions.summaryStats) return;
-    const teamPlayers = await database.players.readAllByChatId(chat_id);
+    const teamPlayers = await database.players.readAllByChatId(chat_id, [
+      'nickname',
+      'player_id',
+    ]);
     const playedPlayers = teamPlayers
       .filter((player) =>
-        playersWithResults.map((p) => p.id).includes(player.player_id)
+        playersWithResults.map(({ id }) => id).includes(player.player_id)
       )
       .map(({ nickname }) => nickname);
-    const { text, error } = await getSummaryStats(
+    const { errorMessage, data } = await getSummaryStats(
       chat_id,
       playedPlayers,
       playersWithResults
     );
-    error
-      ? await telegramSendMessage(chat_id, { text: text || error })
-      : await sendPhoto([chat_id], null, getSummaryStatsTemplate(text));
+    errorMessage
+      ? await telegramSendMessage(chat_id, { text: errorMessage })
+      : await sendPhoto([chat_id], null, getSummaryStatsTemplate(data));
     await telegramSendMessage(
       chat_id,
       {

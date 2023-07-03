@@ -3,6 +3,7 @@ import os from 'node:os';
 import { EventEmitter } from 'node:events';
 
 import puppeteer from 'puppeteer-extra';
+import i18next from 'i18next';
 
 import database from '#db';
 import {
@@ -296,6 +297,12 @@ async function fetchData(url, options) {
   }
 }
 
+function prepareEmptyTeamResult(lng) {
+  return {
+    errorMessage: i18next.t('images.errors.noPlayers', { lng }),
+  };
+}
+
 export {
   adjustConsolesBehavior,
   logEvent,
@@ -316,4 +323,5 @@ export {
   cacheWithExpiry,
   withErrorHandling,
   fetchData,
+  prepareEmptyTeamResult,
 };
