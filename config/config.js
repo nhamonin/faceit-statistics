@@ -66,7 +66,7 @@ const lvlClasses = {
 };
 const DEFAULT_MATCH_GET_LIMIT = 20;
 const DEFAULT_MATCH_STORE_LIMIT = 20;
-const MAX_PLAYERS_AMOUNT = 7;
+const MAX_PLAYERS_AMOUNT = 10;
 const MAX_MATCHES_PER_REQUEST = 100;
 const bots = {};
 const puppeteerArgs = [
