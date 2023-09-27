@@ -35,7 +35,7 @@ import { withAdminChat } from './telegram/telegram.js';
 // webhook
 import { webhookMgr } from './webhook/webhookMgr.js';
 import { getCurrentBearerToken } from './webhook/getCurrentBearerToken.js';
-// csgo
+// cs2
 import { getPlayerMatches } from './csgo/getPlayerMatches.js';
 import { getHighAmountOfPlayerLastMatches } from './csgo/getHighAmountOfPlayerLastMatches.js';
 import { getPlayerLifeTimeStats } from './csgo/getPlayerLifeTimeStats.js';

@@ -13,9 +13,7 @@ export class BaseRepository {
     this.tableName = tableName;
   }
 
-  create = withErrorHandling(async (record) =>
-    this.db(this.tableName).insert(record)
-  );
+  create = withErrorHandling(async (record) => this.db(this.tableName).insert(record));
 
   createMany = withErrorHandling(async (records) => {
     const maxSingleInsert = 30;
@@ -57,25 +55,45 @@ export class BaseRepository {
     return query;
   });
 
-  readAllWhereIn = withErrorHandling(
-    async (columnName, valuesArray, options = {}) => {
-      let query = this.db(this.tableName).whereIn(columnName, valuesArray);
+  readByNicknames = withErrorHandling(async (nicknames, options = {}) => {
+    let query = this.db(this.tableName).whereIn('nickname', nicknames);
 
-      if (options.excludeNull) {
-        query = query.whereNotNull(options.excludeNull);
-      }
-
-      if (options.orderBy && options.orderDirection) {
-        query = query.orderBy(options.orderBy, options.orderDirection);
-      }
-
-      if (options.limit) {
-        query = query.limit(options.limit);
-      }
-
-      return query;
+    if (options.excludeNull) {
+      query = query.whereNotNull(options.excludeNull);
     }
-  );
+
+    if (options.orderBy && options.orderDirection) {
+      query = query.orderBy(options.orderBy, options.orderDirection);
+    }
+
+    if (options.limit) {
+      query = query.limit(options.limit);
+    }
+
+    if (options.pluck) {
+      query = query.pluck(options.pluck);
+    }
+
+    return query;
+  });
+
+  readAllWhereIn = withErrorHandling(async (columnName, valuesArray, options = {}) => {
+    let query = this.db(this.tableName).whereIn(columnName, valuesArray);
+
+    if (options.excludeNull) {
+      query = query.whereNotNull(options.excludeNull);
+    }
+
+    if (options.orderBy && options.orderDirection) {
+      query = query.orderBy(options.orderBy, options.orderDirection);
+    }
+
+    if (options.limit) {
+      query = query.limit(options.limit);
+    }
+
+    return query;
+  });
 
   updateAllBy = withErrorHandling(async (criteria, updates) =>
     this.db(this.tableName).where(criteria).update(updates)
@@ -93,9 +111,7 @@ export class BaseRepository {
     const chunks = chunk(records, chunkSize);
 
     const tasks = chunks.map((chunk) =>
-      limiter.schedule(() =>
-        Promise.all(chunk.map((record) => executeUpdateQuery(record)))
-      )
+      limiter.schedule(() => Promise.all(chunk.map((record) => executeUpdateQuery(record))))
     );
     await Promise.all(tasks);
   });

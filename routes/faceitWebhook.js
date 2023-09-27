@@ -29,11 +29,7 @@ export default {
     post: async (req, res) => {
       try {
         const data = await receiveArgs(req);
-        const addedToCache = cacheWithExpiry(
-          caches[data.event],
-          data.payload.id,
-          1000 * 60 * 30
-        );
+        const addedToCache = cacheWithExpiry(caches[data.event], data.payload.id, 1000 * 60 * 30);
         if (!addedToCache) {
           res.end('Already cached');
           return;
@@ -116,9 +112,7 @@ async function handleMatchStatusFinished(data) {
   const match_id = data?.payload?.id;
 
   const matchData = await getMatchData(match_id);
-  const allowedCompetitionName = allowedCompetitionNames.includes(
-    matchData?.payload?.entity?.name
-  );
+  const allowedCompetitionName = allowedCompetitionNames.includes(matchData?.payload?.entity?.name);
   if (!allowedCompetitionName) return;
 
   await performMapPickerAnalytics(match_id);
@@ -131,10 +125,7 @@ async function handleMatchStatusFinished(data) {
     return;
   }
 
-  const playersRoster = [
-    ...data.payload.teams[0].roster,
-    ...data.payload.teams[1].roster,
-  ];
+  const playersRoster = [...data.payload.teams[0].roster, ...data.payload.teams[1].roster];
   const playerIDs = playersRoster.map(({ id }) => id);
   const teamsToSendSummary = new Set();
   const updatedTeams = new Map();
@@ -176,11 +167,7 @@ async function handleMatchStatusFinished(data) {
     );
   }
 
-  await handleSummaryStatsAutoSend(
-    match_id,
-    [...teamsToSendSummary],
-    playersWithResults
-  );
+  await handleSummaryStatsAutoSend(match_id, [...teamsToSendSummary], playersWithResults);
 }
 
 async function createMatchRows(player_id, matchStats) {
@@ -195,7 +182,7 @@ async function createMatchRows(player_id, matchStats) {
   if (!playerData) return;
 
   const playerDetails = await players.getPlayerDetailsByPlayerID(player_id);
-  const newElo = playerDetails?.games?.csgo?.faceit_elo;
+  const newElo = playerDetails?.games?.cs2?.faceit_elo;
 
   return await database.matches.create({
     match_id: matchStats.matchId,
@@ -213,8 +200,5 @@ async function createMatchRows(player_id, matchStats) {
 }
 
 async function deleteMatchInProgressAttrs(player_id) {
-  return await database.players.updateAllBy(
-    { player_id },
-    { previous_elo: null, in_match: false }
-  );
+  return await database.players.updateAllBy({ player_id }, { previous_elo: null, in_match: false });
 }

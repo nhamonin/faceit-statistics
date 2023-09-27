@@ -29,10 +29,7 @@ export class MatchRepository extends BaseRepository {
   });
 
   create = withErrorHandling(async (record) =>
-    this.db(this.tableName)
-      .insert(record)
-      .onConflict(['match_id', 'player_id'])
-      .merge()
+    this.db(this.tableName).insert(record).onConflict(['match_id', 'player_id']).merge()
   );
 
   createMany = withErrorHandling(async (records) => {
@@ -41,10 +38,7 @@ export class MatchRepository extends BaseRepository {
     const chunks = chunk(records, maxSingleInsert);
 
     const createChunk = async (chunk) => {
-      await this.db(this.tableName)
-        .insert(chunk)
-        .onConflict(['match_id', 'player_id'])
-        .merge();
+      await this.db(this.tableName).insert(chunk).onConflict(['match_id', 'player_id']).merge();
     };
 
     const limiter = new Bottleneck({ maxConcurrent: concurrencyLimit });
@@ -52,11 +46,19 @@ export class MatchRepository extends BaseRepository {
     if (chunks.length === 1) {
       await createChunk(chunks[0]);
     } else {
-      const promises = chunks.map((chunk) =>
-        limiter.schedule(() => createChunk(chunk))
-      );
+      const promises = chunks.map((chunk) => limiter.schedule(() => createChunk(chunk)));
 
       await Promise.all(promises);
     }
+  });
+
+  readAllEloByPlayerIDs = withErrorHandling(async (playerIds) => {
+    const matches = await this.db(this.tableName)
+      .whereIn('player_id', playerIds)
+      .whereNotNull('elo')
+      .select('player_id', 'timestamp', 'elo')
+      .orderBy('timestamp', 'asc');
+
+    return matches;
   });
 }
