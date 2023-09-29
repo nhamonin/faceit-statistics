@@ -1,17 +1,11 @@
 import i18next from 'i18next';
 
 import database from '#db';
-import {
-  calculateAverage,
-  getPlayerLastStats,
-  getClass,
-  getLangByChatID,
-} from '#utils';
+import { calculateAverage, getPlayerLastStats, getClass, getLangByChatID } from '#utils';
 import { DEFAULT_MATCH_GET_LIMIT } from '#config';
 
 export const getTeamKDData = async (matchLimit, chat_id) => {
-  const limit =
-    matchLimit !== undefined ? Number(matchLimit) : DEFAULT_MATCH_GET_LIMIT;
+  const limit = matchLimit !== undefined ? Number(matchLimit) : DEFAULT_MATCH_GET_LIMIT;
 
   if (matchLimit !== undefined && (!Number.isInteger(limit) || limit <= 0)) {
     return {
@@ -31,11 +25,10 @@ export const getTeamKDData = async (matchLimit, chat_id) => {
 
 async function getTemplateData(players, limit, statAttribute, lng) {
   const avgPlayersKD = await getAvgPlayersKD(players, limit);
+  const existedAvgPlayersKD = avgPlayersKD.filter((avgPlayerKD) => avgPlayerKD.value > 0);
   const avgTeamKD =
-    avgPlayersKD.length > 1
-      ? calculateAverage(
-          avgPlayersKD.map((avgPlayerKD) => +avgPlayerKD.value)
-        ).toFixed(2)
+    existedAvgPlayersKD.length > 1
+      ? calculateAverage(avgPlayersKD.map((avgPlayerKD) => +avgPlayerKD.value)).toFixed(2)
       : null;
 
   return {
@@ -51,6 +44,7 @@ async function getTemplateData(players, limit, statAttribute, lng) {
         count: limit,
         lng,
       }),
+      noCs2InfoMessage: i18next.t('noCs2Info', { lng }),
     },
   };
 }

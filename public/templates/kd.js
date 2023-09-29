@@ -5,6 +5,7 @@ export const getKDTemplate = ({
   statAttribute,
   avgTeamStats,
   lastMatchesMessage,
+  noCs2InfoMessage,
 }) =>
   `<html lang="en">
     <head>
@@ -21,17 +22,26 @@ export const getKDTemplate = ({
         </div>
         <div class="player-kd__main">
           ${avgPlayersKD
-            .map(
-              (item) => `
-            <div class="player-kd__player">
-              <span>${item.nickname}:</span>
-              <span class="${item.class}">
-                ${item.value}
-                <span class="white">&nbsp;K/D</span>
-              </span>
-            </div>
-          `
-            )
+            .map((item) => {
+              if (item.value === '0.00') {
+                return `
+                    <div class="player-kd__player">
+                      <span>${item.nickname}:</span>
+                      <div class="no-info">${noCs2InfoMessage}</div>
+                    </div>
+                  `;
+              } else {
+                return `
+                    <div class="player-kd__player">
+                      <span>${item.nickname}:</span>
+                      <span class="${item.class}">
+                        ${item.value}
+                        <span class="white">&nbsp;K/D</span>
+                      </span>
+                    </div>
+                  `;
+              }
+            })
             .join('')}
         </div>
         ${

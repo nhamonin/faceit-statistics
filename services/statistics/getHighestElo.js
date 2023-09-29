@@ -47,6 +47,12 @@ export const getHighestElo = async (nickname) =>
         };
       }
 
+      if (highestElo === currentElo && highestElo === 0) {
+        return {
+          text: 'noCs2Info',
+        };
+      }
+
       const highestEloOptions = await getHighestEloOptions(player_id);
       highestElo = highestEloOptions?.elo || currentElo;
       highestEloDate = highestEloOptions?.date || new Date();

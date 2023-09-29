@@ -7,11 +7,10 @@ import { lvlClasses } from '#config';
 export const getTeamEloData = async (chat_id) => {
   const team = await database.teams.readBy({ chat_id });
   if (!team) return { errorMessage: 'teamNotExistError' };
-  let playersStats = await database.players.readAllByChatId(
-    chat_id,
-    ['nickname', 'elo', 'lvl'],
-    { column: 'elo', direction: 'desc' }
-  );
+  let playersStats = await database.players.readAllByChatId(chat_id, ['nickname', 'elo', 'lvl'], {
+    column: 'elo',
+    direction: 'desc',
+  });
   playersStats = playersStats.map((player) => ({
     ...player,
     class: lvlClasses[player.lvl],
@@ -24,8 +23,7 @@ export const getTeamEloData = async (chat_id) => {
 
 function getTemplateData(playersStats, statAttribute, lng) {
   const playersElo = playersStats.map(({ elo }) => elo);
-  const avgTeamElo =
-    playersElo.length > 1 ? calculateAverage(playersElo).toFixed(0) : null;
+  const avgTeamElo = playersElo.length > 1 ? calculateAverage(playersElo).toFixed(0) : null;
 
   return {
     data: {
@@ -35,6 +33,7 @@ function getTemplateData(playersStats, statAttribute, lng) {
         value: avgTeamElo,
         statAttribute,
       },
+      noCs2InfoMessage: i18next.t('noCs2Info', { lng }),
     },
   };
 }

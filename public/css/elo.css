@@ -17,16 +17,27 @@
 .player-elo__player {
   border-radius: 1.5rem;
   border: 1px solid var(--white, #fff);
-  padding: 1.375rem 8.6rem 1.375rem 3.125rem;
+  padding: 1.375rem 3.125rem;
   color: var(--white);
   font-size: 2.875rem;
   display: flex;
   justify-content: space-between;
   font-weight: 700;
+  align-items: center;
+  gap: 5rem;
+  min-height: 8rem;
 }
 
-.player-elo__player span {
-  position: relative;
+.no-info {
+  font-size: 1.5rem;
+}
+
+.level-image {
+  width: 5rem;
+  height: 5rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .player-elo__summary {
@@ -44,53 +55,39 @@
   line-height: normal;
 }
 
-.first::after,
-.second::after,
-.third::after,
-.fourth::after,
-.fifth::after,
-.sixth::after,
-.seventh::after,
-.eighth::after,
-.ninth::after,
-.tenth::after {
-  width: 5rem;
-  height: 5rem;
-  left: 7.5rem;
-  top: -1rem;
-  position: absolute;
-  content: '';
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+.player-elo__right-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
-.first::after {
+
+.first {
   background-image: url('../images/faceit-levels/1.svg');
 }
-.second::after {
+.second {
   background-image: url('../images/faceit-levels/2.svg');
 }
-.third::after {
+.third {
   background-image: url('../images/faceit-levels/3.svg');
 }
-.fourth::after {
+.fourth {
   background-image: url('../images/faceit-levels/4.svg');
 }
-.fifth::after {
+.fifth {
   background-image: url('../images/faceit-levels/5.svg');
 }
-.sixth::after {
+.sixth {
   background-image: url('../images/faceit-levels/6.svg');
 }
-.seventh::after {
+.seventh {
   background-image: url('../images/faceit-levels/7.svg');
 }
-.eighth::after {
+.eighth {
   background-image: url('../images/faceit-levels/8.svg');
 }
-.ninth::after {
+.ninth {
   background-image: url('../images/faceit-levels/9.svg');
 }
-.tenth::after {
+.tenth {
   background-image: url('../images/faceit-levels/10.svg');
 }

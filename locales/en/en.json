@@ -69,6 +69,7 @@
     "chooseLanguage": "Choose language:",
     "teamNotExistError": "You don't have a team. Init it first via the command '/start.'",
     "playerNotExistsError": "Sorry, but player with nickname <b>{{ nickname }}</b> doesn't exists. Try to check another player.",
+    "noCs2Info": "No information about CS2.",
     "serverError": "Oops, something went wrong. Try again later.",
     "buttons": {
       "basic": {
