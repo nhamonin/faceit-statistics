@@ -9,10 +9,10 @@ export const getBestMapsTemplate = (msg, bestMap) => {
   );
 
   return `<html lang="en">
-  <head>
-  <base href="${SERVER_URL}">
-  <style>${cssContent}</style>
-</head>
-<body> ${msg} </body>
-</html>`;
+      <head>
+        <base href="${SERVER_URL}">
+        <style>${cssContent}</style>
+      </head>
+      <body> ${msg} </body>
+    </html>`;
 };
