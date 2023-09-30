@@ -18,8 +18,6 @@ export function distanceToLevels(elo) {
 
   if (currentLevel === 1) {
     prevEloDistance = '∞';
-  } else if (currentLevel === 2) {
-    prevEloDistance = elo - faceitLevels[1][0];
   } else {
     prevEloDistance = elo - faceitLevels[currentLevel - 1][1];
   }
