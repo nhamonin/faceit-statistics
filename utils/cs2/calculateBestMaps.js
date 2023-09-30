@@ -109,9 +109,10 @@ async function fillInTeamVariablesWithPlayersStats(playerIDs, dbPlayers, stats) 
             player_id: player.player_id,
           });
         const lifeTimeStats = await getPlayerLifeTimeStats(player_id);
-        const segmentKeys = lifeTimeStats.segments[0]?.segments
-          ? Object.keys(lifeTimeStats.segments[0].segments)
-          : [];
+        const segmentKeys =
+          lifeTimeStats && lifeTimeStats.segments && lifeTimeStats.segments[0]?.segments
+            ? Object.keys(lifeTimeStats.segments[0].segments)
+            : [];
         const firstSegmentKey = segmentKeys.length ? segmentKeys[0] : '';
         const index = firstSegmentKey.startsWith('de_') ? 0 : 1;
         const segments = lifeTimeStats?.segments && lifeTimeStats.segments[index]?.segments;
