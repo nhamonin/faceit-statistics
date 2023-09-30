@@ -10,7 +10,6 @@ export function distanceToLevels(elo) {
     }
   }
 
-  // Check if currentLevel is valid
   if (currentLevel < 1 || currentLevel > 10) {
     throw new Error(`Invalid currentLevel: ${currentLevel}, elo: ${elo}`);
   }
@@ -19,6 +18,8 @@ export function distanceToLevels(elo) {
 
   if (currentLevel === 1) {
     prevEloDistance = '∞';
+  } else if (currentLevel === 2) {
+    prevEloDistance = elo - faceitLevels[1][0];
   } else {
     prevEloDistance = elo - faceitLevels[currentLevel - 1][1];
   }
