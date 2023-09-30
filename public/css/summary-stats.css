@@ -3,7 +3,7 @@ html {
   justify-content: center;
   font-family: Roboto, Kharkiv Tone, sans-serif;
   padding: 30px;
-  width: 2600px;
+  width: 2650px;
 }
 
 body .player-container:first-child {
@@ -15,7 +15,7 @@ body .player-container:last-child {
 }
 
 body .player-container {
-  width: 2300px;
+  width: 2350px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -46,14 +46,39 @@ body .player-container {
 
 .faceit-lvl {
   z-index: 4;
-  width: 15rem;
-  height: 15rem;
   position: absolute;
   top: 9rem;
   left: 7.5rem;
   --box-shadow-color: rgba(255, 255, 255, 0.08);
   box-shadow: 0 0 5rem 0 var(--box-shadow-color);
   border-radius: 50%;
+}
+
+.faceit-lvl__image {
+  width: 15rem;
+  height: 15rem;
+}
+
+.faceit-lvl::before,
+.faceit-lvl::after {
+  font-size: 3.5rem;
+  font-weight: bold;
+  display: block;
+  position: absolute;
+  bottom: -3.5rem;
+  transform: translate(-50%, -50%);
+}
+
+.faceit-lvl::before {
+  content: attr(data-prev-elo-distance);
+  color: red;
+  left: 0;
+}
+
+.faceit-lvl::after {
+  content: attr(data-next-elo-distance);
+  color: #1de100;
+  left: 100%;
 }
 
 .player-container--win .faceit-lvl {

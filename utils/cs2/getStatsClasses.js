@@ -11,9 +11,9 @@ function getEloColorClass(value) {
     return 'red';
   } else if (value < 2000) {
     return 'yellow';
-  } else if (value < 3000) {
+  } else if (value < 2500) {
     return 'green';
-  } else if (value < 4000) {
+  } else if (value < 3000) {
     return 'aqua';
   } else {
     return 'purple';
@@ -35,13 +35,13 @@ function getKDColorClass(value) {
 }
 
 function getAvgColorClass(value) {
-  if (value < 15) {
+  if (value < 12) {
     return 'red';
-  } else if (value < 17.5) {
+  } else if (value < 14) {
     return 'yellow';
-  } else if (value < 20) {
+  } else if (value < 16) {
     return 'green';
-  } else if (value < 24) {
+  } else if (value < 19.2) {
     return 'aqua';
   } else {
     return 'purple';

@@ -55,6 +55,7 @@ import { handleSummaryStatsAutoSend } from './cs2/handleSummaryStatsAutoSend.js'
 import { storePlayerMatches } from './cs2/storePlayerMatches.js';
 import { getMatchStats } from './cs2/getMatchStats.js';
 import { prettifyScoreBasedOnResult } from './cs2/prettifyScoreBasedOnResult.js';
+import { distanceToLevels } from './cs2/distanceToLevels.js';
 // i18next
 import { initI18next } from './i18next/i18next.js';
 
@@ -109,5 +110,6 @@ export {
   storePlayerMatches,
   getMatchStats,
   prettifyScoreBasedOnResult,
+  distanceToLevels,
   initI18next,
 };

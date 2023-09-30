@@ -27,29 +27,35 @@ export const getSummaryStatsTemplate = ({
           return `
             <div class="player-container${player.playerContainerModificator}">
               <div class="player-container__nickname">${player.nickname}</div>
-              <img
-                class="faceit-lvl"
-                src="public/images/faceit-levels/${player.lvl}.svg"
-                alt="faceit-${player.lvl}-lvl"
-              />
-              <div class="player-container__main-stats">
-                <div class="stats-wrapper__main-stats">
-                  <div class="stats-wrapper__image"></div>
-                  <div class="stats-wrapper__title">${overallTitle}</div>
-                  <div class="stats-wrapper__stats">
-                    <div class="stats-attribute-wrapper">
-                      <div class="stats-attribute__item">Elo</div>
-                      <div class="stats-attribute__item">Top</div>
-                      <div class="stats-attribute__item">W/R</div>
-                    </div>
-                    <div class="stats-value-wrapper">
-                      <div class="stats-value__item ${player.elo.class}">${player.elo.value}</div>
-                      <div class="stats-value__item ${player.highestElo.class}">${player.highestElo.value}</div>
-                      <div class="stats-value__item ${player.winrate.class} percent">${player.winrate.value}</div>
+                <div
+                  class="faceit-lvl"
+                  data-prev-elo-distance="${player.prevEloDistance}"
+                  data-next-elo-distance="${player.nextEloDistance}"
+                >
+                  <img
+                    class="faceit-lvl__image"
+                    src="public/images/faceit-levels/${player.lvl}.svg"
+                    alt="faceit-${player.lvl}-lvl"
+                  />
+                </div>
+                <div class="player-container__main-stats">
+                  <div class="stats-wrapper__main-stats">
+                    <div class="stats-wrapper__image"></div>
+                    <div class="stats-wrapper__title">${overallTitle}</div>
+                    <div class="stats-wrapper__stats">
+                      <div class="stats-attribute-wrapper">
+                        <div class="stats-attribute__item">Elo</div>
+                        <div class="stats-attribute__item">Top</div>
+                        <div class="stats-attribute__item">W/R</div>
+                      </div>
+                      <div class="stats-value-wrapper">
+                        <div class="stats-value__item ${player.elo.class}">${player.elo.value}</div>
+                        <div class="stats-value__item ${player.highestElo.class}">${player.highestElo.value}</div>
+                        <div class="stats-value__item ${player.winrate.class} percent">${player.winrate.value}</div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
               <div class="player-container__last-stats">
                 <div class="stats-wrapper__last-stats">
                   <div class="stats-wrapper__image"></div>

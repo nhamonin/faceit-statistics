@@ -55,6 +55,18 @@ const lvlClasses = {
   9: 'ninth',
   10: 'tenth',
 };
+const faceitLevels = {
+  1: [0, 800],
+  2: [801, 950],
+  3: [951, 1100],
+  4: [1101, 1250],
+  5: [1251, 1400],
+  6: [1401, 1550],
+  7: [1551, 1700],
+  8: [1701, 1850],
+  9: [1851, 2000],
+  10: [2001, Infinity],
+};
 const DEFAULT_MATCH_GET_LIMIT = 20;
 const DEFAULT_MATCH_STORE_LIMIT = 20;
 const MAX_PLAYERS_AMOUNT = 10;
@@ -136,6 +148,7 @@ export {
   currentMapPool,
   allowedCompetitionNames,
   lvlClasses,
+  faceitLevels,
   DEFAULT_MATCH_GET_LIMIT,
   DEFAULT_MATCH_STORE_LIMIT,
   MAX_PLAYERS_AMOUNT,

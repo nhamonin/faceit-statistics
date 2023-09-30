@@ -23,7 +23,8 @@ export const getTeamEloData = async (chat_id) => {
 
 function getTemplateData(playersStats, statAttribute, lng) {
   const playersElo = playersStats.map(({ elo }) => elo);
-  const avgTeamElo = playersElo.length > 1 ? calculateAverage(playersElo).toFixed(0) : null;
+  const avgTeamElo =
+    playersElo.length > 1 ? calculateAverage(playersElo.filter(Boolean)).toFixed(0) : null;
 
   return {
     data: {

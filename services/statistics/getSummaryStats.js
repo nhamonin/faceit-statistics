@@ -1,7 +1,7 @@
 import i18next from 'i18next';
 
 import database from '#db';
-import { getClass, getLangByChatID, prepareEmptyTeamResult } from '#utils';
+import { distanceToLevels, getClass, getLangByChatID, prepareEmptyTeamResult } from '#utils';
 
 export const getSummaryStats = async (chat_id, playedPlayers, playersWithResults) => {
   const team = await database.teams.readBy({ chat_id });
@@ -27,6 +27,7 @@ function getTemplateData(team, players, playedPlayers = [], playersWithResults =
     const lastMatchesSetting = team?.settings?.lastMatches || 20;
     const styleSuffix = playerResult ? (playerResult?.win ? '--win' : '--lose') : '';
     const playerContainerModificator = playerResult ? ` player-container${styleSuffix}` : '';
+    const eloDistance = distanceToLevels(player.elo);
 
     return {
       nickname: player.nickname,
@@ -42,6 +43,7 @@ function getTemplateData(team, players, playedPlayers = [], playersWithResults =
         value: player.highestElo,
         class: getClass.elo(player.highestElo),
       },
+      ...eloDistance,
       winrate: {
         value: (+player.winrate.lifetime).toFixed(2),
         class: getClass.winrate(player.winrate.lifetime),
