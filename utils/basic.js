@@ -85,9 +85,7 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
   }
 
   const chatsToSend =
-    !logEnabled ||
-    !isProduction ||
-    (chatIDs.length === 1 && chatIDs[0] === +TELEGRAM_ADMIN_CHAT_ID)
+    !logEnabled || !isProduction || (chatIDs.length === 1 && chatIDs[0] === +TELEGRAM_ADMIN_CHAT_ID)
       ? chatIDs
       : [...chatIDs, TELEGRAM_LOGS_CHAT_ID];
 
@@ -208,9 +206,7 @@ function getEventEmitter() {
 
 function setEnvValue(key, value) {
   const ENV_VARS = fs.readFileSync('./.env', 'utf8').split(os.EOL);
-  const target = ENV_VARS.indexOf(
-    ENV_VARS.find((line) => line.match(new RegExp(key)))
-  );
+  const target = ENV_VARS.indexOf(ENV_VARS.find((line) => line.match(new RegExp(key))));
 
   ENV_VARS.splice(target, 1, `${key}=${value}`);
   fs.writeFileSync('./.env', ENV_VARS.join(os.EOL));
@@ -240,7 +236,7 @@ function withErrorHandling(fn, errorObj, options = { log: true }) {
       return await fn(...args);
     } catch (e) {
       if (options?.log) {
-        console.log(e);
+        console.error(e);
       }
       return {
         error: errorObj?.error,
@@ -287,9 +283,7 @@ async function fetchData(url, options) {
     } catch (e) {
       if (e.message.includes('No retries') || i === retries - 1)
         throw new Error(
-          `Failed after ${i + 1} attempts. URL: ${url}. Original error: ${
-            e.message
-          }`
+          `Failed after ${i + 1} attempts. URL: ${url}. Original error: ${e.message}`
         );
 
       await new Promise((resolve) => setTimeout(resolve, delay));
