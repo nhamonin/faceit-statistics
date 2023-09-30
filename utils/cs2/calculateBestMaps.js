@@ -16,11 +16,7 @@ import { getBestMapsTemplate } from '#templates';
 import { subscriptionReceivedMarkup } from '#telegramReplyMarkup';
 
 export async function calculateBestMaps(matchData) {
-  const addedToCache = cacheWithExpiry(
-    caches.bestMapsMatchIDs,
-    matchData?.payload?.id,
-    1000 * 10
-  );
+  const addedToCache = cacheWithExpiry(caches.bestMapsMatchIDs, matchData?.payload?.id, 1000 * 10);
   if (!addedToCache) return;
 
   return withErrorHandling(async () => {
@@ -38,12 +34,7 @@ export async function calculateBestMaps(matchData) {
     const team1Result = [];
     const team2Result = [];
 
-    calculateDifferencesAndSortResult(
-      team1Stats,
-      team2Stats,
-      team1Result,
-      team2Result
-    );
+    calculateDifferencesAndSortResult(team1Stats, team2Stats, team1Result, team2Result);
 
     await sendMapPickerResult(
       team1Data.dbPlayers,
@@ -107,11 +98,7 @@ function fillInStatsBoilerplateWithMaps(arr) {
   });
 }
 
-async function fillInTeamVariablesWithPlayersStats(
-  playerIDs,
-  dbPlayers,
-  stats
-) {
+async function fillInTeamVariablesWithPlayersStats(playerIDs, dbPlayers, stats) {
   await withErrorHandling(async () => {
     await Promise.all(
       playerIDs.map(async (player_id) => {
@@ -122,13 +109,12 @@ async function fillInTeamVariablesWithPlayersStats(
             player_id: player.player_id,
           });
         const lifeTimeStats = await getPlayerLifeTimeStats(player_id);
-        const segments =
-          lifeTimeStats?.segments &&
-          lifeTimeStats.segments[
-            +!Object.keys(lifeTimeStats.segments[0]?.segments)[0].startsWith(
-              'de_'
-            )
-          ]?.segments;
+        const segmentKeys = lifeTimeStats.segments[0]?.segments
+          ? Object.keys(lifeTimeStats.segments[0].segments)
+          : [];
+        const firstSegmentKey = segmentKeys.length ? segmentKeys[0] : '';
+        const index = firstSegmentKey.startsWith('de_') ? 0 : 1;
+        const segments = lifeTimeStats?.segments && lifeTimeStats.segments[index]?.segments;
         if (!segments || !Object.keys(segments).length) return;
         currentMapPool.map((map_id) => {
           stats.lifetime[map_id].push(
@@ -175,27 +161,20 @@ function calculateAndFillAllData(arr) {
             0
           ) || 0;
         teamStats.totalWinrate[mapName] =
-          +(
-            teamStats.winrateMatches[mapName] / teamStats.totalMatches[mapName]
-          ).toFixed(2) || 0;
+          +(teamStats.winrateMatches[mapName] / teamStats.totalMatches[mapName]).toFixed(2) || 0;
 
         lifetime[mapName].map((soloStats) => {
           const soloAvg = soloStats.avg;
           const teamAvg = teamStats.avg[mapName];
           soloStats.cf = (1 + (soloAvg - teamAvg) / teamAvg) * 0.2;
-          soloStats.points = +(soloStats.cf * soloStats.winrate * 10).toFixed(
-            2
-          );
+          soloStats.points = +(soloStats.cf * soloStats.winrate * 10).toFixed(2);
         });
       });
 
       Object.keys(lifetime).map((mapName) => {
         lifetime[mapName] = {
           totalWinrate:
-            +(
-              teamStats.winrateMatches[mapName] /
-              teamStats.totalMatches[mapName]
-            ).toFixed(2) || 0,
+            +(teamStats.winrateMatches[mapName] / teamStats.totalMatches[mapName]).toFixed(2) || 0,
           totalMatches: teamStats.totalMatches[mapName],
           totalPoints: +lifetime[mapName]
             .map(({ points }) => points)
@@ -207,12 +186,7 @@ function calculateAndFillAllData(arr) {
   })();
 }
 
-function calculateDifferencesAndSortResult(
-  team1Stats,
-  team2Stats,
-  team1Result,
-  team2Result
-) {
+function calculateDifferencesAndSortResult(team1Stats, team2Stats, team1Result, team2Result) {
   withErrorHandling(() => {
     currentMapPool.map((mapName) => {
       team1Result.push({
@@ -269,15 +243,11 @@ async function sendMapPickerResult(
       ? [dbPlayersTeam1, team1Result, team1Name]
       : [dbPlayersTeam2, team2Result, team2Name];
     let teamsToSendNotification = new Map();
-    const opponentTeamName =
-      neededVariables[2] === team1Name ? team2Name : team1Name;
+    const opponentTeamName = neededVariables[2] === team1Name ? team2Name : team1Name;
 
     for await (const player of neededVariables[0]) {
-      const teams = (
-        await database.teams.readAllByPlayerId(player.player_id)
-      ).filter(
-        (team) =>
-          team.settings.subscriptions.match_object_created.calculateBestMaps
+      const teams = (await database.teams.readAllByPlayerId(player.player_id)).filter(
+        (team) => team.settings.subscriptions.match_object_created.calculateBestMaps
       );
 
       teams.map(({ chat_id }) => {
@@ -305,9 +275,7 @@ async function sendMapPickerResult(
     [...teamsToSendNotification].forEach((team) => {
       const chat_id = team[0];
       const teammates = team[1];
-      const teammatesString = teammates
-        .map((nickname) => `<b>${nickname}</b>`)
-        .join(', ');
+      const teammatesString = teammates.map((nickname) => `<b>${nickname}</b>`).join(', ');
 
       telegramSendMessage(
         chat_id,
@@ -321,10 +289,7 @@ async function sendMapPickerResult(
         },
         {
           parse_mode: 'html',
-          ...subscriptionReceivedMarkup(
-            'match_object_created',
-            'calculateBestMaps'
-          ),
+          ...subscriptionReceivedMarkup('match_object_created', 'calculateBestMaps'),
         }
       );
     });
