@@ -72,13 +72,13 @@ body .player-container {
 .faceit-lvl::before {
   content: attr(data-prev-elo-distance);
   color: red;
-  left: 0;
+  left: -1.5rem;
 }
 
 .faceit-lvl::after {
   content: attr(data-next-elo-distance);
   color: #1de100;
-  left: 100%;
+  left: calc(100% + 1rem);
 }
 
 .player-container--win .faceit-lvl {
