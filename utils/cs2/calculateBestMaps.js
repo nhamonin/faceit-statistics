@@ -125,7 +125,7 @@ async function fillInTeamVariablesWithPlayersStats(playerIDs, dbPlayers, stats) 
                   avg: regulateAvg(+segments[map_id].k1),
                   matches: +segments[map_id].m1,
                 }
-              : { winrate: 50, avg: 18, matches: 0 }
+              : { winrate: 50, avg: 14.4, matches: 0 }
           );
         });
       })
