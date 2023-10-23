@@ -65,7 +65,11 @@ async function handleMatchObjectCreated(data) {
     const allowedCompetitionName = allowedCompetitionNames.includes(
       matchData?.payload?.entity?.name
     );
-    if (!allowedCompetitionName) clearInterval(interval);
+    if (!allowedCompetitionName) {
+      console.log('New competition name:', matchData?.payload?.entity?.name);
+      clearInterval(interval);
+    }
+
     if (
       matchData?.payload?.teams?.faction1 &&
       matchData?.payload?.teams?.faction2 &&
@@ -113,7 +117,10 @@ async function handleMatchStatusFinished(data) {
 
   const matchData = await getMatchData(match_id);
   const allowedCompetitionName = allowedCompetitionNames.includes(matchData?.payload?.entity?.name);
-  if (!allowedCompetitionName) return;
+  if (!allowedCompetitionName) {
+    console.log('New competition name:', matchData?.payload?.entity?.name);
+    return;
+  }
 
   await performMapPickerAnalytics(match_id);
 
