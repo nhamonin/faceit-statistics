@@ -42,7 +42,13 @@ const currentMapPool = [
   'de_vertigo',
   'de_anubis',
 ];
-const allowedCompetitionNames = ['5v5 RANKED', '5v5 RANKED PREMIUM', 'COMPETITIVE 5v5', 'CS2 5v5'];
+const allowedCompetitionNames = [
+  '5v5 RANKED',
+  '5v5 RANKED PREMIUM',
+  'COMPETITIVE 5v5',
+  'COMPETITIVE 5V5',
+  'CS2 5v5',
+];
 const lvlClasses = {
   1: 'first',
   2: 'second',

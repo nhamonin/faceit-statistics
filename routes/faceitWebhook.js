@@ -66,7 +66,6 @@ async function handleMatchObjectCreated(data) {
       matchData?.payload?.entity?.name
     );
     if (!allowedCompetitionName) {
-      console.log('New competition name:', matchData?.payload?.entity?.name);
       clearInterval(interval);
     }
 
@@ -118,7 +117,6 @@ async function handleMatchStatusFinished(data) {
   const matchData = await getMatchData(match_id);
   const allowedCompetitionName = allowedCompetitionNames.includes(matchData?.payload?.entity?.name);
   if (!allowedCompetitionName) {
-    console.log('New competition name:', matchData?.payload?.entity?.name);
     return;
   }
 
