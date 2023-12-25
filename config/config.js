@@ -115,6 +115,7 @@ const COMMAND_PATTERNS = {
   softUpdatePlayers: /^\/soft_update_players$/,
   updatePlayers: /^\/update_players$/,
   hardUpdatePlayers: /^\/hard_update_players$/,
+  updateWebhookToken: /^\/update_webhook_token\s*(\S*)$/,
 };
 const dynamicValues = {
   FACEIT_WEBHOOK_API_KEY,

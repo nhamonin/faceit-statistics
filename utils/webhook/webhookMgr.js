@@ -1,10 +1,5 @@
 import { FACEIT_WEBHOOK_ID, dynamicValues } from '#config';
-import {
-  getCurrentBearerToken,
-  setEnvValue,
-  withErrorHandling,
-  fetchData,
-} from '#utils';
+import { getCurrentBearerToken, setEnvValue, withErrorHandling, fetchData } from '#utils';
 import { syncWebhookStaticListWithDB } from '#jobs';
 
 const url = `https://api.faceit.com/webhooks/v1/subscriptions/${FACEIT_WEBHOOK_ID}`;
@@ -73,9 +68,7 @@ function createBodyFromWebhookData(playersIDs, action, webhookData) {
   let restrictions = webhookData.restrictions;
 
   label: if (action === 'add') {
-    const isPlayerAlreadyInList = restrictions.some(({ value }) =>
-      playersIDs.includes(value)
-    );
+    const isPlayerAlreadyInList = restrictions.some(({ value }) => playersIDs.includes(value));
 
     if (isPlayerAlreadyInList) break label;
 
@@ -87,9 +80,7 @@ function createBodyFromWebhookData(playersIDs, action, webhookData) {
       })),
     ];
   } else if (action === 'remove') {
-    restrictions = restrictions.filter(
-      ({ value }) => !playersIDs.includes(value)
-    );
+    restrictions = restrictions.filter(({ value }) => !playersIDs.includes(value));
   }
 
   return JSON.stringify({ ...body, restrictions });
@@ -109,7 +100,9 @@ async function fetchWebhookData() {
 
 async function limitRestrictions(limit) {
   const webhookData = await getWebhookDataPayload();
-  const { restrictions } = webhookData;
+  const { restrictions } = webhookData || {};
+
+  if (!restrictions) return;
 
   if (restrictions.length > limit) {
     const rest = restrictions.length - limit;
@@ -122,8 +115,13 @@ async function limitRestrictions(limit) {
 
 async function getRestrictionsCount() {
   const webhookData = await getWebhookDataPayload();
-  const { restrictions } = webhookData;
+  const { restrictions } = webhookData || {};
   return restrictions?.length || 0;
+}
+
+function manualBearerTokenUpdate(token) {
+  setEnvValue('FACEIT_WEBHOOK_API_KEY', token);
+  dynamicValues.FACEIT_WEBHOOK_API_KEY = token;
 }
 
 export const webhookMgr = {
@@ -131,6 +129,6 @@ export const webhookMgr = {
   limitRestrictions,
   getRestrictionsCount,
   addPlayersToList: (playersIDs) => changeWebhookPlayersList('add')(playersIDs),
-  removePlayersFromList: (playersIDs) =>
-    changeWebhookPlayersList('remove')(playersIDs),
+  removePlayersFromList: (playersIDs) => changeWebhookPlayersList('remove')(playersIDs),
+  manualBearerTokenUpdate,
 };

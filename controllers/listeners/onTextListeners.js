@@ -20,41 +20,14 @@ import { COMMAND_PATTERNS } from '#config';
 export function initOnTextListeners() {
   registerCommand(COMMAND_PATTERNS.start, handleStartCommand);
   registerCommand(COMMAND_PATTERNS.getAnalytics, handleGetAnalyticsCommand);
-  registerCommand(
-    COMMAND_PATTERNS.deleteAnalytics,
-    handleDeleteAnalyticsCommand,
-    true
-  );
-  registerCommand(
-    COMMAND_PATTERNS.addNewWhPlayers,
-    handleAddNewWhPlayersCommand,
-    true
-  );
-  registerCommand(
-    COMMAND_PATTERNS.syncDbWithStaticList,
-    handleSyncDbWithStaticListCommand,
-    true
-  );
-  registerCommand(
-    COMMAND_PATTERNS.limitRestrictions,
-    handleLimitRestrictionsCommand,
-    true
-  );
-  registerCommand(
-    COMMAND_PATTERNS.softUpdatePlayers,
-    handleSoftUpdatePlayersCommand,
-    true
-  );
-  registerCommand(
-    COMMAND_PATTERNS.updatePlayers,
-    handleUpdatePlayersCommand,
-    true
-  );
-  registerCommand(
-    COMMAND_PATTERNS.hardUpdatePlayers,
-    handleHardUpdatePlayersCommand,
-    true
-  );
+  registerCommand(COMMAND_PATTERNS.deleteAnalytics, handleDeleteAnalyticsCommand, true);
+  registerCommand(COMMAND_PATTERNS.addNewWhPlayers, handleAddNewWhPlayersCommand, true);
+  registerCommand(COMMAND_PATTERNS.syncDbWithStaticList, handleSyncDbWithStaticListCommand, true);
+  registerCommand(COMMAND_PATTERNS.limitRestrictions, handleLimitRestrictionsCommand, true);
+  registerCommand(COMMAND_PATTERNS.softUpdatePlayers, handleSoftUpdatePlayersCommand, true);
+  registerCommand(COMMAND_PATTERNS.updatePlayers, handleUpdatePlayersCommand, true);
+  registerCommand(COMMAND_PATTERNS.hardUpdatePlayers, handleHardUpdatePlayersCommand, true);
+  registerCommand(COMMAND_PATTERNS.updateWebhookToken, handleUpdateWebhookTokenCommand, true);
 }
 
 async function handleStartCommand({ chat }) {
@@ -136,6 +109,15 @@ async function handleHardUpdatePlayersCommand(params) {
   });
 }
 
+async function handleUpdateWebhookTokenCommand({ chat, message_id }, match) {
+  webhookMgr.manualBearerTokenUpdate(match[1]);
+  await sendTelegramMessage({
+    chatId: chat.id,
+    text: 'Update webhook token done! Now try /get_analytics command.',
+    messageId: message_id,
+  });
+}
+
 async function performUpdatePlayers({
   chat,
   message_id,
@@ -147,9 +129,7 @@ async function performUpdatePlayers({
   await updatePlayers({ playerIDs, isHardUpdate, withAPIMatches });
   await sendTelegramMessage({
     chatId: chat.id,
-    text: `${
-      isHardUpdate ? 'Hard' : ''
-    } Update players done! Now try /get_analytics command.`,
+    text: `${isHardUpdate ? 'Hard' : ''} Update players done! Now try /get_analytics command.`,
     messageId: message_id,
   });
 }
