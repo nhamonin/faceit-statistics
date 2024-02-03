@@ -121,11 +121,7 @@ export async function handleBlockedToSendMessage(chat_id) {
         webhookMgr.removePlayersFromList([player.player_id]);
       })
       .then(() => {
-        console.log(
-          `Successfully deleted team ${
-            team.username || team.title || team.chat_id
-          }`
-        );
+        console.log(`Successfully deleted team ${team.username || team.title || team.chat_id}`);
       });
   });
 }
@@ -139,12 +135,11 @@ export function withAdminChat(handler) {
 
 function translateInlineKeyboard(opts, lng) {
   if (!opts?.reply_markup?.inline_keyboard?.length) return opts;
-  const translatedInlineKeyboard = opts.reply_markup.inline_keyboard.map(
-    (row) =>
-      row.map((button) => ({
-        ...button,
-        text: i18next.t(button.text, { lng }),
-      }))
+  const translatedInlineKeyboard = opts.reply_markup.inline_keyboard.map((row) =>
+    row.map((button) => ({
+      ...button,
+      text: i18next.t(button.text, { lng }),
+    }))
   );
 
   return {
@@ -159,9 +154,7 @@ function translateInlineKeyboard(opts, lng) {
 function processI18Options(options, lang) {
   for (let key in options) {
     if (options[key] instanceof Date) {
-      options[key] = Intl.DateTimeFormat(lang === 'uk' ? 'ukr' : lang).format(
-        options[key]
-      );
+      options[key] = Intl.DateTimeFormat(lang === 'uk' ? 'ukr' : lang).format(options[key]);
     }
   }
 }

@@ -3,8 +3,7 @@ module.exports = {
     {
       name: 'app',
       script: 'app.js',
-      interpreter: '/root/.nvm/versions/node/v19.3.0/bin/node',
-      node_args: '--experimental-specifier-resolution=node',
+      node_args: '--experimental-specifier-resolution=node --env-file=.env',
       max_size: '100M',
     },
   ],

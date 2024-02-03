@@ -20,4 +20,4 @@ jobs:
             cd ~/faceit-statistics
             git pull
             npm install
-            pm2 restart app
+            pm2 start pm2.config.cjs

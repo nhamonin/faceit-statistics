@@ -111,10 +111,18 @@ async function handleHardUpdatePlayersCommand(params) {
 
 async function handleUpdateWebhookTokenCommand({ chat, message_id }, match) {
   webhookMgr.manualBearerTokenUpdate(match[1]);
+  await syncWebhookStaticListWithDB();
+
   await sendTelegramMessage({
     chatId: chat.id,
-    text: 'Update webhook token done! Now try /get_analytics command.',
+    text: 'Update webhook token and sync done! Now try /get_analytics command.',
     messageId: message_id,
+  });
+  const text = await getAnalytics();
+
+  await sendTelegramMessage({
+    chatId: chat.id,
+    text,
   });
 }
 
