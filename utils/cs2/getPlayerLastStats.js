@@ -1,5 +1,5 @@
 import database from '#db';
-import { calculateAverage, getPlayerLifeTimeStats } from '#utils';
+import { calculateAverage, getPlayerLifeTimeStats, calculateLifeTimeWinrate } from '#utils';
 import { statsNumberArray } from '#config';
 
 export async function getPlayerLastStats(player_id, limit) {
@@ -22,18 +22,14 @@ export async function getPlayerLastStats(player_id, limit) {
   };
 
   res.kd.lifetime = stats ? +stats.lifetime?.k5 : 0;
-  res.winrate.lifetime = stats
-    ? +((stats.lifetime?.m2 / stats.lifetime?.m1) * 100).toFixed(2)
-    : 0;
+  res.winrate.lifetime = calculateLifeTimeWinrate(stats);
   res.hs.lifetime = stats ? +stats.lifetime?.k8 : 0;
 
   statsNumberArray.forEach((number) => {
     Object.keys(res).forEach((attr) => {
       res[attr][`last${limit ? '' : number}`] = +(
         calculateAverage(
-          statsArr
-            .map((attrsObj) => attrsObj[attr])
-            .slice(0, limit || number) || 0
+          statsArr.map((attrsObj) => attrsObj[attr]).slice(0, limit || number) || 0
         ) * (attr === 'winrate' ? 100 : 1) || 0
       ).toFixed(2);
     });
