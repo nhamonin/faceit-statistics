@@ -9,7 +9,7 @@ export const getClass = {
 function getEloColorClass(value) {
   if (value < 1000) {
     return 'red';
-  } else if (value < 2000) {
+  } else if (value < 2001) {
     return 'yellow';
   } else if (value < 2500) {
     return 'green';
