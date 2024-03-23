@@ -61,7 +61,7 @@ async function handleDeleteAnalyticsCommand({ chat, message_id }) {
   await deleteAnalytics();
   await sendTelegramMessage({
     chatId: chat.id,
-    text: 'Deletion of analytics done! Now try /get_analytics command.',
+    text: 'Deletion of analytics done! Now try /ga command.',
     messageId: message_id,
   });
 }
@@ -79,7 +79,7 @@ async function handleSyncDbWithStaticListCommand({ chat, message_id }) {
   await syncWebhookStaticListWithDB();
   await sendTelegramMessage({
     chatId: chat.id,
-    text: 'Sync DB with static list done! Now try /get_analytics command.',
+    text: 'Sync DB with static list done! Now try /ga command.',
     messageId: message_id,
   });
 }
@@ -88,7 +88,7 @@ async function handleLimitRestrictionsCommand({ chat, message_id }, match) {
   await webhookMgr.limitRestrictions(+match[1]);
   await sendTelegramMessage({
     chatId: chat.id,
-    text: 'Limit restrictions done! Now try /get_analytics command.',
+    text: 'Limit restrictions done! Now try /ga command.',
     messageId: message_id,
   });
 }
@@ -115,7 +115,7 @@ async function handleUpdateWebhookTokenCommand({ chat, message_id }, match) {
 
   await sendTelegramMessage({
     chatId: chat.id,
-    text: 'Update webhook token and sync done! Now try /get_analytics command.',
+    text: 'Update webhook token and sync done! Now try /ga command.',
     messageId: message_id,
   });
   const text = await getAnalytics();
@@ -137,7 +137,7 @@ async function performUpdatePlayers({
   await updatePlayers({ playerIDs, isHardUpdate, withAPIMatches });
   await sendTelegramMessage({
     chatId: chat.id,
-    text: `${isHardUpdate ? 'Hard' : ''} Update players done! Now try /get_analytics command.`,
+    text: `${isHardUpdate ? 'Hard' : ''} Update players done! Now try /ga command.`,
     messageId: message_id,
   });
 }
