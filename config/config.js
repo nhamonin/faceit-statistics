@@ -35,7 +35,7 @@ const currentMapPool = [
   'de_inferno',
   'de_mirage',
   'de_nuke',
-  'de_overpass',
+  'de_dust2',
   'de_vertigo',
   'de_anubis',
 ];
