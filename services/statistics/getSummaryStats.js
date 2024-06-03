@@ -39,11 +39,11 @@ function getTemplateData(team, players, playedPlayers = [], playersWithResults =
     const styleSuffix = playerResult ? (playerResult?.win ? '--win' : '--lose') : '';
     const playerContainerModificator = playerResult ? ` player-container${styleSuffix}` : '';
     const eloDifferenceValue =
-      playerResult && player.previous_elo ? player.elo - player.previous_elo : 0;
-    const eloDifferencePrefix = eloDifferenceValue > 0 ? '+' : '';
+      playerResult && player.previous_elo ? Math.abs(player.elo - player.previous_elo) : 0;
+    const eloDifferencePrefix = playerResult?.win ? '+' : '';
     const eloDifference = eloDifferencePrefix + eloDifferenceValue;
     const eloDifferenceClass = eloDifferenceValue
-      ? `elo-difference elo-difference--${eloDifference > 0 ? 'win' : 'lose'}`
+      ? `elo-difference elo-difference--${playerResult?.win ? 'win' : 'lose'}`
       : '';
     const eloDistance = distanceToLevels(player.elo);
 
