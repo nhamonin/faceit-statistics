@@ -40,7 +40,7 @@ function getTemplateData(team, players, playedPlayers = [], playersWithResults =
     const playerContainerModificator = playerResult ? ` player-container${styleSuffix}` : '';
     const eloDifferenceValue =
       playerResult && player.previous_elo ? Math.abs(player.elo - player.previous_elo) : 0;
-    const eloDifferencePrefix = playerResult?.win ? '+' : '';
+    const eloDifferencePrefix = playerResult?.win ? '+' : '-';
     const eloDifference = eloDifferencePrefix + eloDifferenceValue;
     const eloDifferenceClass = eloDifferenceValue
       ? `elo-difference elo-difference--${playerResult?.win ? 'win' : 'lose'}`
