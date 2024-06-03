@@ -155,10 +155,7 @@ async function handleMatchStatusFinished(data) {
       teamsToSendSummary.add(team.chat_id);
     }
 
-    await Promise.all([
-      createMatchRows(player_id, matchStats),
-      deleteMatchInProgressAttrs(player_id),
-    ]);
+    await createMatchRows(player_id, matchStats);
   }
 
   await updatePlayers({ playerIDs });
@@ -173,6 +170,8 @@ async function handleMatchStatusFinished(data) {
   }
 
   await handleSummaryStatsAutoSend(match_id, [...teamsToSendSummary], playersWithResults);
+
+  await Promise.all(playerIDs.map((player_id) => deleteMatchInProgressAttrs(player_id)));
 }
 
 async function createMatchRows(player_id, matchStats) {
