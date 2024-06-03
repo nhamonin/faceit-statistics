@@ -7,6 +7,7 @@ import { isProduction, port, host, SERVER_URL, mimeTypes } from '#config';
 import routes from '#routes';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+let server;
 
 function requestHandler(req, res) {
   const { method, url } = req;
@@ -55,13 +56,9 @@ function requestHandler(req, res) {
 
 export function startServer() {
   const options = {
-    key: fs.readFileSync(
-      `./certs/private${isProduction ? '.key' : '_test.pem'}`
-    ),
+    key: fs.readFileSync(`./certs/private${isProduction ? '.key' : '_test.pem'}`),
     cert: fs.readFileSync(
-      `./certs/${
-        isProduction ? 'faceit-helper_pro.crt' : 'certificate_test.pem'
-      }`
+      `./certs/${isProduction ? 'faceit-helper_pro.crt' : 'certificate_test.pem'}`
     ),
     ...(isProduction && {
       ca: [
@@ -71,7 +68,23 @@ export function startServer() {
     }),
   };
 
-  https.createServer(options, requestHandler).listen(port, host, () => {
+  server = https.createServer(options, requestHandler).listen(port, host, () => {
     console.log(`Server listens ${SERVER_URL}`);
   });
 }
+
+const gracefulShutdown = () => {
+  console.log('Shutting down gracefully...');
+  server.close(() => {
+    console.log('Closed out remaining connections.');
+    process.exit();
+  });
+
+  setTimeout((e) => {
+    console.error('Could not close connections in time, forcefully shutting down', e);
+    process.exit(1);
+  }, 10000);
+};
+
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);

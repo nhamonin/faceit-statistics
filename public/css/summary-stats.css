@@ -221,6 +221,22 @@ body .player-container {
   width: 23rem;
 }
 
+.stats-value__item.elo-difference::after {
+  position: absolute;
+  content: attr(data-elo-difference);
+
+  font-size: 2rem;
+  left: -1.5rem;
+}
+
+.stats-value__item.elo-difference--win::after {
+  color: #1de100;
+}
+
+.stats-value__item.elo-difference--lose::after {
+  color: red;
+}
+
 .stats-attribute__item {
   display: flex;
   height: 2rem;

@@ -49,7 +49,11 @@ export const getSummaryStatsTemplate = ({
                         <div class="stats-attribute__item">W/R</div>
                       </div>
                       <div class="stats-value-wrapper">
-                        <div class="stats-value__item ${player.elo.class}">${player.elo.value}</div>
+                        <div
+                          class="stats-value__item ${player.elo.class} ${player.eloDifferenceClass}"
+                          data-elo-difference="${player.eloDifference}"
+                        >${player.elo.value}
+                        </div>
                         <div class="stats-value__item ${player.highestElo.class}">${player.highestElo.value}</div>
                         <div class="stats-value__item ${player.winrate.class} percent">${player.winrate.value}</div>
                       </div>

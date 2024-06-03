@@ -220,7 +220,7 @@ async function receiveArgs(req) {
 }
 
 function cacheWithExpiry(cache, key, timeout) {
-  if (!cache || cache.has(key)) return false;
+  if (isProduction && (!cache || cache.has(key))) return false;
 
   cache.add(key);
   setTimeout(() => {

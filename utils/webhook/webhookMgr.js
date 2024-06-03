@@ -38,14 +38,6 @@ function changeWebhookPlayersList(action) {
 async function getWebhookDataPayload() {
   let webhookData = await getWebhookData();
 
-  if (!webhookData.payload) {
-    const token = await getCurrentBearerToken();
-
-    setEnvValue('FACEIT_WEBHOOK_API_KEY', token);
-    dynamicValues.FACEIT_WEBHOOK_API_KEY = token;
-    webhookData = await getWebhookData();
-  }
-
   return webhookData.payload;
 }
 

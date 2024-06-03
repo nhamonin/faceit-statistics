@@ -10,7 +10,18 @@ export const getSummaryStats = async (chat_id, playedPlayers, playersWithResults
 
   const players = await database.players.readAllByChatId(
     chat_id,
-    ['player_id', 'nickname', 'elo', 'highestElo', 'winrate', 'lvl', 'kd', 'avg', 'hs'],
+    [
+      'player_id',
+      'nickname',
+      'elo',
+      'highestElo',
+      'winrate',
+      'lvl',
+      'kd',
+      'avg',
+      'hs',
+      'previous_elo',
+    ],
     { column: 'elo', direction: 'desc' }
   );
 
@@ -27,6 +38,13 @@ function getTemplateData(team, players, playedPlayers = [], playersWithResults =
     const lastMatchesSetting = team?.settings?.lastMatches || 20;
     const styleSuffix = playerResult ? (playerResult?.win ? '--win' : '--lose') : '';
     const playerContainerModificator = playerResult ? ` player-container${styleSuffix}` : '';
+    const eloDifferenceValue =
+      playerResult && player.previous_elo ? player.elo - player.previous_elo : 0;
+    const eloDifferencePrefix = eloDifferenceValue > 0 ? '+' : '';
+    const eloDifference = eloDifferencePrefix + eloDifferenceValue;
+    const eloDifferenceClass = eloDifferenceValue
+      ? `elo-difference elo-difference--${eloDifference > 0 ? 'win' : 'lose'}`
+      : '';
     const eloDistance = distanceToLevels(player.elo);
 
     return {
@@ -43,6 +61,8 @@ function getTemplateData(team, players, playedPlayers = [], playersWithResults =
         value: player.highestElo,
         class: getClass.elo(player.highestElo),
       },
+      eloDifference,
+      eloDifferenceClass,
       ...eloDistance,
       winrate: {
         value: (+player.winrate.lifetime).toFixed(2),
