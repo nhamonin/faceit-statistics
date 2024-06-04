@@ -2,6 +2,7 @@ import i18next from 'i18next';
 
 import database from '#db';
 import { distanceToLevels, getClass, getLangByChatID, prepareEmptyTeamResult } from '#utils';
+import { isProduction } from '#config';
 
 export const getSummaryStats = async (chat_id, playedPlayers, playersWithResults) => {
   const team = await database.teams.readBy({ chat_id });
@@ -44,9 +45,10 @@ async function getTemplateData(team, players, playedPlayers = [], playersWithRes
       const eloDifferenceValue = playerResult && previousElo ? player.elo - previousElo : 0;
       const eloDifferencePrefix = eloDifferenceValue > 0 ? '+' : '';
       const eloDifference = eloDifferencePrefix + eloDifferenceValue;
-      const eloDifferenceClass = eloDifferenceValue
-        ? `elo-difference elo-difference--${eloDifferenceValue > 0 ? 'win' : 'lose'}`
-        : '';
+      const eloDifferenceClass =
+        eloDifferenceValue && !isProduction
+          ? `elo-difference elo-difference--${eloDifferenceValue > 0 ? 'win' : 'lose'}`
+          : '';
       const eloDistance = distanceToLevels(player.elo);
 
       return {
