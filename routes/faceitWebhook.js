@@ -134,7 +134,7 @@ async function handleMatchStatusFinished(data) {
   const playerIDs = playersRoster.map(({ id }) => id);
   const teamsToSendSummary = new Set();
   const updatedTeams = new Map();
-  await wait(1000 * 3);
+  await wait(1000 * 15);
   const matchStatsArr = await getMatchStats(match_id);
   if (!matchStatsArr?.length) return;
   const [matchStats] = matchStatsArr;
@@ -187,7 +187,15 @@ async function createMatchRows(player_id, matchStats) {
   if (!playerData) return;
 
   const playerDetails = await players.getPlayerDetailsByPlayerID(player_id);
-  const newElo = playerDetails?.games?.cs2?.faceit_elo;
+  let newElo = playerDetails?.games?.cs2?.faceit_elo;
+
+  if (!newElo) {
+    await wait(1000 * 15);
+
+    const playerDetails = await players.getPlayerDetailsByPlayerID(player_id);
+
+    newElo = playerDetails?.games?.cs2?.faceit_elo;
+  }
 
   return await database.matches.create({
     match_id: matchStats.matchId,

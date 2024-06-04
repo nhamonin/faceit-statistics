@@ -65,6 +65,7 @@ export class MatchRepository extends BaseRepository {
   readLastByPlayerID = withErrorHandling(async (playerId, limit = -1) => {
     const match = await this.db(this.tableName)
       .where({ player_id: playerId })
+      .whereNotNull('elo')
       .orderBy('timestamp', 'desc')
       .limit(limit);
 

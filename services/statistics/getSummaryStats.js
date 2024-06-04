@@ -29,26 +29,24 @@ async function getTemplateData(team, players, playedPlayers = [], playersWithRes
       const lastMatchesSetting = team?.settings?.lastMatches || 20;
       const styleSuffix = playerResult ? (playerResult?.win ? '--win' : '--lose') : '';
       const playerContainerModificator = playerResult ? ` player-container${styleSuffix}` : '';
-      let previousElo;
+      let eloDifferenceValue;
 
       if (playerResult) {
-        const TEN_MINUTES_IN_MILLISECONDS = 10 * 60 * 1000;
+        const TEN_MINUTES_IN_MILLISECONDS = 10 * 60 * 1000 * 10000;
         const matches = await database.matches.readLastByPlayerID(player.player_id, 2);
         const lastMatch = matches.length > 1 ? matches[0] : null;
         const preLastMatch = matches.length > 1 ? matches[1] : null;
 
         if (lastMatch && new Date() - new Date(lastMatch.timestamp) < TEN_MINUTES_IN_MILLISECONDS) {
-          previousElo = preLastMatch?.elo;
+          eloDifferenceValue = playerResult ? lastMatch.elo - preLastMatch.elo : 0;
         }
       }
 
-      const eloDifferenceValue = playerResult && previousElo ? player.elo - previousElo : 0;
       const eloDifferencePrefix = eloDifferenceValue > 0 ? '+' : '';
       const eloDifference = eloDifferencePrefix + eloDifferenceValue;
-      const eloDifferenceClass =
-        eloDifferenceValue && !isProduction
-          ? `elo-difference elo-difference--${eloDifferenceValue > 0 ? 'win' : 'lose'}`
-          : '';
+      const eloDifferenceClass = eloDifferenceValue
+        ? `elo-difference elo-difference--${eloDifferenceValue > 0 ? 'win' : 'lose'}`
+        : '';
       const eloDistance = distanceToLevels(player.elo);
 
       return {
