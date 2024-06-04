@@ -19,14 +19,14 @@ export const getSummaryStatsTemplate = ({
         if (player.elo.value === 0) {
           return `
             <div class="player-container${player.playerContainerModificator}">
-              <div class="player-container__nickname">${player.nickname}</div>
+              <div class="player-container__nickname ${player.eloDifferenceClass}" data-elo-difference="${player.eloDifference}">${player.nickname}</div>
               <div class="no-info">${noCs2InfoMessage}</div>
             </div>
           `;
         } else {
           return `
             <div class="player-container${player.playerContainerModificator}">
-              <div class="player-container__nickname">${player.nickname}</div>
+              <div class="player-container__nickname ${player.eloDifferenceClass}" data-elo-difference="${player.eloDifference}">${player.nickname}</div>
                 <div
                   class="faceit-lvl"
                   data-prev-elo-distance="${player.prevEloDistance}"
@@ -50,9 +50,7 @@ export const getSummaryStatsTemplate = ({
                       </div>
                       <div class="stats-value-wrapper">
                         <div
-                          class="stats-value__item ${player.elo.class} ${player.eloDifferenceClass}"
-                          data-elo-difference="${player.eloDifference}"
-                        >${player.elo.value}
+                          class="stats-value__item ${player.elo.class}">${player.elo.value}
                         </div>
                         <div class="stats-value__item ${player.highestElo.class}">${player.highestElo.value}</div>
                         <div class="stats-value__item ${player.winrate.class} percent">${player.winrate.value}</div>

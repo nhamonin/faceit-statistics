@@ -98,6 +98,7 @@ body .player-container {
 .player-container__nickname {
   font-family: var(--main-font);
   display: inline;
+  position: relative;
   width: max-content;
   padding: 2rem 6rem 1rem;
   border: 0.1rem solid #4f4f4f;
@@ -221,19 +222,19 @@ body .player-container {
   width: 23rem;
 }
 
-.stats-value__item.elo-difference::after {
+.elo-difference::after {
   position: absolute;
   content: attr(data-elo-difference);
-
-  font-size: 2rem;
-  left: -1.5rem;
+  font-size: 4rem;
+  font-weight: bold;
+  right: -20rem;
 }
 
-.stats-value__item.elo-difference--win::after {
+.elo-difference--win::after {
   color: #1de100;
 }
 
-.stats-value__item.elo-difference--lose::after {
+.elo-difference--lose::after {
   color: red;
 }
 

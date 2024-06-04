@@ -43,7 +43,7 @@ async function getTemplateData(team, players, playedPlayers = [], playersWithRes
       }
 
       const eloDifferencePrefix = eloDifferenceValue > 0 ? '+' : '';
-      const eloDifference = eloDifferencePrefix + eloDifferenceValue;
+      const eloDifference = eloDifferencePrefix + eloDifferenceValue + ' elo';
       const eloDifferenceClass = eloDifferenceValue
         ? `elo-difference elo-difference--${eloDifferenceValue > 0 ? 'win' : 'lose'}`
         : '';
