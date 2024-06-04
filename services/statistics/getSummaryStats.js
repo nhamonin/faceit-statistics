@@ -10,18 +10,7 @@ export const getSummaryStats = async (chat_id, playedPlayers, playersWithResults
 
   const players = await database.players.readAllByChatId(
     chat_id,
-    [
-      'player_id',
-      'nickname',
-      'elo',
-      'highestElo',
-      'winrate',
-      'lvl',
-      'kd',
-      'avg',
-      'hs',
-      'previous_elo',
-    ],
+    ['player_id', 'nickname', 'elo', 'highestElo', 'winrate', 'lvl', 'kd', 'avg', 'hs'],
     { column: 'elo', direction: 'desc' }
   );
 
@@ -32,57 +21,71 @@ export const getSummaryStats = async (chat_id, playedPlayers, playersWithResults
     : getTemplateData(team, players, playedPlayers, playersWithResults, lng);
 };
 
-function getTemplateData(team, players, playedPlayers = [], playersWithResults = [], lng) {
-  const playersWithStatus = players.map((player) => {
-    const playerResult = playersWithResults.find((p) => p.id === player.player_id);
-    const lastMatchesSetting = team?.settings?.lastMatches || 20;
-    const styleSuffix = playerResult ? (playerResult?.win ? '--win' : '--lose') : '';
-    const playerContainerModificator = playerResult ? ` player-container${styleSuffix}` : '';
-    const eloDifferenceValue =
-      playerResult && player.previous_elo ? Math.abs(player.elo - player.previous_elo) : 0;
-    const eloDifferencePrefix = playerResult?.win ? '+' : '-';
-    const eloDifference = eloDifferencePrefix + eloDifferenceValue;
-    const eloDifferenceClass = eloDifferenceValue
-      ? `elo-difference elo-difference--${playerResult?.win ? 'win' : 'lose'}`
-      : '';
-    const eloDistance = distanceToLevels(player.elo);
+async function getTemplateData(team, players, playedPlayers = [], playersWithResults = [], lng) {
+  const playersWithStatus = await Promise.all(
+    players.map(async (player) => {
+      const playerResult = playersWithResults.find((p) => p.id === player.player_id);
+      const lastMatchesSetting = team?.settings?.lastMatches || 20;
+      const styleSuffix = playerResult ? (playerResult?.win ? '--win' : '--lose') : '';
+      const playerContainerModificator = playerResult ? ` player-container${styleSuffix}` : '';
+      let previousElo;
 
-    return {
-      nickname: player.nickname,
-      active: playedPlayers.includes(player.nickname),
-      win: playerResult ? playerResult.win : null,
-      lastMatchesSetting,
-      playerContainerModificator,
-      elo: {
-        value: player.elo,
-        class: getClass.elo(player.elo),
-      },
-      highestElo: {
-        value: player.highestElo,
-        class: getClass.elo(player.highestElo),
-      },
-      eloDifference,
-      eloDifferenceClass,
-      ...eloDistance,
-      winrate: {
-        value: (+player.winrate.lifetime).toFixed(2),
-        class: getClass.winrate(player.winrate.lifetime),
-      },
-      kd: {
-        value: player.kd[`last${lastMatchesSetting}`]?.toFixed(2),
-        class: getClass.kd(player.kd[`last${lastMatchesSetting}`]),
-      },
-      avg: {
-        value: player.avg[`last${lastMatchesSetting}`]?.toFixed(1),
-        class: getClass.avg(player.avg[`last${lastMatchesSetting}`]),
-      },
-      hs: {
-        value: player.hs[`last${lastMatchesSetting}`]?.toFixed(2),
-        class: getClass.hs(player.hs[`last${lastMatchesSetting}`]),
-      },
-      lvl: player.lvl,
-    };
-  });
+      if (playerResult) {
+        const TEN_MINUTES_IN_MILLISECONDS = 10 * 60 * 1000;
+        const matches = await database.matches.readLastByPlayerID(player.player_id, 2);
+        const lastMatch = matches.length > 1 ? matches[0] : null;
+        const preLastMatch = matches.length > 1 ? matches[1] : null;
+
+        if (lastMatch && new Date() - new Date(lastMatch.timestamp) < TEN_MINUTES_IN_MILLISECONDS) {
+          previousElo = preLastMatch?.elo;
+        }
+      }
+
+      const eloDifferenceValue = playerResult && previousElo ? player.elo - previousElo : 0;
+      const eloDifferencePrefix = eloDifferenceValue > 0 ? '+' : '';
+      const eloDifference = eloDifferencePrefix + eloDifferenceValue;
+      const eloDifferenceClass = eloDifferenceValue
+        ? `elo-difference elo-difference--${eloDifferenceValue > 0 ? 'win' : 'lose'}`
+        : '';
+      const eloDistance = distanceToLevels(player.elo);
+
+      return {
+        nickname: player.nickname,
+        active: playedPlayers.includes(player.nickname),
+        win: playerResult ? playerResult.win : null,
+        lastMatchesSetting,
+        playerContainerModificator,
+        elo: {
+          value: player.elo,
+          class: getClass.elo(player.elo),
+        },
+        highestElo: {
+          value: player.highestElo,
+          class: getClass.elo(player.highestElo),
+        },
+        eloDifference,
+        eloDifferenceClass,
+        ...eloDistance,
+        winrate: {
+          value: (+player.winrate.lifetime).toFixed(2),
+          class: getClass.winrate(player.winrate.lifetime),
+        },
+        kd: {
+          value: player.kd[`last${lastMatchesSetting}`]?.toFixed(2),
+          class: getClass.kd(player.kd[`last${lastMatchesSetting}`]),
+        },
+        avg: {
+          value: player.avg[`last${lastMatchesSetting}`]?.toFixed(1),
+          class: getClass.avg(player.avg[`last${lastMatchesSetting}`]),
+        },
+        hs: {
+          value: player.hs[`last${lastMatchesSetting}`]?.toFixed(2),
+          class: getClass.hs(player.hs[`last${lastMatchesSetting}`]),
+        },
+        lvl: player.lvl,
+      };
+    })
+  );
 
   return {
     data: {
