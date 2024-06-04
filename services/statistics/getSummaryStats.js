@@ -32,7 +32,7 @@ async function getTemplateData(team, players, playedPlayers = [], playersWithRes
       let eloDifferenceValue;
 
       if (playerResult) {
-        const TEN_MINUTES_IN_MILLISECONDS = 10 * 60 * 1000 * 10000;
+        const TEN_MINUTES_IN_MILLISECONDS = 10 * 60 * 1000;
         const matches = await database.matches.readLastByPlayerID(player.player_id, 2);
         const lastMatch = matches.length > 1 ? matches[0] : null;
         const preLastMatch = matches.length > 1 ? matches[1] : null;
