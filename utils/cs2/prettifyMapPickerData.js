@@ -1,8 +1,8 @@
 export function prettifyMapPickerData(neededVariables) {
   const getClassForPoints = (totalPoints) => {
-    if (totalPoints > 0) {
+    if (totalPoints > 20) {
       return 'green';
-    } else if (Math.abs(totalPoints) < 20) {
+    } else if (totalPoints >= -20 && totalPoints <= 20) {
       return 'yellow';
     } else {
       return 'red';
