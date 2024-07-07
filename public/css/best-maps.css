@@ -56,6 +56,9 @@ th {
 .green {
   background-color: rgba(9, 83, 16, 0.6);
 }
+.yellow {
+  background-color: rgba(255, 255, 0, 0.3);
+}
 .red {
   background-color: rgba(121, 0, 0, 0.4);
 }
