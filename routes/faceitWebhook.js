@@ -29,13 +29,16 @@ export default {
     post: async (req, res) => {
       try {
         const data = await receiveArgs(req);
+
+        if (data.event !== 'match_object_created') {
+          console.log(JSON.stringify(data, null, 2));
+        }
+
         const addedToCache = cacheWithExpiry(caches[data.event], data.payload.id, 1000 * 60 * 30);
         if (!addedToCache) {
           res.end('Already cached');
           return;
         }
-
-        console.log(JSON.stringify(data, null, 2));
 
         const eventHandler = eventHandlers.get(data.event);
 
