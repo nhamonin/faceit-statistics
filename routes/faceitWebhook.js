@@ -72,7 +72,7 @@ async function handleMatchObjectCreated(data) {
 
     const teams = matchData?.payload?.teams;
 
-    if (teams?.faction1 && teams?.faction2 && allowedCompetitionName) {
+    if (teams && teams[0]?.roster?.length && allowedCompetitionName) {
       clearInterval(interval);
 
       await updatePlayersInMatch(teams);
@@ -125,11 +125,12 @@ async function handleMatchStatusFinished(data) {
 
   const teams = data?.payload?.teams;
 
-  if (!teams || !teams.faction1?.roster?.length || !teams.faction2?.roster?.length) {
+  if (!teams || !teams[0]?.roster?.length) {
     return;
   }
 
-  const playersRoster = [...teams.faction1.roster, ...teams.faction2.roster];
+  const playersRoster = [...teams[0]?.roster];
+
   const playerIDs = playersRoster.map(({ id }) => id);
   const teamsToSendSummary = new Set();
   const updatedTeams = new Map();
