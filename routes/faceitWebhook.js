@@ -35,6 +35,8 @@ export default {
           return;
         }
 
+        console.log(JSON.stringify(data, null, 2));
+
         const eventHandler = eventHandlers.get(data.event);
 
         if (eventHandler) {
