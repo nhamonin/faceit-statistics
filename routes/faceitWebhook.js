@@ -23,25 +23,12 @@ const eventHandlers = new Map([
 ]);
 
 const players = new Players();
-let lastLogTime = 0;
-let pendingLog = null;
 
 export default {
   '/faceit-webhook': {
     post: async (req, res) => {
       try {
         const data = await receiveArgs(req);
-
-        if (data.event !== 'match_object_created') {
-          const now = Date.now();
-          pendingLog = data;
-
-          if (now - lastLogTime >= 10000) {
-            console.log(JSON.stringify(pendingLog, null, 2).slice(0, 3000));
-            lastLogTime = now;
-            pendingLog = null;
-          }
-        }
 
         const addedToCache = cacheWithExpiry(caches[data.event], data.payload.id, 1000 * 60 * 30);
         if (!addedToCache) {
