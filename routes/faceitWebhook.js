@@ -83,13 +83,13 @@ async function handleMatchObjectCreated(data) {
       clearInterval(interval);
     }
 
-    if (
-      matchData?.payload?.teams?.faction1 &&
-      matchData?.payload?.teams?.faction2 &&
-      allowedCompetitionName
-    ) {
+    const teams = matchData?.payload?.teams;
+
+    if (teams?.faction1 && teams?.faction2 && allowedCompetitionName) {
       clearInterval(interval);
-      await updatePlayersInMatch(matchData.payload.teams);
+
+      await updatePlayersInMatch(teams);
+
       const predictions = await calculateBestMaps(matchData);
       if (predictions?.length) {
         const prediction = await database.tempPredictions.readBy({
@@ -136,15 +136,13 @@ async function handleMatchStatusFinished(data) {
 
   await performMapPickerAnalytics(match_id);
 
-  if (
-    !data?.payload?.teams?.length ||
-    !data.payload.teams[0]?.roster?.length ||
-    !data.payload.teams[1]?.roster?.length
-  ) {
+  const teams = data?.payload?.teams;
+
+  if (!teams || !teams.faction1?.roster?.length || !teams.faction2?.roster?.length) {
     return;
   }
 
-  const playersRoster = [...data.payload.teams[0].roster, ...data.payload.teams[1].roster];
+  const playersRoster = [...teams.faction1.roster, ...teams.faction2.roster];
   const playerIDs = playersRoster.map(({ id }) => id);
   const teamsToSendSummary = new Set();
   const updatedTeams = new Map();
