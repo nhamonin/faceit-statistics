@@ -37,7 +37,7 @@ export default {
           pendingLog = data;
 
           if (now - lastLogTime >= 10000) {
-            console.log(JSON.stringify(pendingLog, null, 2));
+            console.log(JSON.stringify(pendingLog, null, 2).slice(0, 3000));
             lastLogTime = now;
             pendingLog = null;
           }
