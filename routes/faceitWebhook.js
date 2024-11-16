@@ -72,7 +72,11 @@ async function handleMatchObjectCreated(data) {
 
     const teams = matchData?.payload?.teams;
 
-    if (teams && teams[0]?.roster?.length && allowedCompetitionName) {
+    if (
+      matchData?.payload?.teams?.faction1 &&
+      matchData?.payload?.teams?.faction2 &&
+      allowedCompetitionName
+    ) {
       clearInterval(interval);
 
       await updatePlayersInMatch(teams);
@@ -123,13 +127,17 @@ async function handleMatchStatusFinished(data) {
 
   await performMapPickerAnalytics(match_id);
 
-  const teams = data?.payload?.teams;
-
-  if (!teams || !teams[0]?.roster?.length) {
+  if (
+    !matchData?.payload?.teams?.faction1?.roster?.length ||
+    !matchData?.payload?.teams?.faction2?.roster?.length
+  ) {
     return;
   }
 
-  const playersRoster = [...teams[0]?.roster];
+  const playersRoster = [
+    ...matchData.payload.teams.faction1.roster,
+    ...matchData.payload.teams.faction2.roster,
+  ];
 
   const playerIDs = playersRoster.map(({ id }) => id);
   const teamsToSendSummary = new Set();
