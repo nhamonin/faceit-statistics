@@ -1,13 +1,10 @@
-export const subscriptionReceivedMarkup = (
-  subscriptionType,
-  subscriptionName
-) => ({
+export const subscriptionReceivedMarkup = (subscriptionType, subscriptionName) => ({
   reply_markup: {
     inline_keyboard: [
       [
         {
           text: 'buttons.menu.donate',
-          url: 'https://www.buymeacoffee.com/faceithelper',
+          url: 'https://send.monobank.ua/jar/2AWXbMbuWH',
         },
         {
           text: 'buttons.subscriptions.unsubscribe',

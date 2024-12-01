@@ -14,7 +14,7 @@ export const mainMenuMarkup = {
       [
         {
           text: 'buttons.menu.donate',
-          url: 'https://www.buymeacoffee.com/faceithelper',
+          url: 'https://send.monobank.ua/jar/2AWXbMbuWH',
         },
       ],
       [
