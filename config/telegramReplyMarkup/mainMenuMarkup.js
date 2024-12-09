@@ -23,6 +23,12 @@ export const mainMenuMarkup = {
           callback_data: 'settingsMenu',
         },
       ],
+      [
+        {
+          text: 'buttons.menu.contact',
+          url: 'https://t.me/mewnh',
+        },
+      ],
     ],
     force_reply: true,
   },

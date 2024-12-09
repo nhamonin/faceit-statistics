@@ -81,7 +81,8 @@
         "statistics": "Statistics",
         "modifyTeam": "Modify team",
         "donate": "Keep this bot alive ❤️",
-        "settings": "Settings"
+        "settings": "Settings",
+        "contact": "Contact the developer"
       },
       "stats": {
         "summary": "Summary",
