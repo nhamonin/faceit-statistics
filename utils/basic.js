@@ -65,6 +65,13 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
   let image = null;
 
   try {
+    page.on('response', (response) => {
+      console.log(`${response.url()}: ${response.status()}`);
+    });
+    page.on('requestfailed', (request) => {
+      console.error(`${request.url()}: ${request.failure().errorText}`);
+    });
+
     await page.setContent(html);
 
     await page.waitForNetworkIdle({
