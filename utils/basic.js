@@ -60,8 +60,7 @@ function logEvent(chat, action) {
 
 async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
   const tBot = getTelegramBot();
-  const context = await browser.createIncognitoBrowserContext();
-  const page = await context.newPage();
+  const page = await browser.newPage();
   let image = null;
 
   try {
@@ -72,16 +71,20 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
       timeout: 10000,
     });
 
-    await withErrorHandling(async () => {
-      image = await page.screenshot({
-        fullPage: true,
-      });
-    })();
+    image = await page.screenshot({
+      fullPage: true,
+      encoding: 'binary',
+    });
   } catch (e) {
-    console.log(e);
+    console.error(e);
+    return;
   } finally {
     await page.close();
-    await context.close();
+  }
+
+  if (!image) {
+    console.error('Failed to generate image');
+    return;
   }
 
   const chatsToSend =
@@ -89,26 +92,18 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
       ? chatIDs
       : [...chatIDs, TELEGRAM_LOGS_CHAT_ID];
 
-  await Promise.all(
-    chatsToSend.map((chat_id) =>
-      withErrorHandling(
-        async () => {
-          await tBot.sendPhoto(
-            chat_id,
-            image,
-            message_id ? getBasicTelegramOptions(message_id) : {}
-          );
-        },
-        async (e) => {
-          if (e.message.startsWith(ERROR_TELEGRAM_FORBIDDEN)) {
-            await handleBlockedToSendMessage(chat_id);
-          } else {
-            console.log(e);
-          }
-        }
-      )()
-    )
-  );
+  for (const chat_id of chatsToSend) {
+    try {
+      const options = message_id ? getBasicTelegramOptions(message_id) : {};
+      await tBot.sendPhoto(chat_id, Buffer.from(image), options);
+    } catch (e) {
+      if (e.message.startsWith(ERROR_TELEGRAM_FORBIDDEN)) {
+        await handleBlockedToSendMessage(chat_id);
+      } else {
+        console.error(`Failed to send photo to chat ${chat_id}:`, e);
+      }
+    }
+  }
 }
 
 async function getBrowser() {
