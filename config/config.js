@@ -86,6 +86,9 @@ const puppeteerArgs = [
   '--disable-accelerated-2d-canvas',
   '--no-first-run',
   '--no-zygote',
+  '--font-render-hinting=none',
+  '--allow-file-access-from-files',
+  '--enable-local-file-accesses',
 ];
 const caches = {
   updatedPlayers: new Set(),
