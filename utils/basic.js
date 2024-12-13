@@ -67,20 +67,15 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
   try {
     await page.setContent(html);
 
-    await page.waitForFunction(() => {
-      const stylesheets = document.querySelectorAll('link[rel="stylesheet"]');
-      return Array.from(stylesheets).every((link) => link.sheet !== null);
-    });
-
     await page.waitForNetworkIdle({
-      idleTime: 1000,
-      timeout: 15000,
+      idleTime: 350,
+      timeout: 10000,
     });
 
     await withErrorHandling(async () => {
       image = await page.screenshot({
         fullPage: true,
-        encoding: 'binary',
+        type: 'png',
       });
     })();
   } catch (e) {
@@ -101,7 +96,7 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
         async () => {
           await tBot.sendPhoto(
             chat_id,
-            Buffer.from(image, 'binary'),
+            Buffer.from(image),
             message_id ? getBasicTelegramOptions(message_id) : {}
           );
         },

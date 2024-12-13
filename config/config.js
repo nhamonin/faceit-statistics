@@ -89,6 +89,7 @@ const puppeteerArgs = [
   '--font-render-hinting=none',
   '--allow-file-access-from-files',
   '--enable-local-file-accesses',
+  '--disable-web-security',
 ];
 const caches = {
   updatedPlayers: new Set(),
