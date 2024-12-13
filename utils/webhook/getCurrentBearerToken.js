@@ -1,14 +1,6 @@
-import puppeteer from 'puppeteer-extra';
-import stealthPlugin from 'puppeteer-extra-plugin-stealth';
+import puppeteer from 'puppeteer';
 
-import {
-  FACEIT_APP_ID,
-  FACEIT_WEBHOOK_ID,
-  puppeteerArgs,
-  loggedInCookie,
-} from '#config';
-
-puppeteer.use(stealthPlugin());
+import { FACEIT_APP_ID, FACEIT_WEBHOOK_ID, puppeteerArgs, loggedInCookie } from '#config';
 
 const webhookEditURL = `https://developers.faceit.com/apps/${FACEIT_APP_ID}/webhooks/${FACEIT_WEBHOOK_ID}/edit`;
 const waitUntil = 'networkidle2';
@@ -31,10 +23,7 @@ export async function getCurrentBearerToken() {
     await new Promise((r) => setTimeout(r, 8000));
     bearerToken = await page.evaluate(() => localStorage.getItem('auth_token'));
   } catch (e) {
-    console.error(
-      'Error while getting webhook token via puppeteer: ',
-      e.message
-    );
+    console.error('Error while getting webhook token via puppeteer: ', e.message);
   } finally {
     await browser.close();
   }

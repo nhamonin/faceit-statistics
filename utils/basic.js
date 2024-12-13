@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import { EventEmitter } from 'node:events';
 
-import puppeteer from 'puppeteer-extra';
+import puppeteer from 'puppeteer';
 import i18next from 'i18next';
 
 import database from '#db';
