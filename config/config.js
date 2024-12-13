@@ -28,7 +28,7 @@ const PG_CONNECTION_STRING = isProduction ? PG_CONNECTION_STRING_PROD : PG_CONNE
 const FACEIT_WEBHOOK_ID = isProduction ? FACEIT_WEBHOOK_ID_PROD : FACEIT_WEBHOOK_ID_TEST;
 const host = isProduction ? HOST_PROD : HOST_TEST;
 const port = isProduction ? PORT_PROD : PORT_TEST;
-const SERVER_URL = `https://${host}:${port}`;
+const SERVER_URL = isProduction ? 'https://faceit-helper.pro' : `https://${host}:${port}`;
 const game_id = 'cs2';
 const currentMapPool = [
   'de_ancient',
