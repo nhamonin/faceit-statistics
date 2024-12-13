@@ -39,8 +39,6 @@ export default {
         const eventHandler = eventHandlers.get(data.event);
 
         if (eventHandler) {
-          console.log('eventHandler', JSON.stringify(data.payload));
-
           await eventHandler(data);
         } else {
           console.warn(`Unhandled event type: ${data.event}`);

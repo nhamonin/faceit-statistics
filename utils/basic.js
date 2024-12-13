@@ -60,31 +60,34 @@ function logEvent(chat, action) {
 
 async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
   const tBot = getTelegramBot();
-  const page = await browser.newPage();
+  const context = await browser.createBrowserContext();
+  const page = await context.newPage();
   let image = null;
 
   try {
     await page.setContent(html);
 
-    await page.waitForNetworkIdle({
-      idleTime: 350,
-      timeout: 10000,
+    await page.waitForFunction(() => {
+      const stylesheets = document.querySelectorAll('link[rel="stylesheet"]');
+      return Array.from(stylesheets).every((link) => link.sheet !== null);
     });
 
-    image = await page.screenshot({
-      fullPage: true,
-      encoding: 'binary',
+    await page.waitForNetworkIdle({
+      idleTime: 1000,
+      timeout: 15000,
     });
+
+    await withErrorHandling(async () => {
+      image = await page.screenshot({
+        fullPage: true,
+        encoding: 'binary',
+      });
+    })();
   } catch (e) {
-    console.error(e);
-    return;
+    console.log(e);
   } finally {
     await page.close();
-  }
-
-  if (!image) {
-    console.error('Failed to generate image');
-    return;
+    await context.close();
   }
 
   const chatsToSend =
@@ -92,18 +95,26 @@ async function sendPhoto(chatIDs, message_id, html, logEnabled = true) {
       ? chatIDs
       : [...chatIDs, TELEGRAM_LOGS_CHAT_ID];
 
-  for (const chat_id of chatsToSend) {
-    try {
-      const options = message_id ? getBasicTelegramOptions(message_id) : {};
-      await tBot.sendPhoto(chat_id, Buffer.from(image), options);
-    } catch (e) {
-      if (e.message.startsWith(ERROR_TELEGRAM_FORBIDDEN)) {
-        await handleBlockedToSendMessage(chat_id);
-      } else {
-        console.error(`Failed to send photo to chat ${chat_id}:`, e);
-      }
-    }
-  }
+  await Promise.all(
+    chatsToSend.map((chat_id) =>
+      withErrorHandling(
+        async () => {
+          await tBot.sendPhoto(
+            chat_id,
+            Buffer.from(image, 'binary'),
+            message_id ? getBasicTelegramOptions(message_id) : {}
+          );
+        },
+        async (e) => {
+          if (e.message.startsWith(ERROR_TELEGRAM_FORBIDDEN)) {
+            await handleBlockedToSendMessage(chat_id);
+          } else {
+            console.log(e);
+          }
+        }
+      )()
+    )
+  );
 }
 
 async function getBrowser() {
