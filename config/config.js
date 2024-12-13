@@ -47,6 +47,7 @@ const allowedCompetitionNames = [
   'COMPETITIVE 5V5',
   'CS2 5v5',
   'Europe 5v5',
+  'Europe 5v5 Queue',
 ];
 const lvlClasses = {
   1: 'first',

@@ -19,5 +19,5 @@ jobs:
           script: |
             cd ~/faceit-statistics
             git pull
-            npm install
-            pm2 start pm2.config.cjs
+            npm ci
+            pm2 restart pm2.config.cjs
