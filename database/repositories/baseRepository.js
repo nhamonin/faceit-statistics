@@ -29,12 +29,35 @@ export class BaseRepository {
   });
 
   readBy = withErrorHandling(async (criteria) => {
-    const result = await this.db(this.tableName).where(criteria).first();
+    let query = this.db(this.tableName);
+    for (const [column, condition] of Object.entries(criteria)) {
+      if (typeof condition === 'object') {
+        for (const [operator, value] of Object.entries(condition)) {
+          query = query.where(column, operator, value);
+        }
+      } else {
+        query = query.where(column, condition);
+      }
+    }
+    const result = await query.first();
     return result || null;
   });
 
   readAllBy = withErrorHandling(async (criteria, options = {}) => {
-    let query = this.db(this.tableName).where(criteria);
+    let query = this.db(this.tableName);
+
+    // Handle criteria with possible operators
+    for (const [column, condition] of Object.entries(criteria)) {
+      if (typeof condition === 'object') {
+        // Process operator-based conditions
+        for (const [operator, value] of Object.entries(condition)) {
+          query = query.where(column, operator, value);
+        }
+      } else {
+        // Process simple equality conditions
+        query = query.where(column, condition);
+      }
+    }
 
     if (options.excludeNull) {
       query = query.whereNotNull(options.excludeNull);
