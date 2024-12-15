@@ -10,6 +10,7 @@ import {
   getDefaultTelegramCallbackOptions,
   sendPhoto,
   logEvent,
+  actionTracking,
 } from '#utils';
 import { getSummaryStatsTemplate, getEloTemplate } from '#templates';
 import { getStatsMarkup } from '#telegramReplyMarkup';
@@ -20,6 +21,7 @@ const defaultOpts = getDefaultTelegramCallbackOptions();
 async function handleSummary(opts, msg) {
   const { data, error } = await getSummaryStats(opts.chat_id);
   logEvent(msg.chat, 'Get summary stats');
+  actionTracking(opts.chat_id);
   error
     ? await telegramSendMessage(
         opts.chat_id,
@@ -41,9 +43,11 @@ async function handleSummary(opts, msg) {
 async function handleTeamKD(opts, msg, callbackQuery) {
   const amount = callbackQuery.data.split('?')[1];
 
+  logEvent(msg.chat, `Get team KD last ${amount}`);
+  actionTracking(opts.chat_id);
+
   if (amount !== 'custom') {
     getTeamKDWrapper(amount, opts);
-    logEvent(msg.chat, `Get team KD last ${amount}`);
   } else {
     telegramSendMessage(
       opts.chat_id,
@@ -52,16 +56,11 @@ async function handleTeamKD(opts, msg, callbackQuery) {
         ...defaultOpts,
       }
     ).then(({ message_id: bot_message_id }) => {
-      tBot.onReplyToMessage(
-        opts.chat_id,
-        bot_message_id,
-        async ({ text: amount, message_id }) => {
-          logEvent(msg.chat, `get team KD last ${amount}`);
-          await getTeamKDWrapper(amount, opts, message_id);
-          await telegramDeleteMessage(opts.chat_id, message_id);
-          await telegramDeleteMessage(opts.chat_id, bot_message_id);
-        }
-      );
+      tBot.onReplyToMessage(opts.chat_id, bot_message_id, async ({ text: amount, message_id }) => {
+        await getTeamKDWrapper(amount, opts, message_id);
+        await telegramDeleteMessage(opts.chat_id, message_id);
+        await telegramDeleteMessage(opts.chat_id, bot_message_id);
+      });
     });
   }
 }
@@ -70,6 +69,8 @@ async function handleTeamElo(opts, msg) {
   const { errorMessage, data } = await getTeamEloData(opts.chat_id);
 
   logEvent(msg.chat, 'Get team Elo');
+  actionTracking(opts.chat_id);
+
   errorMessage
     ? await telegramSendMessage(
         opts.chat_id,
@@ -88,12 +89,7 @@ async function handleTeamElo(opts, msg) {
   );
 }
 
-async function handlePlayerLastMatches(
-  opts,
-  msg,
-  teamNicknames,
-  callbackQuery
-) {
+async function handlePlayerLastMatches(opts, msg, teamNicknames, callbackQuery) {
   const nickname = callbackQuery.data.split('?')[1];
   await getPlayerLastMatchesWrapper(nickname, msg.chat, opts, teamNicknames);
 }
@@ -104,10 +100,4 @@ async function handleHighestElo(opts, msg, teamNicknames, callbackQuery) {
   await getHighestEloWrapper(nickname, teamNicknames, opts, msg.chat);
 }
 
-export {
-  handleSummary,
-  handleTeamKD,
-  handleTeamElo,
-  handlePlayerLastMatches,
-  handleHighestElo,
-};
+export { handleSummary, handleTeamKD, handleTeamElo, handlePlayerLastMatches, handleHighestElo };

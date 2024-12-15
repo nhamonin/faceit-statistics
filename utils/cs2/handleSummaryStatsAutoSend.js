@@ -1,6 +1,6 @@
 import database from '#db';
 import { getSummaryStats } from '#services';
-import { telegramSendMessage, sendPhoto, cacheWithExpiry } from '#utils';
+import { telegramSendMessage, sendPhoto, cacheWithExpiry, actionTracking } from '#utils';
 import { getSummaryStatsTemplate } from '#templates';
 import { subscriptionReceivedMarkup } from '#telegramReplyMarkup';
 import { caches } from '#config';
@@ -43,6 +43,8 @@ export async function handleSummaryStatsAutoSend(matchID, chatIDs, playersWithRe
           ...subscriptionReceivedMarkup('match_status_finished', 'summaryStats'),
         }
       );
+
+      actionTracking(chat_id);
     })
   );
 }

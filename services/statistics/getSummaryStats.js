@@ -2,7 +2,6 @@ import i18next from 'i18next';
 
 import database from '#db';
 import { distanceToLevels, getClass, getLangByChatID, prepareEmptyTeamResult } from '#utils';
-import { isProduction } from '#config';
 
 export const getSummaryStats = async (chat_id, playedPlayers, playersWithResults) => {
   const team = await database.teams.readBy({ chat_id });

@@ -248,6 +248,10 @@ function withErrorHandling(fn, errorObj, options = { log: true }) {
   };
 }
 
+function actionTracking(chat_id) {
+  return database.teams.incrementActionUsage(chat_id);
+}
+
 async function fetchData(url, options) {
   options = options || {
     retries: 3,
@@ -317,6 +321,7 @@ export {
   receiveArgs,
   cacheWithExpiry,
   withErrorHandling,
+  actionTracking,
   fetchData,
   prepareEmptyTeamResult,
 };

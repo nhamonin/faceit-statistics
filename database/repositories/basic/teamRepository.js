@@ -22,7 +22,9 @@ export class TeamRepository extends BaseRepository {
     )
   );
 
-  readAllChatIds = withErrorHandling(async () =>
-    this.db(this.tableName).pluck('chat_id')
+  readAllChatIds = withErrorHandling(async () => this.db(this.tableName).pluck('chat_id'));
+
+  incrementActionUsage = withErrorHandling(async (chat_id) =>
+    this.db(this.tableName).where({ chat_id }).increment('actions_used', 1)
   );
 }

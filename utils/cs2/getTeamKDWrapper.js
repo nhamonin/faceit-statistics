@@ -1,10 +1,5 @@
 import { getTeamKDData } from '#services';
-import {
-  sendPhoto,
-  telegramSendMessage,
-  telegramDeleteMessage,
-  getLangByChatID,
-} from '#utils';
+import { sendPhoto, telegramSendMessage, telegramDeleteMessage } from '#utils';
 import { getKDTemplate } from '#templates';
 import { getTeamKDMenu } from '#telegramReplyMarkup';
 

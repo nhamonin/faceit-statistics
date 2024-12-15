@@ -18,6 +18,7 @@ import {
   receiveArgs,
   cacheWithExpiry,
   withErrorHandling,
+  actionTracking,
   fetchData,
   prepareEmptyTeamResult,
 } from './basic.js';
@@ -79,6 +80,7 @@ export {
   receiveArgs,
   cacheWithExpiry,
   withErrorHandling,
+  actionTracking,
   fetchData,
   prepareEmptyTeamResult,
   startServer,

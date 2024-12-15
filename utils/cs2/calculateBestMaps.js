@@ -10,6 +10,7 @@ import {
   getPlayerLifeTimeStats,
   cacheWithExpiry,
   withErrorHandling,
+  actionTracking,
 } from '#utils';
 import { currentMapPool, caches, TELEGRAM_LOGS_CHAT_ID } from '#config';
 import { getBestMapsTemplate } from '#templates';
@@ -277,6 +278,8 @@ async function sendMapPickerResult(
       const chat_id = team[0];
       const teammates = team[1];
       const teammatesString = teammates.map((nickname) => `<b>${nickname}</b>`).join(', ');
+
+      actionTracking(chat_id);
 
       telegramSendMessage(
         chat_id,
